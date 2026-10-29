@@ -8,7 +8,7 @@ import { createHash } from 'node:crypto';
 const HOST = 'cd70bx-gg.myshopify.com';
 const SRC = `https://${HOST}`;
 const SITE = 'https://baraka-charcuterie.be';
-const WHATSAPP = '32495315500';
+const EMAIL = 'contact@baraka-charcuterie.be';
 const OUT = path.resolve(process.argv[2] || path.join(import.meta.dirname, '..', 'docs'));
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
 
@@ -143,7 +143,7 @@ const SCRIPT_TEXT_BLOCK = [
 
 const CONTACT_SCRIPT = `
 <script>
-  // Formulaire de contact : le site est statique, le message part sur WhatsApp.
+  // Formulaire de contact : le site est statique, le message s'ouvre dans la messagerie du visiteur.
   document.addEventListener('submit', function (event) {
     var form = event.target;
     if (!form || form.id !== 'contact_form') return;
@@ -153,14 +153,18 @@ const CONTACT_SCRIPT = `
       return field ? field.value.trim() : '';
     };
     var lines = [
-      'Bonjour, je vous contacte depuis le site Baraka.',
+      'Bonjour,',
+      '',
+      get('body'),
+      '',
       'Prénom : ' + get('first_name'),
       'Nom : ' + get('last_name'),
       'Téléphone : ' + get('phone'),
       'Email : ' + get('email'),
     ];
-    if (get('body')) lines.push('Message : ' + get('body'));
-    window.open('https://wa.me/${WHATSAPP}?text=' + encodeURIComponent(lines.join('\\n')), '_blank', 'noopener');
+    window.location.href =
+      'mailto:${EMAIL}?subject=' + encodeURIComponent('Demande de contact – site Baraka') +
+      '&body=' + encodeURIComponent(lines.join('\\n'));
   });
 </script>`;
 
@@ -209,10 +213,13 @@ function cleanPage(html) {
   $('footer a[href="/account"], footer a[href="/search"]').closest('li').remove();
   $('.nbr-footer__newsletter').remove();
 
-  // Formulaire de contact : envoi par WhatsApp
+  // Formulaire de contact : envoi vers l'adresse mail pro, affichée sous « 2. Par mail »
   if ($('#contact_form').length) {
     $('#contact_form').attr('action', '#').attr('method', 'get');
     $('#contact_form input[name="form_type"], #contact_form input[name="utf8"]').remove();
+    $('.nbr-contact-label')
+      .filter((_, el) => /par mail/i.test($(el).text()))
+      .after(`<p class="nbr-contact-mail" style="width:100%;align-self:stretch;text-align:center;margin:12px 0 4px"><a href="mailto:${EMAIL}">${EMAIL}</a></p>`);
     $('body').append(CONTACT_SCRIPT);
   }
 

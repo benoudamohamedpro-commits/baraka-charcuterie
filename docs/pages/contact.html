@@ -1993,7 +1993,7 @@ rgb(var(--color-border-rgb) / 1.0); --border-radius: 0px;
   
     <rte-formatter class=" spacing-style text-block text-block--ATHhTdEJqWWl1WWUvR__nbr_contact_label_mail paragraph nbr-contact-label svf-align    text-block--align-center text-block--full-width  rte   " style="    --padding-block-start: 30px; --padding-block-end:0px; --padding-inline-start:0px; --padding-inline-end:0px;    --svf-text-align: center; --svf-text-align-mobile: center;                --width: 100%;    --max-width: var(--max-width--body-none);          --text-align: center;          ">
       <p>2. Par mail</p>
-    </rte-formatter>
+    </rte-formatter><p class="nbr-contact-mail" style="width:100%;align-self:stretch;text-align:center;margin:12px 0 4px"><a href="mailto:contact@baraka-charcuterie.be">contact@baraka-charcuterie.be</a></p>
   
 
 
@@ -2608,7 +2608,7 @@ rgb(var(--color-border-rgb) / 1.0); --border-radius: 0px;
 
 
 <script>
-  // Formulaire de contact : le site est statique, le message part sur WhatsApp.
+  // Formulaire de contact : le site est statique, le message s'ouvre dans la messagerie du visiteur.
   document.addEventListener('submit', function (event) {
     var form = event.target;
     if (!form || form.id !== 'contact_form') return;
@@ -2618,13 +2618,17 @@ rgb(var(--color-border-rgb) / 1.0); --border-radius: 0px;
       return field ? field.value.trim() : '';
     };
     var lines = [
-      'Bonjour, je vous contacte depuis le site Baraka.',
+      'Bonjour,',
+      '',
+      get('body'),
+      '',
       'Prénom : ' + get('first_name'),
       'Nom : ' + get('last_name'),
       'Téléphone : ' + get('phone'),
       'Email : ' + get('email'),
     ];
-    if (get('body')) lines.push('Message : ' + get('body'));
-    window.open('https://wa.me/32495315500?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener');
+    window.location.href =
+      'mailto:contact@baraka-charcuterie.be?subject=' + encodeURIComponent('Demande de contact – site Baraka') +
+      '&body=' + encodeURIComponent(lines.join('\n'));
   });
 </script></body></html>

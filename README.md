@@ -20,5 +20,6 @@ Puis envoyer les changements sur GitHub (`git add -A`, `git commit`, `git push`)
 ## Différences avec la boutique Shopify
 
 - Pas de panier, de compte client ni de recherche (le site est statique).
-- Le formulaire de contact ouvre WhatsApp (+32 495 315 500) avec le message prérempli.
+- Le formulaire de contact ouvre la messagerie du visiteur avec un mail prérempli vers contact@baraka-charcuterie.be (adresse aussi affichée sous « 2. Par mail »).
+- Les titres et métadonnées disent « Baraka » au lieu de « La boucherie » (nom de la boutique Shopify).
 - Le formulaire newsletter du pied de page est retiré.
