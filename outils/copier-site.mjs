@@ -164,8 +164,19 @@ const CONTACT_SCRIPT = `
   });
 </script>`;
 
+// Nom de la boutique Shopify (« La boucherie ») remplacé par « Baraka » dans les titres et métadonnées.
+// Le texte de la politique de confidentialité n'est pas modifié.
+function renameShop(text) {
+  return text.replace(/\|\s*Baraka\s*–\s*La boucherie/g, '| Baraka').replace(/La boucherie ?/g, 'Baraka');
+}
+
 function cleanPage(html) {
   const $ = cheerio.load(html);
+
+  $('title').each((_, el) => void $(el).text(renameShop($(el).text())));
+  $('meta[content*="La boucherie"]').each((_, el) => void $(el).attr('content', renameShop($(el).attr('content'))));
+  $('script[type="application/ld+json"]').each((_, el) => void $(el).text(renameShop($(el).text())));
+  $('.visually-hidden').filter((_, el) => $(el).text().trim() === 'La boucherie').text('Baraka');
 
   $('script').each((_, el) => {
     const src = $(el).attr('src') || '';
@@ -183,7 +194,7 @@ function cleanPage(html) {
     if (/prefetch|preconnect|dns-prefetch/.test(rel) && !href.includes(`/cdn/shop/t/`)) return void $(el).remove();
     if (rel === 'ucp' || rel === 'buy' || /oembed|atom/.test($(el).attr('type') || '')) return void $(el).remove();
   });
-  $('meta[name^="shopify-"]').remove();
+  $('meta[name^="shopify-"], meta[name="request-id"]').remove();
   $('meta[id^="shopify-"]').remove();
 
   // En-tête : compte client, panier et recherche n'existent pas sur un site statique
