@@ -1,0 +1,83 @@
+<div
+  class="svf-contact-form"
+  {{ block.shopify_attributes }}
+  {% if request.visual_preview_mode %}
+    data-visual-preview-mode
+  {% endif %}
+>
+  {% form 'contact', class: 'svf-contact-form' %}
+    {% liquid
+      assign first_name_label = 'Prénom'
+      assign last_name_label = 'Nom'
+      assign phone_label = 'Téléphone'
+      assign email_label = 'Email'
+      assign message_label = 'Message'
+      assign submit_label = 'Envoyer'
+    %}
+
+    <div class="textfields-group">
+      {% render 'svf-textfield', label: first_name_label, name: 'contact[first_name]', id: 'first-name', full_width: true %}
+
+      {% render 'svf-textfield', label: last_name_label, name: 'contact[last_name]', id: 'last-name', full_width: true %}
+    </div>
+
+    {% render 'svf-textfield', label: phone_label, name: 'contact[phone]', id: 'phone', type: 'tel', full_width: true %}
+
+    {% render 'svf-textfield', label: email_label, name: 'contact[email]', id: 'email', type: 'email', full_width: true %}
+
+    {% render 'svf-textarea', placeholder: message_label, name: 'contact[body]', id: 'message', full_width: true %}
+
+    <button type="submit" class="button svf-button svf-button--full">{{ submit_label }}</button>
+
+    {%- if form.errors -%}
+      <div class="form-error">
+        {% render 'svf-icon', icon: 'cancel' %}
+        {{- form.errors.translated_fields.email | capitalize }}
+        {{ form.errors.messages.email -}}
+      </div>
+    {%- endif -%}
+
+    {%- if form.posted_successfully? -%}
+      <div class="form-success">
+        {% render 'svf-icon', icon: 'check_circle' %}
+        Votre message a été envoyé avec succès.
+      </div>
+    {%- endif -%}
+  {% endform %}
+</div>
+
+{% stylesheet %}
+  .svf-contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  shopify-visual-preview-block-list .svf-contact-form[data-visual-preview-mode] {
+    max-width: 500px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Formulaire d'origine",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Formulaire de contact",
+      "category": "Formulaires"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,154 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "custom.cart_drawer",
+  "name": "Tiroir du panier",
+  "sections": {
+    "cart-drawer": {
+      "type": "svf-cart-drawer",
+      "blocks": {
+        "cart_header_blocks": {
+          "type": "_cart-header-blocks",
+          "static": true,
+          "settings": {
+            "wrap_in_card": false,
+            "color_scheme": "",
+            "margin_top": 0,
+            "margin_bottom": 0
+          },
+          "blocks": {
+            "countdown_niknBz": {
+              "type": "countdown",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "wrap_in_card": true,
+                "color_scheme": "",
+                "timer_font_size": 20,
+                "timer_font_weight": 500,
+                "timer_style": "normal",
+                "show_days": true,
+                "show_hours": true,
+                "show_minutes": true,
+                "show_seconds": true,
+                "ended_timer_style": "hide_timer",
+                "margin_top": 0,
+                "margin_bottom": 0,
+                "additional_class": ""
+              },
+              "blocks": {},
+              "disabled": true
+            },
+            "cart_progress_bar_zGzMTb": {
+              "type": "_cart-progress-bar",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "progress_bar_based_on": "value",
+                "step1_value": 250,
+                "step1_quantity": 3,
+                "margin_top": 0,
+                "margin_bottom": 0,
+                "additional_class": ""
+              }
+            }
+          },
+          "block_order": [
+            "countdown_niknBz",
+            "cart_progress_bar_zGzMTb"
+          ]
+        },
+        "cart_footer_resume_blocks": {
+          "type": "_cart-footer-resume-blocks",
+          "static": true,
+          "settings": {
+            "wrap_in_card": false,
+            "color_scheme": "",
+            "margin_top": 0,
+            "margin_bottom": 0
+          },
+          "blocks": {
+            "discount_code_GBacFY": {
+              "type": "_discount-code",
+              "settings": {
+                "style": "in_accordion",
+                "accordion_heading": "Ajouter un code de réduction",
+                "button_text": "Appliquer",
+                "placeholder": "Code de réduction",
+                "margin_top": 0,
+                "margin_bottom": 10,
+                "additional_class": ""
+              }
+            }
+          },
+          "block_order": [
+            "discount_code_GBacFY"
+          ]
+        },
+        "cart_footer_blocks": {
+          "type": "_svf-tiroir-footer-blocks",
+          "static": true,
+          "settings": {
+            "wrap_in_card": false,
+            "color_scheme": "",
+            "margin_top": 0,
+            "margin_bottom": 0
+          },
+          "blocks": {
+            "payment_methods_WRBbVe": {
+              "type": "payment-methods",
+              "settings": {
+                "show_on_display": "desktop_only",
+                "alignment_desktop": "center",
+                "alignment_mobile": "center",
+                "icon_size": 35,
+                "margin_top": 5,
+                "margin_bottom": 5,
+                "additional_class": ""
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "payment_methods_WRBbVe"
+          ]
+        },
+        "cart_drawer_empty_blocks": {
+          "type": "_svf-tiroir-empty-blocks",
+          "static": true,
+          "settings": {
+            "show_continue_shopping_button": true,
+            "wrap_in_card": false,
+            "color_scheme": "",
+            "margin_top": 0,
+            "margin_bottom": 0
+          },
+          "blocks": {}
+        }
+      },
+      "settings": {
+        "cart_style": "defaut",
+        "cart_drawer_width_on_desktop": "550",
+        "full_width_on_mobile": false,
+        "products_media_ratio": "1 / 1",
+        "show_variant_options_labels": false,
+        "show_remove_button": true,
+        "show_cart_count": true,
+        "color_scheme_header": "scheme-2",
+        "show_cart_header_bottom_border": true,
+        "color_scheme_body": "scheme-1",
+        "color_scheme_elements": "scheme-1",
+        "color_scheme_footer": "scheme-1",
+        "show_cart_footer_top_border": true
+      }
+    }
+  },
+  "order": [
+    "cart-drawer"
+  ]
+}

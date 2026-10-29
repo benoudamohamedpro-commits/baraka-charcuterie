@@ -1,0 +1,166 @@
+{%- doc -%}
+  Intended for use in a block similar to the text block.
+
+  @param {string} [class] - custom class to define in addition to text-block classes
+  @param {string} [fallback_text] - fallback text if settings.text does not exist
+  @param {object} [block] - The block object
+  @param {string} [width] - width of the text block
+{%- enddoc -%}
+
+{% render 'text-block-styles' %}
+
+{% liquid
+  assign block_settings = block.settings
+  assign plain_text = block_settings.text | strip_newlines | strip
+  assign visible_text = plain_text | strip_html
+  assign text_width = width | default: block_settings.width
+
+  assign font_size_value = block_settings.font_size | split: 'rem' | first | times: 1.0
+
+  if block_settings.font_size contains 'heading-lg' or block_settings.font_size contains 'heading-xl' or font_size_value >= 3
+    assign type = 'display'
+  elsif block_settings.font_size contains 'heading' or font_size_value >= 1.25
+    assign type = 'heading'
+  else
+    assign type = 'body'
+  endif
+  if block_settings.type_preset == 'rte' or block_settings.type_preset == 'paragraph'
+    assign is_rte = true
+  endif
+  if block_settings.rich_text_styles == false
+    assign is_rte = false
+  endif
+
+  capture text_block_classes
+    if text_width == '100%'
+      echo 'text-block--align-' | append: block_settings.alignment
+      if block_settings.max_width == 'none'
+        echo ' text-block--full-width '
+      endif
+    endif
+    if block_settings.type_preset == 'custom'
+      echo ' custom-typography '
+      if block_settings.font_size != ''
+        echo ' custom-font-size '
+      endif
+      if block_settings.color != ''
+        echo ' custom-color '
+      endif
+    endif
+    if block_settings.background
+      echo ' text-block--background '
+    endif
+    if is_rte
+      echo ' rte '
+    endif
+  endcapture
+%}
+
+{% capture attributes %}
+  class="{{ class }} spacing-style text-block text-block--{{ block.id }} {{ block_settings.type_preset }} {{ block_settings.custom_class }}{% if block_settings.alignment_mobile != blank %} svf-align{% endif %}{% if block_settings.font_weight != blank %} svf-weight{% endif %}{% if block_settings.rich_text_styles == false %} svf-plain{% endif %}
+    {{ text_block_classes }}
+  "
+
+  style="
+    {% render 'spacing-padding', settings: block_settings %}
+    {% if block_settings.alignment_mobile != blank %}--svf-text-align: {{ block_settings.alignment }}; --svf-text-align-mobile: {{ block_settings.alignment_mobile }};{% endif %}
+    {% if block_settings.font_weight != blank %}--svf-font-weight: {{ block_settings.font_weight }};{% endif %}
+    {% render 'typography-style', settings: block_settings %}
+    {% if block_settings.text_color != blank %}
+      --color: {{ block_settings.text_color }};
+      --color-rgb: {{ block_settings.text_color.rgb }};
+    {% endif %}
+
+    --width: {{ text_width }};
+    --max-width: var(--max-width--{{ type }}-{{ block_settings.max_width }});
+    {% if text_width == "100%" %}
+      --text-align: {{ block_settings.alignment | replace: 'left', 'start' | replace: 'right', 'end' }};
+    {% endif %}
+    {% if block_settings.background %}
+      --text-background-color: {{ block_settings.background_color | default: 'rgb(255 255 255 / 1.0)' }};
+      --text-corner-radius: {{ block_settings.corner_radius }}px;
+      --text-padding: max(var(--padding-2xs), calc((var(--text-corner-radius) + var(--padding-xs)) * (1 - cos(45deg))));
+    {% endif %}
+  "
+
+  {{ block.shopify_attributes }}
+{% endcapture %}
+
+{% liquid
+  # {{ attributes }} must be on the immediate HTML parent of the text to preserve
+  # the click-to-edit connection in the theme editor. Any break between the text,
+  # including if-statements, will break the connection.
+
+  assign element = 'div'
+  if is_rte
+    assign element = 'rte-formatter'
+  endif
+%}
+
+{% if fallback_text != blank and visible_text == blank %}
+  <div {{ attributes | strip_newlines | strip }}>
+    {{ fallback_text }}
+  </div>
+{% elsif plain_text != blank %}
+  {% if block_settings.show_read_more %}
+    <script src="{{ 'svf-see-more.js' | asset_url }}" type="module"></script>
+    <div {{ attributes | strip_newlines | strip }}>
+      <see-more-component data-read-more-length="{{ block_settings.read_more_length }}">
+        <div class="see-more__content" data-ref="see-more-content">
+          {{ block.settings.text }}
+        </div>
+        <button class="see-more__toggle" type="button" data-ref="see-more-toggle">
+          <span class="see-more__toggle-text" data-more-text="{{ block_settings.read_more_text }}" data-less-text="{{ block_settings.read_less_text }}" data-ref="see-more-toggle-text">
+            {{- block_settings.read_more_text -}}
+          </span>
+        </button>
+      </see-more-component>
+    </div>
+  {% else %}
+    <{{ element }} {{ attributes | strip_newlines | strip }}>
+      {{ block.settings.text }}
+    </{{ element }}>
+  {% endif %}
+{% endif %}
+
+{% stylesheet %}
+  :root {
+    --text-align-default: start;
+  }
+
+  /* Base text-block sizing, spacing, wrapping, and helper classes live in text-block-styles.liquid. */
+  .text-block {
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: var(--horizontal-alignment);
+    color: var(--color, var(--color-foreground));
+  }
+
+  [style*='--horizontal-alignment: center'] .text-block {
+    --text-align-default: center;
+  }
+
+  [style*='--horizontal-alignment: flex-end'] .text-block {
+    --text-align-default: end;
+  }
+
+  [style*='--horizontal-alignment: flex-start'] > .text-block {
+    --text-align-default: start;
+  }
+
+  [style*='--horizontal-alignment: center'] > .text-block {
+    --text-align-default: center;
+  }
+
+  [style*='--horizontal-alignment: flex-end'] > .text-block {
+    --text-align-default: end;
+  }
+
+  .text-block:not(:where(.svf-plain)) > * {
+    width: var(--width, 100%);
+    max-inline-size: min(100%, var(--max-width, 100%));
+    text-align: var(--text-align, var(--text-align-default));
+    text-wrap: var(--text-wrap);
+  }
+{% endstylesheet %}

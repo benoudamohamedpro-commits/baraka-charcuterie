@@ -1,0 +1,75 @@
+{% comment %}
+  Carte produit Baraka : titre court, pastille du goût et ligne format.
+  Le titre complet du produit (SEO) n'est pas modifié ; il est découpé ici pour l'affichage.
+{% endcomment %}
+{%- liquid
+  assign product = closest.product
+  assign title = product.title | default: 'placeholders.product_title' | t
+  assign title_down = title | downcase
+  assign short_title = title
+  assign flavour = ''
+  assign flavour_class = 'nature'
+  assign details = ''
+
+  if title_down contains 'mini saucissons'
+    assign short_title = 'Mini saucissons halal Baraka'
+    assign details = 'En pot · 150 g'
+    if title_down contains 'piquant'
+      assign flavour = 'Piquant'
+      assign flavour_class = 'piquant'
+    else
+      assign flavour = 'Doux'
+    endif
+  elsif title_down contains 'gourmands'
+    assign short_title = 'Saucissons halal Baraka'
+    assign details = 'En barquette · 175 g'
+    assign flavour = 'Gourmands'
+  elsif title_down contains 'en dés'
+    assign short_title = 'Saucissons halal Baraka'
+    assign details = 'En pot · 150 g'
+    assign flavour = 'En dés'
+  elsif title_down contains 'saucisson halal baraka'
+    assign short_title = 'Saucisson halal Baraka'
+    assign details = 'Pièce entière · Environ 2,5 kg'
+    if title_down contains 'piquant'
+      assign flavour = 'Piquant'
+      assign flavour_class = 'piquant'
+    elsif title_down contains 'poivre'
+      assign flavour = 'Au poivre'
+      assign flavour_class = 'poivre'
+    elsif title_down contains 'parmesan'
+      assign flavour = 'Parmesan et truffe'
+      assign flavour_class = 'truffe'
+    else
+      assign flavour = 'Doux'
+    endif
+  endif
+-%}
+<div class="nbr-card-info" {{ block.shopify_attributes }}>
+  <a class="nbr-card-info__link" href="{{ product.url }}">
+    <h2 class="nbr-card-info__title">{{ short_title }}</h2>
+  </a>
+  {%- if flavour != blank -%}
+    <span class="nbr-card-info__pill nbr-card-info__pill--{{ flavour_class }}">
+      {{- flavour -}}
+      {%- if flavour_class == 'piquant' -%}
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.5 3.5c-.8.2-1.4.8-1.6 1.6-1.3-.3-2.6.3-3.3 1.4C12.3 10 9.6 14.5 5.2 17.6c-.9.6-1.2 1.5-.9 2.2.4.8 1.4 1.1 2.4.8 6.1-1.8 10.2-6.5 11.1-11.4.2-1.1-.1-2.1-.8-2.8.2-.5.6-.9 1.1-1.1.5-.2.7-.6.6-1-.1-.5-.6-.8-1.2-.8z" fill="currentColor"/><path d="M17.8 5.1c.4-.9 1.1-1.5 2-1.8" fill="none" stroke="#3f7d2a" stroke-width="1.6" stroke-linecap="round"/></svg>
+      {%- endif -%}
+    </span>
+  {%- endif -%}
+  {%- if details != blank -%}
+    <p class="nbr-card-info__details">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 8V6.5a4 4 0 0 1 8 0V8M5.5 8h13l1.2 12.5H4.3z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+      <span>{{ details }}</span>
+    </p>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Infos carte Baraka",
+  "tag": null,
+  "settings": [],
+  "presets": [{ "name": "Infos carte Baraka", "category": "t:categories.product" }]
+}
+{% endschema %}

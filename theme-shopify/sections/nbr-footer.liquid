@@ -1,0 +1,279 @@
+{% comment %}
+  Pied de page Nabilerie : deux colonnes de liens, réseaux sociaux, newsletter, puis liens légaux et mention.
+  Une icône sociale n'est un lien que si son adresse est renseignée.
+{% endcomment %}
+<footer class="nbr-footer">
+  <div class="nbr-footer__top">
+    <nav class="nbr-footer__links" aria-label="Liens du pied de page">
+      {%- if section.settings.menu_1 != blank -%}
+        <ul class="nbr-footer__list">
+          {%- for link in section.settings.menu_1.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+      {%- if section.settings.menu_2 != blank -%}
+        <ul class="nbr-footer__list">
+          {%- for link in section.settings.menu_2.links -%}
+            <li><a href="{{ link.url }}">{{ link.title }}</a></li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </nav>
+
+    <div class="nbr-footer__social">
+      <p class="nbr-footer__heading">{{ section.settings.social_title }}</p>
+      <div class="nbr-footer__icons">
+        {%- assign networks = 'facebook,instagram,linkedin,pinterest' | split: ',' -%}
+        {%- for network in networks -%}
+          {%- assign url_key = network | append: '_url' -%}
+          {%- assign url = section.settings[url_key] -%}
+          {%- capture icon -%}
+            {%- case network -%}
+              {%- when 'facebook' -%}
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.5 22v-8.2h2.8l.4-3.3h-3.2V8.4c0-.9.3-1.6 1.6-1.6h1.7V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.4H7.3v3.3h2.8V22z" fill="currentColor"/></svg>
+              {%- when 'instagram' -%}
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" fill="currentColor"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="#fff" stroke-width="2"/><circle cx="17.3" cy="6.7" r="1.3" fill="#fff"/></svg>
+              {%- when 'linkedin' -%}
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="3" fill="currentColor"/><rect x="6" y="10" width="2.6" height="8" fill="#fff"/><circle cx="7.3" cy="6.9" r="1.5" fill="#fff"/><path d="M10.6 10h2.5v1.2c.4-.7 1.3-1.4 2.7-1.4 2.6 0 3 1.7 3 3.9V18h-2.6v-3.8c0-.9 0-2.1-1.3-2.1s-1.6 1-1.6 2V18h-2.7z" fill="#fff"/></svg>
+              {%- when 'pinterest' -%}
+                <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12.4 5.5c-3.6 0-5.4 2.6-5.4 4.7 0 1.3.5 2.4 1.5 2.8.2.1.3 0 .4-.2l.1-.6c.1-.2 0-.3-.1-.5-.3-.4-.5-.9-.5-1.6 0-2.1 1.5-3.9 4-3.9 2.2 0 3.4 1.3 3.4 3.1 0 2.4-1 4.3-2.6 4.3-.9 0-1.5-.7-1.3-1.6.2-1 .7-2.2.7-2.9 0-.7-.4-1.2-1.1-1.2-.9 0-1.6.9-1.6 2.2 0 .8.3 1.3.3 1.3l-1.1 4.6c-.3 1.4 0 3.1 0 3.3h.2c.1-.1 1-1.3 1.4-2.6l.5-2.1c.3.5 1 .9 1.8.9 2.4 0 4-2.2 4-5.1 0-2.2-1.9-4.3-4.7-4.3z" fill="#fff"/></svg>
+            {%- endcase -%}
+          {%- endcapture -%}
+          {%- if url != blank -%}
+            <a href="{{ url }}" class="nbr-footer__icon" target="_blank" rel="noopener" aria-label="{{ network | capitalize }}">{{ icon }}</a>
+          {%- else -%}
+            <span class="nbr-footer__icon">{{ icon }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <div class="nbr-footer__newsletter">
+      <p class="nbr-footer__heading">{{ section.settings.newsletter_title }}</p>
+      {%- form 'customer', id: 'nbr-newsletter', class: 'nbr-footer__form' -%}
+        <input type="hidden" name="contact[tags]" value="newsletter">
+        {%- if form.posted_successfully? -%}
+          <p class="nbr-footer__success">Merci, votre inscription est bien enregistrée.</p>
+        {%- else -%}
+          <label class="visually-hidden" for="nbr-newsletter-email">Adresse e-mail</label>
+          <input id="nbr-newsletter-email" type="email" name="contact[email]" placeholder="Adresse e-mail" autocomplete="email" required>
+          <button type="submit" aria-label="S'inscrire à la newsletter">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </div>
+
+  {%- if shop.policies.size > 0 -%}
+    <ul class="nbr-footer__legal">
+      {%- for policy in shop.policies -%}
+        {%- liquid
+          # Titres en français : la langue principale de la boutique est l'anglais.
+          assign policy_title = policy.title
+          if policy.url contains 'privacy-policy'
+            assign policy_title = 'Politique de confidentialité et cookies'
+          elsif policy.url contains 'terms-of-sale'
+            assign policy_title = 'Conditions de vente'
+          elsif policy.url contains 'terms-of-service'
+            assign policy_title = "Conditions d'utilisation"
+          elsif policy.url contains 'refund-policy'
+            assign policy_title = 'Remboursements'
+          elsif policy.url contains 'shipping-policy'
+            assign policy_title = 'Livraison'
+          elsif policy.url contains 'legal-notice' or policy.url contains 'contact-information'
+            assign policy_title = 'Mentions légales'
+          elsif policy.url contains 'ReshowConsentBanner'
+            assign policy_title = 'Gérer les cookies'
+          endif
+        -%}
+        <li><a href="{{ policy.url }}">{{ policy_title }}</a></li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  {%- if section.settings.credits != blank -%}
+    <p class="nbr-footer__credits">{{ section.settings.credits }}</p>
+  {%- endif -%}
+</footer>
+
+{% stylesheet %}
+  .nbr-footer {
+    border-top: 1px solid #111111;
+    padding: 56px 20px 40px;
+    background: #ffffff;
+    color: #111111;
+    font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  }
+
+  .nbr-footer__top {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 40px clamp(32px, 5vw, 90px);
+    max-width: 1300px;
+    margin: 0 auto;
+  }
+
+  .nbr-footer__links {
+    display: flex;
+    gap: 40px;
+  }
+
+  .nbr-footer__list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nbr-footer__list li {
+    margin: 0 0 6px;
+  }
+
+  .nbr-footer a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .nbr-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .nbr-footer__list a {
+    font-size: 16px;
+  }
+
+  .nbr-footer__heading {
+    margin: 0 0 14px;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nbr-footer__icons {
+    display: flex;
+    gap: 14px;
+  }
+
+  .nbr-footer__icon {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    color: #7a0820;
+  }
+
+  .nbr-footer__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .nbr-footer__form {
+    display: flex;
+    width: 340px;
+    max-width: 100%;
+    border: 1px solid #111111;
+  }
+
+  .nbr-footer__form input[type='email'] {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 16px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.12em;
+  }
+
+  .nbr-footer__form button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    border: 0;
+    background: transparent;
+    color: #111111;
+    cursor: pointer;
+  }
+
+  .nbr-footer__form button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .nbr-footer__success {
+    margin: 0;
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+
+  .nbr-footer__legal {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px 70px;
+    margin: 44px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 14px;
+  }
+
+  .nbr-footer__credits {
+    margin: 22px 0 0;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  @media screen and (max-width: 749px) {
+    .nbr-footer {
+      padding: 40px 20px 32px;
+    }
+
+    .nbr-footer__top {
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .nbr-footer__links {
+      justify-content: center;
+    }
+
+    .nbr-footer__icons {
+      justify-content: center;
+    }
+
+    .nbr-footer__form {
+      width: 100%;
+    }
+
+    .nbr-footer__legal {
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pied de page Nabilerie",
+  "tag": "section",
+  "class": "nbr-footer-section",
+  "settings": [
+    { "type": "link_list", "id": "menu_1", "label": "Menu colonne 1" },
+    { "type": "link_list", "id": "menu_2", "label": "Menu colonne 2" },
+    { "type": "text", "id": "social_title", "label": "Titre réseaux sociaux", "default": "Suivez-nous" },
+    { "type": "url", "id": "facebook_url", "label": "Lien Facebook" },
+    { "type": "url", "id": "instagram_url", "label": "Lien Instagram" },
+    { "type": "url", "id": "linkedin_url", "label": "Lien LinkedIn" },
+    { "type": "url", "id": "pinterest_url", "label": "Lien Pinterest" },
+    { "type": "text", "id": "newsletter_title", "label": "Titre newsletter", "default": "Recevez notre newsletter" },
+    { "type": "text", "id": "credits", "label": "Mention en bas", "default": "© Baraka – Charcuterie fine halal" }
+  ],
+  "presets": [{ "name": "Pied de page Nabilerie" }]
+}
+{% endschema %}

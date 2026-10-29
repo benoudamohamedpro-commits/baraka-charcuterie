@@ -1,0 +1,105 @@
+{%- comment -%}
+  Nabilerie : liste de réassurance sous le bouton de la fiche produit (icône bordeaux à gauche, texte à droite).
+  Jusqu'à 6 lignes ; une ligne sans texte n'est pas affichée.
+{%- endcomment -%}
+{%- capture icone_thermometre -%}
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 23.5V8a3.5 3.5 0 0 1 7 0v15.5a6.5 6.5 0 1 1-7 0Z"/><circle cx="20.5" cy="29" r="2.6"/><path d="M20.5 26.4V14"/><path d="M27 10h4M27 14h3M27 18h4"/></svg>
+{%- endcapture -%}
+{%- capture icone_camion -%}
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11h21v16H3z"/><path d="M24 16h7l5 6v5h-12z"/><circle cx="10" cy="29" r="3"/><circle cx="29" cy="29" r="3"/><path d="M6.5 15.5h5M6.5 19h8"/></svg>
+{%- endcapture -%}
+{%- capture icone_camion_froid -%}
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11h21v16H3z"/><path d="M24 16h7l5 6v5h-12z"/><circle cx="10" cy="29" r="3"/><circle cx="29" cy="29" r="3"/><path d="M13.5 13.5v11M8.7 16.2l9.6 5.6M18.3 16.2l-9.6 5.6"/></svg>
+{%- endcapture -%}
+{%- capture icone_halal -%}
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m20 4 3.6 2.6 4.4-.3 1.4 4.2 3.7 2.4-1.3 4.2 1.3 4.2-3.7 2.4-1.4 4.2-4.4-.3L20 30.4l-3.6-2.6-4.4.3-1.4-4.2-3.7-2.4 1.3-4.2-1.3-4.2 3.7-2.4 1.4-4.2 4.4.3z"/><path d="m14.5 17.5 3.8 3.8 7.2-7.2"/><path d="M14 30.5 12 37l4-2 2.5 3.2L20 31M26 30.5l2 6.5-4-2-2.5 3.2L20 31"/></svg>
+{%- endcapture -%}
+{%- capture icone_contact -%}
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 22v-3a13 13 0 0 1 26 0v3"/><rect x="5" y="21" width="6" height="10" rx="2.5"/><rect x="29" y="21" width="6" height="10" rx="2.5"/><path d="M32 31c0 3.5-3.5 5-8 5h-2.5"/><rect x="17" y="33.5" width="5" height="4" rx="1.5"/></svg>
+{%- endcapture -%}
+{%- capture icone_paiement -%}
+  <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="8" width="28" height="19" rx="2.5"/><path d="M3 14h28M7 21h7"/><rect x="24" y="24" width="13" height="10" rx="2"/><path d="M27 24v-2.5a3.5 3.5 0 0 1 7 0V24"/><path d="M30.5 28.2v2"/></svg>
+{%- endcapture -%}
+
+<ul class="nbr-reassurance" {{ block.shopify_attributes }}>
+  {%- for i in (1..6) -%}
+    {%- liquid
+      assign cle_icone = 'icon_' | append: i
+      assign cle_texte = 'text_' | append: i
+      assign cle_detail = 'detail_' | append: i
+      assign icone = block.settings[cle_icone]
+      assign texte = block.settings[cle_texte]
+      assign detail = block.settings[cle_detail]
+    -%}
+    {%- if texte != blank -%}
+      <li class="nbr-reassurance__ligne">
+        <span class="nbr-reassurance__icone">
+          {%- case icone -%}
+            {%- when 'thermometre' -%}{{ icone_thermometre }}
+            {%- when 'camion' -%}{{ icone_camion }}
+            {%- when 'camion_froid' -%}{{ icone_camion_froid }}
+            {%- when 'halal' -%}{{ icone_halal }}
+            {%- when 'contact' -%}{{ icone_contact }}
+            {%- when 'paiement' -%}{{ icone_paiement }}
+          {%- endcase -%}
+        </span>
+        <span class="nbr-reassurance__texte">
+          <span class="nbr-reassurance__titre">{{ texte }}</span>
+          {%- if detail != blank -%}
+            <span class="nbr-reassurance__detail">{{ detail }}</span>
+          {%- endif -%}
+        </span>
+      </li>
+    {%- endif -%}
+  {%- endfor -%}
+</ul>
+
+{% schema %}
+{
+  "name": "Réassurance",
+  "tag": null,
+  "settings": [
+    { "type": "header", "content": "Ligne 1" },
+    { "type": "select", "id": "icon_1", "label": "Icône", "default": "thermometre", "options": [
+      { "value": "thermometre", "label": "Thermomètre" }, { "value": "camion", "label": "Camion" }, { "value": "camion_froid", "label": "Camion froid" },
+      { "value": "halal", "label": "Sceau halal" }, { "value": "contact", "label": "Service client" }, { "value": "paiement", "label": "Paiement sécurisé" } ] },
+    { "type": "inline_richtext", "id": "text_1", "label": "Texte" },
+    { "type": "text", "id": "detail_1", "label": "Précision" },
+    { "type": "header", "content": "Ligne 2" },
+    { "type": "select", "id": "icon_2", "label": "Icône", "default": "camion", "options": [
+      { "value": "thermometre", "label": "Thermomètre" }, { "value": "camion", "label": "Camion" }, { "value": "camion_froid", "label": "Camion froid" },
+      { "value": "halal", "label": "Sceau halal" }, { "value": "contact", "label": "Service client" }, { "value": "paiement", "label": "Paiement sécurisé" } ] },
+    { "type": "inline_richtext", "id": "text_2", "label": "Texte" },
+    { "type": "text", "id": "detail_2", "label": "Précision" },
+    { "type": "header", "content": "Ligne 3" },
+    { "type": "select", "id": "icon_3", "label": "Icône", "default": "camion_froid", "options": [
+      { "value": "thermometre", "label": "Thermomètre" }, { "value": "camion", "label": "Camion" }, { "value": "camion_froid", "label": "Camion froid" },
+      { "value": "halal", "label": "Sceau halal" }, { "value": "contact", "label": "Service client" }, { "value": "paiement", "label": "Paiement sécurisé" } ] },
+    { "type": "inline_richtext", "id": "text_3", "label": "Texte" },
+    { "type": "text", "id": "detail_3", "label": "Précision" },
+    { "type": "header", "content": "Ligne 4" },
+    { "type": "select", "id": "icon_4", "label": "Icône", "default": "halal", "options": [
+      { "value": "thermometre", "label": "Thermomètre" }, { "value": "camion", "label": "Camion" }, { "value": "camion_froid", "label": "Camion froid" },
+      { "value": "halal", "label": "Sceau halal" }, { "value": "contact", "label": "Service client" }, { "value": "paiement", "label": "Paiement sécurisé" } ] },
+    { "type": "inline_richtext", "id": "text_4", "label": "Texte" },
+    { "type": "text", "id": "detail_4", "label": "Précision" },
+    { "type": "header", "content": "Ligne 5" },
+    { "type": "select", "id": "icon_5", "label": "Icône", "default": "contact", "options": [
+      { "value": "thermometre", "label": "Thermomètre" }, { "value": "camion", "label": "Camion" }, { "value": "camion_froid", "label": "Camion froid" },
+      { "value": "halal", "label": "Sceau halal" }, { "value": "contact", "label": "Service client" }, { "value": "paiement", "label": "Paiement sécurisé" } ] },
+    { "type": "inline_richtext", "id": "text_5", "label": "Texte" },
+    { "type": "text", "id": "detail_5", "label": "Précision" },
+    { "type": "header", "content": "Ligne 6" },
+    { "type": "select", "id": "icon_6", "label": "Icône", "default": "paiement", "options": [
+      { "value": "thermometre", "label": "Thermomètre" }, { "value": "camion", "label": "Camion" }, { "value": "camion_froid", "label": "Camion froid" },
+      { "value": "halal", "label": "Sceau halal" }, { "value": "contact", "label": "Service client" }, { "value": "paiement", "label": "Paiement sécurisé" } ] },
+    { "type": "inline_richtext", "id": "text_6", "label": "Texte" },
+    { "type": "text", "id": "detail_6", "label": "Précision" }
+  ],
+  "presets": [
+    {
+      "name": "Réassurance"
+    }
+  ]
+}
+{% endschema %}

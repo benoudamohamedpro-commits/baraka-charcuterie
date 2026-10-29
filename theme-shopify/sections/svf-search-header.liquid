@@ -1,0 +1,90 @@
+{%- comment -%}
+  Haut de la page de recherche, repris du thème d'origine : champ de recherche avec son bouton, nombre de
+  résultats, puis liens vers les pages trouvées. La grille des résultats est la section suivante.
+{%- endcomment -%}
+
+<div class="svf-search-header" style="--padding-top: {{ section.settings.padding_top }}px;">
+  <form action="{{ routes.search_url }}" method="get" role="search" class="main-search__form">
+    {% assign search_terms = search.terms | escape %}
+    <div class="input-group">
+      {% render 'svf-textfield', label: 'Rechercher', name: 'q', value: search_terms, full_width: true %}
+      <input type="hidden" name="options[prefix]" value="last">
+      <div class="input-group__action">
+        <button type="submit" class="button button--icon-only" aria-label="Rechercher">
+          {% render 'svf-icon', icon: 'search' %}
+        </button>
+      </div>
+    </div>
+  </form>
+
+  {% if search.performed %}
+    {% if search.results_count == 0 %}
+      <p class="main-search__results-for">Aucun résultat trouvé pour {{ search.terms | escape }}</p>
+    {% else %}
+      <p class="main-search__results-for">
+        {{ search.results_count }} résultats trouvés pour {{ search.terms | escape }}
+      </p>
+
+      <div class="main-search__pages">
+        {% for result in search.results %}
+          {% if result.object_type == 'page' %}
+            <a class="main-search__page-link" href="{{ result.url }}">{{ result.title }}</a>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .svf-search-header {
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: var(--padding-top) 20px 0;
+  }
+
+  @media screen and (min-width: 750px) {
+    .svf-search-header {
+      padding-inline: 10px;
+    }
+  }
+
+  .main-search__form {
+    margin: 0;
+  }
+
+  .main-search__results-for {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .main-search__pages {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 3rem;
+  }
+
+  .main-search__page-link {
+    color: var(--color-foreground);
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Recherche (origine)",
+  "settings": [
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espace au-dessus",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,35 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "custom.breadcrumbs",
+  "name": "Fil d'Ariane",
+  "sections": {
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "breadcrumbs_enabled": true,
+        "breadcrumbs_enabled_on_products": true,
+        "breadcrumbs_enabled_on_pages": true,
+        "breadcrumbs_enabled_on_collections": true,
+        "breadcrumbs_enabled_on_blogs": true,
+        "breadcrumbs_enabled_on_articles": true,
+        "prefer_shortest_path": true,
+        "separator_shape": "triangle",
+        "color_scheme": "scheme-1",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    }
+  },
+  "order": [
+    "breadcrumbs"
+  ]
+}

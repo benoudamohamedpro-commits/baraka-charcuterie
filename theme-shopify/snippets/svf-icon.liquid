@@ -1,0 +1,42 @@
+{%- doc -%}
+  Affiche une icône Material Symbols (contour, graisse 300), comme le thème d'origine.
+  L'icône prend la couleur du texte qui l'entoure ; sa taille suit `font-size`.
+
+  @param {string} icon - Nom de l'icône Material Symbols
+  @param {number} [size] - Taille d'affichage en pixels (24 par défaut)
+  @param {number} [fill] - 1 pour une icône pleine, 0 pour le contour
+  @param {string} [class] - Classes CSS supplémentaires
+  @param {string} [data] - Attributs HTML supplémentaires
+
+  @example
+  {% render 'svf-icon', icon: 'check', size: 25 %}
+{%- enddoc -%}
+
+{%- if icon != blank and icon != 'none' -%}
+  {%- liquid
+    assign display_size = size | default: 24 | plus: 0
+    assign optical_size = 24
+    if display_size <= 22
+      assign optical_size = 20
+    elsif display_size <= 32
+      assign optical_size = 24
+    elsif display_size <= 44
+      assign optical_size = 40
+    else
+      assign optical_size = 48
+    endif
+
+    assign variant = 'wght300'
+    if fill == 1
+      assign variant = 'wght300fill1'
+    endif
+  -%}
+  <span
+    class="svf-icon icon--{{ icon }} {{ class }}"
+    style="--icon-url: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/{{ icon }}/{{ variant }}/{{ optical_size }}px.svg');{% if size != blank %} font-size: {{ size }}px;{% endif %}"
+    aria-hidden="true"
+    {%- if data %}
+      {{ data -}}
+    {% endif -%}
+  ></span>
+{%- endif -%}

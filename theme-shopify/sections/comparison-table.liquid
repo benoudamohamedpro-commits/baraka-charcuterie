@@ -1,0 +1,316 @@
+<div
+  {% if section.settings.anchor_id != blank %}
+    id="{{ section.settings.anchor_id }}"
+  {% endif %}
+  class="
+    comparison-table color-{{ section.settings.color_scheme }}
+    {%- if section.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if section.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {{ section.settings.additional_class }}
+  "
+  style="
+    --margin-top: {{ section.settings.margin_top }}px;
+    --margin-bottom: {{ section.settings.margin_bottom }}px;
+  "
+>
+  <div
+    class="
+      comparison-table__inner page-width
+      {% if section.settings.section_width == 'narrow' %} page-width--narrow{% endif %}
+    "
+    style="
+      --padding-top: {{ section.settings.padding_top }}px;
+      --padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    {% content_for 'block', type: 'text', id: 'title' %}
+
+    <div class="comparison-table__table-wrapper">
+      <table
+        class="comparison-table__table highlight-column-{{ section.settings.highlighted_column }} color-{{ section.settings.color_scheme_table }}"
+        style="
+          --color-highlighted-column: {{ section.settings.color_highlighted_column }};
+          --color-highlighted-background-column: {{ section.settings.color_highlighted_background_column }};
+          --cell-min-width-mobile: {{ section.settings.cell_min_width_mobile }}px;
+        "
+      >
+        {% content_for 'blocks' %}
+      </table>
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .comparison-table {
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+  }
+
+  .comparison-table__inner {
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+  }
+
+  .comparison-table__table-wrapper {
+    overflow-x: auto;
+  }
+
+  .comparison-table__table {
+    border-collapse: collapse;
+    width: 100%;
+    background: transparent;
+    /* table-layout: fixed; */
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Tableau de comparaison",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer",
+      "custom.cart_drawer",
+      "custom.auto_gifts",
+      "custom.breadcrumbs"
+    ]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Largeur de la section",
+      "default": "normal",
+      "options": [
+        {
+          "value": "narrow",
+          "label": "Étroit"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        }
+      ]
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-2",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "id": "color_scheme_table",
+      "label": "Palette de couleurs du tableau",
+      "default": "scheme-1",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "cell_min_width_mobile",
+      "label": "Largeur minimale de la cellule (mobile)",
+      "default": 120,
+      "min": 40,
+      "max": 160,
+      "step": 10,
+      "unit": "px"
+    },
+    {
+      "type": "number",
+      "id": "highlighted_column",
+      "label": "Colonne mise en avant",
+      "default": 2,
+      "info": "0 pour désactiver la mise en avant"
+    },
+    {
+      "type": "color",
+      "id": "color_highlighted_column",
+      "label": "Couleur du contenu de la colonne mise en avant",
+      "default": "#000000",
+      "visible_if": "{{ section.settings.highlighted_column != 0 }}"
+    },
+    {
+      "type": "color",
+      "id": "color_highlighted_background_column",
+      "label": "Couleur de fond de la colonne mise en avant",
+      "default": "#ffffff",
+      "visible_if": "{{ section.settings.highlighted_column != 0 }}"
+    },
+    {
+      "type": "header",
+      "content": "Espacements internes"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge interne en haut",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge interne en bas",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "Ancre (ID)",
+      "info": "Utilisez cette ancre pour créer un lien qui scroll vers cette section. Consultez [le guide](https://hub.themefullstack.com/training-center/master-theme-fullstack/review-anchor-link). ⚠️ Attention : Un ID ne doit pas contenir d'espace."
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_comparison-table-row"
+    },
+    {
+      "type": "text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Tableau de comparaison",
+      "category": "Narratif",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "section_width": "narrow",
+        "color_scheme": "scheme-2",
+        "color_scheme_table": "scheme-1",
+        "cell_min_width_mobile": 120,
+        "highlighted_column": 2,
+        "color_highlighted_column": "#000000",
+        "color_highlighted_background_column": "#ffffff",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    }
+  ]
+}
+{% endschema %}

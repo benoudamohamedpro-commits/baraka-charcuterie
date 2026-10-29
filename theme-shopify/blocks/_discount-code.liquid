@@ -1,0 +1,266 @@
+<script src="{{ 'svf-cart-discount.js' | asset_url }}" type="module"></script>
+
+{% liquid
+  assign discount_codes = cart.cart_level_discount_applications | where: 'type', 'discount_code' | map: 'title'
+  for item in cart.items
+    for allocation in item.line_level_discount_allocations
+      if allocation.discount_application.type == 'discount_code'
+        assign discount_codes = item.line_level_discount_allocations | slice: forloop.index0 | map: 'discount_application' | map: 'title' | concat: discount_codes
+      endif
+    endfor
+  endfor
+
+  assign discount_codes = discount_codes | uniq
+%}
+
+<div
+  class="cart-discount-block"
+  style="--margin-top: {{ block.settings.margin_top }}px; --margin-bottom: {{ block.settings.margin_bottom }}px;"
+  {% if request.visual_preview_mode %}
+    data-visual-preview-mode
+  {% endif %}
+  {{ block.shopify_attributes }}
+>
+  {% capture discount_code_content %}
+    <cart-discount
+      data-please-insert-a-code="Veuillez saisir un code"
+      data-code-already-applied="Ce code promo est déjà appliqué"
+      data-error-remove-discount="Erreur lors de la suppression du code de réduction"
+      data-error-apply-discount="Erreur lors de l'application du code de réduction"
+      data-code-not-applicable="Ce code promo n'est pas applicable"
+    >
+
+      <div class="cart-discount__container">
+        {% liquid
+          assign data = 'data-ref="discount-input"'
+
+          assign small = false
+          if block.settings.style == 'compact'
+              assign small = true
+          endif
+        %}
+
+        {% render 'svf-textfield',
+          type: 'text',
+          name: 'cart-discount',
+          label: block.settings.placeholder,
+          data: data,
+          small: small
+        %}
+
+        <button
+          class="button{% if block.settings.style == 'compact' %} button--small{% endif %} cart-discount_button"
+          data-ref="apply-discount"
+        >
+          <span class="button__content">
+            {{ block.settings.button_text }}
+          </span>
+
+          {% render 'svf-loading-spinner' %}
+        </button>
+      </div>
+
+      <div class="cart-discount_badge-container {% if discount_codes.size == 0 %}hidden{% endif %}">
+        {% for discount_code in discount_codes %}
+          <p class="badge badge--secondary cart-discount_badge" data-ref="discount-badge" data-discount-code="{{ discount_code }}">
+            <span class="cart-discount__discount-text">
+              {{- discount_code }}
+            </span>
+
+            <span class="cart-discount__remove-discount" data-ref="remove-discount">
+              {% render 'svf-icon', icon: 'close' %}
+            </span>
+          </p>
+        {% endfor %}
+      </div>
+    </cart-discount> 
+  {% endcapture %}
+
+  {% if block.settings.style == 'in_accordion' %}
+    {% assign accordion_heading = block.settings.accordion_heading %}
+    {% if discount_codes.size > 0 %}
+      {% assign accordion_heading = accordion_heading | append: ' (' | append: discount_codes.size | append: ')' %}
+    {% endif %}
+
+    {% render 'svf-accordion', content: discount_code_content, heading: accordion_heading %}
+  {% else %}
+    {{ discount_code_content }}
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .svf-panier {
+    .cart-discount-block {
+      margin-top: var(--margin-top);
+      margin-bottom: var(--margin-bottom);
+  
+      .icon--keyboard_arrow_down {
+        display: none;
+      }
+    }
+  
+    .cart-discount-block[data-visual-preview-mode] {
+      width: 350px;
+    }
+  
+    cart-discount {
+      display: block;
+    }
+  
+    .cart-discount__container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+  
+      .textfield {
+        width: 100%;
+      }
+  
+      .textfield input {
+        min-width: 100%;
+        width: 100%;
+      }
+    }
+  
+    .cart-discount_button {
+      min-width: 90px;
+    }
+  
+    .cart-discount_badge-container {
+      margin-top: 0.5rem;
+    }
+  
+    .cart-discount_badge {
+      justify-content: center;
+      gap: 5px;
+      padding-right: 5px !important;
+    }
+  
+    .cart-discount_badge.loading {
+      cursor: default;
+      pointer-events: none;
+  
+      .cart-discount__discount-text,
+      .cart-discount__remove-discount {
+        opacity: 0.5;
+      }
+    }
+  
+    .cart-discount__remove-discount {
+      cursor: pointer;
+      height: 14px;
+    }
+  
+    .cart-discount_badge .cart-discount__discount-text {
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Code de réduction",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "select",
+      "id": "style",
+      "label": "Apparence",
+      "default": "normal",
+      "options": [
+        {
+          "value": "in_accordion",
+          "label": "Dans un accordéon"
+        },
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "compact",
+          "label": "Compact"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "accordion_heading",
+      "label": "Titre de l'accordéon",
+      "default": "Ajouter un code de réduction",
+      "visible_if": "{{ block.settings.style == 'in_accordion' }}"
+    },
+    {
+      "type": "text",
+      "id": "button_text",
+      "label": "Texte du bouton",
+      "default": "Appliquer"
+    },
+    {
+      "type": "text",
+      "id": "placeholder",
+      "label": "Placeholder du champ",
+      "default": "Code de réduction"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Code de réduction"
+    }
+  ]
+}
+{% endschema %}

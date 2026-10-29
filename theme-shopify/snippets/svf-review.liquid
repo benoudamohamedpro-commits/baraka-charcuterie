@@ -1,0 +1,418 @@
+{% doc %}
+  Affiche un avis avec une mise en page configurable.
+
+  @param block - {Block} Le bloc à utiliser.
+
+  @example
+  {% content_for 'block', type: 'review', id: 'review' %}
+{% enddoc %}
+
+{% comment %} Note à 0 = note individuelle inconnue : aucune étoile affichée pour cet avis {% endcomment %}
+{% capture review_rating %}
+  {% if block.settings.rating > 0 %}
+    <div class="review__rating">
+      {% render 'svf-rating-stars', rating: block.settings.rating %}
+    </div>
+  {% endif %}
+{% endcapture %}
+
+{% capture review_image %}
+  {% if block.settings.image != blank %}
+    <div class="review__images">
+    <button
+      type="button"
+      class="review__image-button"
+      data-review-lightbox="{{ block.settings.image | image_url: width: 1600 }}"
+      aria-label="Agrandir la photo de l'avis"
+    >
+      {{ block.settings.image | image_url: width: 500 | image_tag: class: 'review__image', sizes: '(min-width: 750px) 500px, 100vw', widths: '320, 500, 750, 1000' }}
+    </button>
+
+    {% comment %} Photos supplémentaires : visibles seulement dans la mise en page « liste » {% endcomment %}
+    {% assign extra_images = 'image_2,image_3,image_4,image_5,image_6,image_7' | split: ',' %}
+    {% for extra_key in extra_images %}
+      {% assign extra_image = block.settings[extra_key] %}
+      {% if extra_image != blank %}
+        <button
+          type="button"
+          class="review__image-button review__image-button--extra"
+          data-review-lightbox="{{ extra_image | image_url: width: 1600 }}"
+          aria-label="Agrandir la photo de l'avis"
+        >
+          {{ extra_image | image_url: width: 500 | image_tag: class: 'review__image', sizes: '100px', widths: '160, 320, 500' }}
+        </button>
+      {% endif %}
+    {% endfor %}
+    </div>
+  {% else %}
+    <img
+        src="{{ 'svf-placeholder-image.jpg' | asset_img_url: 'x500' }}"
+        alt="placeholder image"
+        width="150"
+        height="150"
+        loading="lazy"
+        class="review__image"
+      >
+  {% endif %}
+{% endcapture %}
+
+{% capture review_video %}{% endcapture %}
+
+{% capture review_author %}
+  {% if block.settings.author != blank %}
+    <p class="review__author-name">
+      <span class="review__avatar" aria-hidden="true">{{ block.settings.author | strip | slice: 0 | upcase }}</span>
+      {{- block.settings.author -}}
+    </p>
+  {% endif %}
+{% endcapture %}
+
+{% capture review_author_profile %}{% endcapture %}
+
+{% capture review_title %}
+  {% if block.settings.title != blank %}
+    <p class="review__title">{{ block.settings.title }}</p>
+  {% endif %}
+{% endcapture %}
+
+{% capture review_content %}
+  {% if block.settings.content != blank %}
+    <div class="review__content text-block">{{ block.settings.content }}</div>
+  {% endif %}
+{% endcapture %}
+
+{% capture review_date %}
+  {% if block.settings.date != blank %}
+    <p class="review__date">{{ block.settings.date }}</p>
+  {% endif %}
+{% endcapture %}
+
+{% case block.settings.display_type %}
+  {% when '1' %}
+    {{ review_rating }}
+    {{ review_author }}
+    {{ review_content }}
+    {{ review_date }}
+  {% when '2' %}
+    {{ review_rating }}
+    {{ review_title }}
+    {{ review_content }}
+    <div class="review__author-and-date">
+      {{ review_author }}
+      {{ review_date }}
+    </div>
+  {% when '3' %}
+    {{ review_image }}
+    {{ review_rating }}
+    {{ review_author }}
+    {{ review_content }}
+    {{ review_date }}
+  {% when '4' %}
+    <div class="review__content text-block">
+      {{ review_rating }}
+      {{ review_author }}
+      {{ review_content }}
+      {{ review_date }}
+    </div>
+    {{ review_image }}
+  {% when '5' %}
+    <div class="review__author-and-date-container">
+      {{ review_author_profile }}
+      <div class="review__author-and-date">
+        {{ review_author }}
+        {{ review_date }}
+      </div>
+    </div>
+    {{ review_rating }}
+    {{ review_title }}
+    {{ review_content }}
+  {% when '6' %}
+    {{ review_video }}
+    {{ review_rating }}
+    {{ review_author }}
+    {{ review_content }}
+    {{ review_date }}
+  {% else %}
+
+{% endcase %}
+
+{% stylesheet %}
+  .review {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  shopify-visual-preview-block-list shopify-visual-preview-block-list .review[data-visual-preview-mode] {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .review__image {
+    object-fit: cover;
+    width: 100%;
+    overflow: auto;
+    border-radius: calc(16px - (var(--svf-card-padding) * 0.5));
+  }
+
+  .review__image .placeholder-svg {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    border-radius: calc(16px - (var(--svf-card-padding) * 0.5));
+  }
+
+  .review__image-button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .review__image-button .review__image {
+    display: block;
+  }
+
+  .review__images {
+    width: 100%;
+  }
+
+  .review__image-button--extra {
+    display: none;
+  }
+
+  .review-lightbox {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    max-width: 92vw;
+    max-height: 92vh;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .review-lightbox::backdrop {
+    background: rgb(0 0 0 / 80%);
+  }
+
+  .review-lightbox__image {
+    display: block;
+    /* Les photos d'avis sont petites : on les agrandit jusqu'à 700px */
+    width: min(92vw, 700px);
+    height: auto;
+    max-height: 92vh;
+    border-radius: 16px;
+    object-fit: contain;
+  }
+
+  .review-lightbox__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 60%);
+    color: #fff;
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .review-lightbox__nav {
+    position: fixed;
+    top: 50%;
+    z-index: 1;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 90%);
+    color: #000;
+    font-family: Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .review-lightbox__nav--prev {
+    left: 12px;
+  }
+
+  .review-lightbox__nav--next {
+    right: 12px;
+  }
+
+  .review-lightbox__counter {
+    position: fixed;
+    bottom: 14px;
+    left: 50%;
+    padding: 4px 12px;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 60%);
+    color: #fff;
+    font-size: 14px;
+    transform: translateX(-50%);
+  }
+
+  .review-lightbox--single .review-lightbox__nav,
+  .review-lightbox--single .review-lightbox__counter {
+    display: none;
+  }
+
+  .review__title,
+  .review__author-name {
+    font-weight: 600;
+  }
+
+  .review__date {
+    font-style: italic;
+  }
+
+  /* Pastille avec l'initiale : affichée seulement dans la mise en page « liste » de la section Avis */
+  .review__avatar {
+    display: none;
+  }
+
+  .review--2 {
+    .review__author-and-date {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      margin-top: 10px;
+    }
+  }
+
+  .review--3 {
+    .review__image {
+      aspect-ratio: var(--image-ratio);
+    }
+
+    .review__image .placeholder-svg {
+      aspect-ratio: var(--image-ratio);
+    }
+  }
+
+  .review--4 {
+    flex-direction: row;
+    align-items: center;
+
+    .review__content {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .review__image,
+    .review__image .placeholder-svg {
+      aspect-ratio: 1 / 1;
+    }
+  }
+
+  @media (width > 750px) {
+    .review--4 {
+      flex-direction: row;
+      align-items: center;
+    }
+  }
+
+  .review--5 {
+    .review__author-and-date-container {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      margin-bottom: 10px;
+
+      .review__author-and-date {
+        display: flex;
+        flex-direction: column;
+        gap: 0.33rem;
+      }
+
+      .review__author-profile,
+      .review__author-profile svg {
+        width: 50px;
+        height: 50px;
+        background-color: #f8f8f8;
+        border-radius: calc(16px - (var(--svf-card-padding) * 0.5));
+        object-fit: cover;
+      }
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  // Agrandit la photo d'un avis au clic, avec défilement entre toutes les photos d'avis de la section
+  (() => {
+    let lightbox;
+    let urls = [];
+    let index = 0;
+
+    const show = (next) => {
+      index = (next + urls.length) % urls.length;
+      lightbox.querySelector('.review-lightbox__image').src = urls[index];
+      lightbox.querySelector('.review-lightbox__counter').textContent = `${index + 1} / ${urls.length}`;
+    };
+
+    const build = () => {
+      lightbox = document.createElement('dialog');
+      lightbox.className = 'review-lightbox';
+      lightbox.innerHTML =
+        '<button type="button" class="review-lightbox__close" aria-label="Fermer">&times;</button>' +
+        '<button type="button" class="review-lightbox__nav review-lightbox__nav--prev" aria-label="Photo précédente">&#8249;</button>' +
+        '<img class="review-lightbox__image" alt="Photo d\'un avis client">' +
+        '<button type="button" class="review-lightbox__nav review-lightbox__nav--next" aria-label="Photo suivante">&#8250;</button>' +
+        '<span class="review-lightbox__counter"></span>';
+
+      lightbox.addEventListener('click', (event) => {
+        if (event.target.closest('.review-lightbox__nav--prev')) return show(index - 1);
+        if (event.target.closest('.review-lightbox__nav--next')) return show(index + 1);
+        if (!event.target.classList.contains('review-lightbox__image')) lightbox.close();
+      });
+
+      lightbox.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowLeft') show(index - 1);
+        if (event.key === 'ArrowRight') show(index + 1);
+      });
+
+      // Balayage au doigt sur mobile
+      let startX = null;
+      lightbox.addEventListener('touchstart', (event) => (startX = event.touches[0].clientX), { passive: true });
+      lightbox.addEventListener('touchend', (event) => {
+        if (startX === null) return;
+        const delta = event.changedTouches[0].clientX - startX;
+        startX = null;
+        if (Math.abs(delta) > 40) show(index + (delta < 0 ? 1 : -1));
+      });
+
+      document.body.append(lightbox);
+    };
+
+    document.addEventListener('click', (event) => {
+      const trigger = event.target.closest('[data-review-lightbox]');
+      if (!trigger) return;
+
+      if (!lightbox) build();
+
+      // Toutes les photos d'avis de la même section, sans doublon, dans l'ordre de la page
+      const scope = trigger.closest('.reviews') || document;
+      urls = [...new Set([...scope.querySelectorAll('[data-review-lightbox]')].map((el) => el.dataset.reviewLightbox))];
+      lightbox.classList.toggle('review-lightbox--single', urls.length < 2);
+      show(Math.max(0, urls.indexOf(trigger.dataset.reviewLightbox)));
+      lightbox.showModal();
+    });
+  })();
+{% endjavascript %}

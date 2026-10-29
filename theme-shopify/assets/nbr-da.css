@@ -1,0 +1,1408 @@
+/*
+ * DA sombre : fond à carreaux, lueur rouge, titres condensés italiques (Anton) et libellés capitales (Archivo).
+ * Appliquée au footer et aux sections qui portent la classe « nbr-dark ».
+ * Rouge sur fond sombre : #ff2d20 (5,65:1) ; fond rouge sous texte blanc : #e10600 (4,97:1).
+ */
+.shopify-section-group-footer-group,
+.shopify-section:has(.nbr-dark) {
+  --nbr-grid: rgb(255 255 255 / 0.045);
+
+  position: relative;
+  color: #ffffff;
+  background-color: #0a0a0a;
+  background-image:
+    linear-gradient(var(--nbr-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--nbr-grid) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+/* FAQ et footer forment un seul bloc : quadrillage calé sur la fenêtre (continu d'une section à l'autre)
+   et une seule lueur rouge, en haut à droite de la FAQ. */
+.shopify-section-group-footer-group,
+.shopify-section:has(.nbr-dark) {
+  background-attachment: fixed;
+}
+
+.shopify-section:has(.nbr-dark) {
+  background-image:
+    radial-gradient(ellipse 55% 75% at 100% 10%, rgb(225 6 0 / 0.22), transparent 70%),
+    linear-gradient(var(--nbr-grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--nbr-grid) 1px, transparent 1px);
+  background-size: auto, 48px 48px, 48px 48px;
+  background-attachment: scroll, fixed, fixed;
+}
+
+.shopify-section-group-footer-group .section-background,
+.shopify-section-group-footer-group .section,
+.shopify-section:has(.nbr-dark) .section-background,
+.shopify-section:has(.nbr-dark) .section {
+  background: transparent;
+}
+
+/* Étiquette rouge « FAQ ». */
+.nbr-faq-tag {
+  padding: 4px 12px;
+  background: #e10600;
+  color: #ffffff;
+  font-family: 'Archivo', var(--font-body--family);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.nbr-faq-tag p {
+  margin: 0;
+}
+
+/* Titre condensé italique souligné de rouge. */
+.nbr-faq-title :is(h1, h2, h3, p) {
+  margin: 0;
+  font-family: 'Anton', var(--font-heading--family);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-style: italic;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.nbr-faq-title::after {
+  content: '';
+  display: block;
+  width: 160px;
+  height: 4px;
+  margin-top: 8px;
+  background: #ff2d20;
+}
+
+/* Questions numérotées 01, 02… */
+.nbr-faq {
+  width: 100%;
+  counter-reset: nbr-faq;
+  --color-border: rgb(255 255 255 / 0.12);
+}
+
+.nbr-faq .details {
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+}
+
+.nbr-faq .details:last-of-type {
+  border-bottom: 1px solid rgb(255 255 255 / 0.12);
+}
+
+/* !important : l'accordéon pose sa police en style inline (variables --summary-font-*). */
+.accordion.nbr-faq .details__header {
+  counter-increment: nbr-faq;
+  gap: 24px;
+  padding-block: 22px;
+  color: #ffffff;
+  font-family: 'Archivo', var(--font-body--family) !important;
+  font-size: 1rem !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em;
+  text-transform: uppercase !important;
+}
+
+.nbr-faq .details__header::before {
+  content: counter(nbr-faq, decimal-leading-zero);
+  min-width: 32px;
+  color: #ff2d20;
+  font-family: 'Anton', var(--font-heading--family);
+  font-size: 1.625rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.nbr-faq .icon-plus,
+.nbr-faq .icon-caret {
+  margin-left: auto;
+  color: #ff2d20;
+}
+
+.nbr-faq .details-content {
+  padding: 0 0 22px 56px;
+  color: rgb(255 255 255 / 0.8);
+}
+
+/* Footer : titres de colonnes condensés italiques, liens en gras, newsletter sombre et bouton rouge. */
+.shopify-section-group-footer-group :is(.menu__heading__default, .svf-menu-heading, h5, h6) {
+  font-family: 'Anton', var(--font-heading--family);
+  font-size: 1.875rem;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.shopify-section-group-footer-group .menu a {
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.shopify-section-group-footer-group .menu a:hover {
+  color: #ff2d20;
+}
+
+.shopify-section-group-footer-group .email-signup__input {
+  border: 1px solid rgb(255 255 255 / 0.15);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.04);
+  color: #ffffff;
+}
+
+.shopify-section-group-footer-group .email-signup__button {
+  border-radius: 4px;
+  background: #e10600;
+  color: #ffffff;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Bannière « image entière » sur mobile (demande Nabilerie) : la photo s'affiche en entier, sans recadrage,
+   et le titre passe juste en dessous sur fond noir au lieu de recouvrir la photo.
+   Ordinateur et tablette (750 px et plus) inchangés. */
+@media screen and (max-width: 749px) {
+  .hero.svf-hero-fit .hero__media-grid {
+    height: calc(100vw / var(--svf-hero-ratio, 2.667));
+    background: none;
+  }
+
+  .hero.svf-hero-fit .hero__media-grid::before {
+    content: none;
+  }
+
+  .hero.svf-hero-fit .hero__media {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .hero.svf-hero-fit .hero__content-wrapper:has(*) {
+    position: static;
+    padding: 24px 20px 28px;
+    background: #000000;
+  }
+}
+
+/* Bannière classique Nabilerie : le boucher est à droite de la photo, on cadre sur lui ; sur ordinateur le
+   texte garde une marge à gauche, sur mobile il descend en bas de la bannière. */
+.hero img.hero__media {
+  object-position: 85% center;
+}
+
+@media screen and (min-width: 750px) {
+  .hero:has(img.hero__media) .hero__content-wrapper {
+    padding-inline-start: clamp(20px, 5vw, 80px);
+  }
+}
+
+@media screen and (max-width: 749px) {
+  .hero img.hero__media {
+    object-position: 80% center;
+  }
+
+  .hero:has(img.hero__media) .hero__content-wrapper {
+    justify-content: flex-end;
+  }
+}
+
+/* Collections de l'accueil : cartes portrait, titre et lien « Voir la collection » souligné sur l'image. */
+/* Nabilerie : noms des vignettes Bœuf et Volaille en blanc sur les photos, avec une légère ombre pour rester lisibles. */
+.nbr-collection-title :is(h3, p) {
+  margin: 0;
+  color: #ffffff;
+  text-shadow: 0 1px 6px rgb(0 0 0 / 0.55);
+}
+
+.nbr-collection-cta {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgb(0 0 0 / 0.5);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.nbr-collection-cta p {
+  margin: 0;
+}
+
+/* Titre « COLLECTION » au-dessus des cartes de collections : encadré rouge, texte blanc en Anton italique,
+   aligné à gauche sur la marge de la page (la section est en pleine largeur). */
+.nbr-section-tag {
+  align-self: flex-start;
+  /* Haut : 8 px + ~25 px laissés par la bannière = même écart (~32 px) qu'en dessous. */
+  margin: 8px 0 32px max(20px, calc((100% - var(--narrow-page-width, 1600px)) / 2)) !important;
+  padding: 10px 24px 8px;
+  border-radius: 10px;
+  background: #e10600;
+}
+
+.nbr-section-tag :is(h2, p) {
+  margin: 0;
+  color: #ffffff !important;
+  font-family: 'Anton', var(--font-heading--family) !important;
+  font-size: clamp(1.75rem, 3vw, 2.5rem) !important;
+  font-style: italic !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase !important;
+}
+
+/* Titre manuscrit de luxe (Nabilerie), ex. « Charcuterie » au-dessus du carrousel de produits. */
+.text-block.nbr-script-title,
+.text-block.nbr-script-title > * {
+  font-family: var(--svf-script-font, 'Pinyon Script', cursive) !important;
+  font-weight: 400 !important;
+  font-size: clamp(2.6rem, 4.5vw, 3.6rem) !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: #000000;
+}
+
+/* Titre manuscrit centré sur toute la largeur, et épaissi (la police n'existe qu'en un seul poids). */
+.text-block.nbr-script-title {
+  flex: 1 1 100% !important;
+  width: 100% !important;
+  max-width: none !important;
+  text-align: center !important;
+}
+
+.text-block.nbr-script-title > * {
+  text-align: center !important;
+  -webkit-text-stroke: 1.1px currentColor;
+}
+
+/* ---------- Cartes produit Nabilerie (accueil et collections) : titre en capitales, prix bordeaux en grand,
+   sélecteur de quantité − 1 + et bouton d'ajout bordeaux pleine largeur. ---------- */
+:root {
+  --nbr-bordeaux: #7a0820;
+  /* Marron noyer qui remplace le noir des fonds (en-tête, barre d'annonce, sections sombres). */
+  --nbr-brun: #3e2516;
+  --nbr-brun-fonce: #2c1a10;
+}
+
+/* Barre d'annonce : le schéma « Noir » passe au bordeaux des boutons. */
+.announcement-bar.color-scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4 {
+  --color-background: var(--nbr-bordeaux);
+  background-color: var(--nbr-bordeaux);
+}
+
+.product-card .product-card__content a.contents > .text-block,
+.product-card .product-card__content a.contents > .text-block :is(p, h2, h3) {
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.product-card product-price,
+.product-card .price {
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  color: var(--nbr-bordeaux);
+  font-size: 22px !important;
+  font-weight: 700 !important;
+}
+
+.product-card .unit-price {
+  display: block;
+  color: #222222;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.product-card .buy-buttons-block,
+.product-card .product-form-buttons {
+  width: 100%;
+}
+
+.product-card .quantity-selector {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid #dddddd;
+  border-radius: 2px;
+  padding: 4px;
+}
+
+.product-card .quantity-selector button {
+  width: 32px;
+  height: 32px;
+  border-radius: 2px;
+  background: var(--nbr-bordeaux);
+  color: #ffffff;
+}
+
+.product-card .quantity-selector input {
+  font-weight: 700;
+  text-align: center;
+}
+
+.product-card .add-to-cart-button,
+.product-card button[name='add'] {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  border-radius: 2px;
+  background: var(--nbr-bordeaux);
+  color: #ffffff;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-weight: 600;
+}
+
+/* Quantité au-dessus, bouton en dessous, tous deux sur toute la largeur de la carte. */
+.product-card .product-form-buttons {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.product-card .product-form-buttons > *,
+.product-card add-to-cart-component {
+  display: block;
+  width: 100%;
+  max-width: none;
+  flex: 1 1 auto;
+}
+
+.product-card .quantity-selector {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+/* ---------- Titre de la bannière façon enseigne (Nabilerie) : petites capitales espacées entre deux filets,
+   grand nom au centre, puis une ligne d'accroche entre deux filets. ---------- */
+.text-block.nbr-hero-line,
+.text-block.nbr-hero-name {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.text-block.nbr-hero-line > * {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif) !important;
+  font-size: clamp(0.8rem, 1.1vw, 1rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.42em !important;
+  line-height: 1.2 !important;
+  text-transform: uppercase !important;
+  white-space: nowrap;
+  color: #ffffff;
+}
+
+.text-block.nbr-hero-line > *::before,
+.text-block.nbr-hero-line > *::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: rgb(255 255 255 / 0.55);
+}
+
+.text-block.nbr-hero-name > * {
+  margin: 0;
+  font-family: var(--nbr-hero-name-font, 'Playfair Display', Georgia, serif) !important;
+  font-size: clamp(2rem, 4vw, 4.4rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+  text-align: center;
+  text-transform: uppercase !important;
+  color: #ffffff;
+  text-shadow: 3px 3px 0 rgb(0 0 0 / 0.55);
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-line > * {
+    gap: 10px;
+    letter-spacing: 0.3em !important;
+  }
+
+  .text-block.nbr-hero-name > * {
+    font-size: clamp(1.8rem, 9vw, 2.6rem) !important;
+    letter-spacing: 0.04em !important;
+  }
+}
+
+/* L'accroche « Boucherie & Charcuterie » fait partie du H1 (référencement) mais garde l'allure de la ligne à filets. */
+.text-block.nbr-hero-name > h1 {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.text-block.nbr-hero-name > h1 em {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 18px;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-size: clamp(0.8rem, 1.1vw, 1rem);
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.42em;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-shadow: none;
+}
+
+.text-block.nbr-hero-name > h1 em::before,
+.text-block.nbr-hero-name > h1 em::after {
+  content: '';
+  flex: 1 1 auto;
+  height: 1px;
+  background: rgb(255 255 255 / 0.55);
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-name > h1 em {
+    gap: 10px;
+    letter-spacing: 0.3em;
+  }
+}
+
+/* Numéro de téléphone sous l'accroche de la bannière : même lettrage, dans un fin cadre arrondi, cliquable pour appeler. */
+.text-block.nbr-hero-phone {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.text-block.nbr-hero-phone > * {
+  margin: 0;
+  text-align: center;
+}
+
+.text-block.nbr-hero-phone a {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 30px;
+  border: 2px solid #ffffff;
+  border-radius: 999px;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif) !important;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em !important;
+  line-height: 1.2 !important;
+  white-space: nowrap;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  background: var(--nbr-bordeaux, #7a0820);
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.45);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.text-block.nbr-hero-phone a::before {
+  content: '';
+  flex: 0 0 auto;
+  width: 1.1em;
+  height: 1.1em;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.25 11.4 11.4 0 0 0 3.6.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.57a1 1 0 0 1-.25 1z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.text-block.nbr-hero-phone a:hover {
+  background: #93112b;
+  transform: translateY(-1px);
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-phone a {
+    gap: 10px;
+    padding: 12px 24px;
+    font-size: 1.15rem !important;
+    letter-spacing: 0.04em !important;
+  }
+}
+
+/* Visuel de collection glissé dans la grille des produits : même hauteur que les cartes, fin cadre bordeaux. */
+.product-grid__item.nbr-grid-visual {
+  list-style: none;
+}
+
+.nbr-grid-visual__frame {
+  height: 100%;
+  min-height: 320px;
+  padding: 8px;
+  border: 1px solid var(--nbr-bordeaux, #7a0820);
+  background: #ffffff;
+}
+
+.nbr-grid-visual__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Produit en vitrine : bouton « Nous contacter » à la place du panier, même style que « Ajouter au panier »
+   (bordeaux, pleine largeur, 50px de haut), sur les cartes comme sur la fiche produit. */
+.nbr-vitrine {
+  display: block;
+  width: 100%;
+}
+
+.nbr-vitrine .nbr-vitrine__contact {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+  padding-block: 10px;
+  border: none !important;
+  border-radius: 2px;
+  background: var(--nbr-bordeaux, #7a0820) !important;
+  color: #ffffff !important;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nbr-vitrine .nbr-vitrine__contact:hover {
+  background: #5c0618 !important;
+}
+
+/* Grande image sur deux colonnes (grille produits de l'accueil). */
+.nbr-grid-visual--wide {
+  grid-column: span 2;
+}
+
+/* En-tête : menu centré sur la page (colonnes logo et icônes de même largeur, sans la place réservée au bouton « Plus »). */
+@media screen and (min-width: 750px) {
+  .header__row--top .header__columns {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
+  }
+
+  .header__row--top .header__column--center overflow-list::part(placeholder) {
+    position: absolute;
+    visibility: hidden;
+  }
+
+  .header__row--top .header__column--center overflow-list::part(list) {
+    margin-inline: 0;
+  }
+}
+
+/* ---------- Pages collection (Nabilerie) : titre centré en capitales fines, barre « Trier par » entre deux traits,
+   tri à gauche et filtres à droite. ---------- */
+.text-block.nbr-collection-heading,
+.text-block.nbr-collection-heading > * {
+  width: 100%;
+  text-align: center !important;
+}
+
+.text-block.nbr-collection-heading > *,
+[id$="__main-page"] .text-block > h1 {
+  margin: 0;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif) !important;
+  font-size: clamp(1.8rem, 2.6vw, 2.4rem) !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  color: #000000;
+}
+
+.collection-wrapper form.facets__form {
+  align-items: center;
+  padding-block: 10px;
+  border-top: 1px solid #000000;
+  border-bottom: 1px solid #000000;
+}
+
+.collection-wrapper form.facets__form .sorting-filter {
+  order: -1;
+  margin-inline: 0 auto !important;
+}
+
+.collection-wrapper form.facets__form .facets__filters-wrapper {
+  order: 1;
+  justify-content: flex-end;
+}
+
+.collection-wrapper form.facets__form .facets__label {
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-size: 15px;
+  font-weight: 700;
+  text-transform: none;
+  color: #000000;
+}
+
+/* Barre d'annonce sur téléphone : les deux messages défilent sur une seule ligne au lieu de passer sur deux lignes.
+   Le délai négatif fait démarrer le défilement en cours de route (pas de barre vide au chargement). */
+@media screen and (max-width: 749px) {
+  .announcement-bar .announcement {
+    overflow: hidden;
+  }
+
+  .announcement-bar .announcement .slide {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    width: max-content !important;
+    overflow: visible !important;
+    white-space: nowrap;
+    animation: nbr-defile 16s linear -5s infinite;
+  }
+
+  .announcement-bar .announcement .slide > * {
+    flex: 0 0 auto;
+  }
+}
+
+@media screen and (max-width: 749px) and (prefers-reduced-motion: reduce) {
+  .announcement-bar .announcement .slide {
+    animation-duration: 40s;
+  }
+}
+
+@keyframes nbr-defile {
+  from {
+    transform: translateX(100vw);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Tiroir panier : bouton « Commander » bordeaux, comme les boutons d'ajout au panier. */
+.svf-tiroir__ctas .button,
+.svf-tiroir__ctas button[name='checkout'] {
+  border: none;
+  background: var(--nbr-bordeaux, #7a0820);
+  color: #ffffff;
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-weight: 600;
+}
+
+.svf-tiroir__ctas .button:hover,
+.svf-tiroir__ctas button[name='checkout']:hover {
+  background: #5c0618;
+}
+
+/* Pastille du panier (nombre d'articles) : bordeaux comme les boutons, chiffre en blanc. */
+.header .cart-bubble__background {
+  background: var(--nbr-bordeaux, #7a0820) !important;
+}
+
+.header .cart-bubble__text,
+.header .cart-bubble__text-count {
+  color: #ffffff !important;
+}
+
+/* Menu mobile : logo du site centré dans l'espace vide sous les liens. */
+.menu-drawer::after {
+  content: '';
+  display: block;
+  flex: 0 0 auto;
+  height: 110px;
+  margin: auto 32px;
+  background: var(--nbr-logo-url) center / contain no-repeat;
+}
+
+/* Fiches produit : bouton « Ajouter au panier » bordeaux, comme sur les cartes et dans le panier. */
+.add-to-cart-button.button-custom,
+.product-information .add-to-cart-button {
+  border-color: var(--nbr-bordeaux, #7a0820) !important;
+  background: var(--nbr-bordeaux, #7a0820) !important;
+  color: #ffffff !important;
+}
+
+.add-to-cart-button.button-custom:hover,
+.product-information .add-to-cart-button:hover {
+  border-color: #5c0618 !important;
+  background: #5c0618 !important;
+}
+
+/* Fiches produit : prix en grand, en gras et en bordeaux (les cartes produit gardent leur propre taille). */
+product-price:not(.product-card product-price) .price {
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif) !important;
+  font-size: clamp(2rem, 3vw, 2.4rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.1;
+  color: var(--nbr-bordeaux, #7a0820) !important;
+}
+
+product-price:not(.product-card product-price) .unit-price {
+  display: block;
+  margin-top: 4px;
+  font-size: 15px;
+  color: #555555;
+}
+
+/* Fiches produit : titre en Playfair Display, description juste en dessous. */
+.text-block.nbr-titre-produit,
+.text-block.nbr-titre-produit > * {
+  font-family: 'Playfair Display', Georgia, serif !important;
+  font-weight: 600 !important;
+  font-size: clamp(26px, 2.3vw, 34px) !important;
+  line-height: 1.2 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  color: #111111;
+}
+
+.text-block.nbr-description-produit,
+.text-block.nbr-description-produit > * {
+  font-family: var(--svf-announce-font, 'Montserrat', Arial, sans-serif) !important;
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  color: #222222;
+}
+
+/* Fiches produit : « Poids du colis » et le poids dans un carré bordeaux. */
+.nbr-poids {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.nbr-poids__label {
+  margin: 0;
+  font-family: var(--svf-announce-font, 'Montserrat', Arial, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #111111;
+}
+
+.nbr-poids__valeur {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  height: 38px;
+  padding: 0 20px;
+  border-radius: 2px;
+  background: var(--nbr-bordeaux, #7a0820);
+  color: #ffffff;
+  font-family: var(--svf-announce-font, 'Montserrat', Arial, sans-serif);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Fiches produit : vidéo sous la fiche, dans un encadré marbre sombre bordé de bordeaux. */
+[id$='__nbr_video_produit'] {
+  position: relative;
+  border-top: 8px solid #a3101f;
+  border-bottom: 8px solid #a3101f;
+  background-color: var(--nbr-brun, #3e2516);
+  background-image: url('nbr-fond-marbre-noir.webp');
+  background-size: cover;
+  background-position: center;
+  /* Le marbre noir éclaire le marron par ses veines : on obtient un marbre brun. */
+  background-blend-mode: screen;
+}
+
+[id$='__nbr_video_produit'] .section-background {
+  display: none;
+}
+
+[id$='__nbr_video_produit'] video {
+  display: block;
+  border: 4px solid #a3101f;
+  outline: 1px solid rgba(255, 255, 255, 0.35);
+  outline-offset: 6px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+/* Fiches produit : réassurance, icône bordeaux à gauche, texte à droite. */
+.nbr-reassurance {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nbr-reassurance__ligne {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nbr-reassurance__icone {
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  color: #a3101f;
+}
+
+.nbr-reassurance__icone svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.nbr-reassurance__icone svg * {
+  stroke-width: 2;
+}
+
+.nbr-reassurance__texte {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-family: var(--svf-announce-font, 'Montserrat', Arial, sans-serif);
+}
+
+.nbr-reassurance__titre {
+  font-size: 15px;
+  line-height: 1.35;
+  color: #111111;
+}
+
+.nbr-reassurance__titre strong {
+  font-weight: 700;
+}
+
+.nbr-reassurance__detail {
+  font-size: 13px;
+  line-height: 1.4;
+  color: #555555;
+}
+
+/* Titre H1 des pages (Notre histoire, etc.) : toujours centré. */
+[id$="__main-page"] .text-block:has(> h1) {
+  width: 100%;
+  max-width: none;
+  align-self: stretch;
+  text-align: center;
+}
+[id$="__main-page"] .text-block > h1 {
+  text-align: center;
+}
+
+/* Notre histoire : texte posé dans la partie noire de la bannière. */
+.nbr-histoire-banniere {
+  position: relative;
+  margin-bottom: 2rem;
+  background: #000000;
+  min-height: 450px;
+  overflow: hidden;
+}
+.nbr-histoire-banniere img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 55%;
+  max-width: none;
+  object-fit: cover;
+  object-position: 80% center;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 25%);
+  mask-image: linear-gradient(to right, transparent 0, #000 25%);
+}
+.nbr-histoire-banniere__texte h2 {
+  font-size: clamp(22px, 2.4vw, 32px);
+}
+.nbr-histoire-banniere__texte h3 {
+  font-size: clamp(16px, 1.6vw, 20px);
+}
+.nbr-histoire-banniere__texte {
+  position: relative;
+  z-index: 1;
+  width: 50%;
+  padding: 40px 0 40px 5%;
+  color: #ffffff;
+}
+.nbr-histoire-banniere__texte h2,
+.nbr-histoire-banniere__texte h3,
+.nbr-histoire-banniere__texte p {
+  color: #ffffff;
+  margin: 0 0 0.8em;
+}
+.nbr-histoire-banniere__texte h2,
+.nbr-histoire-banniere__texte h3,
+.nbr-histoire-banniere__texte p {
+  text-wrap: wrap !important;
+  text-align: center !important;
+}
+.nbr-histoire-banniere__texte p {
+  font-size: 14px;
+  line-height: 1.6;
+}
+.nbr-histoire-banniere__texte p:last-child {
+  margin-bottom: 0;
+}
+@media screen and (max-width: 749px) {
+  .nbr-histoire-banniere {
+    min-height: 0;
+  }
+  .nbr-histoire-banniere img {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+  .nbr-histoire-banniere__texte {
+    width: auto;
+    padding: 20px;
+  }
+}
+
+/* Pied de page sur téléphone : tout centré. */
+@media screen and (max-width: 749px) {
+  .nbr-footer .nbr-footer__top {
+    align-items: center;
+    text-align: center;
+  }
+  .nbr-footer .nbr-footer__links,
+  .nbr-footer .nbr-footer__icons {
+    justify-content: center;
+  }
+  .nbr-footer .nbr-footer__social,
+  .nbr-footer .nbr-footer__newsletter {
+    width: 100%;
+    text-align: center;
+  }
+  .nbr-footer .nbr-footer__form {
+    margin-inline: auto;
+  }
+}
+
+/* Page Contact : deux façons de nous joindre, chacune annoncée par un petit titre entre deux traits. */
+.text-block.nbr-contact-intro,
+.text-block.nbr-contact-label {
+  width: 100% !important;
+  max-width: none !important;
+  text-align: center;
+}
+.text-block.nbr-contact-intro p {
+  margin: 0;
+  font-size: 16px;
+}
+.text-block.nbr-contact-label p {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nbr-bordeaux, #7a0820);
+}
+.text-block.nbr-contact-label p::before,
+.text-block.nbr-contact-label p::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #d9d9d9;
+}
+
+/* Accueil : séparation « Bientôt disponible » entre les saucissons et les mini saucissons en pot. */
+.text-block.nbr-separation {
+  width: 100% !important;
+  max-width: none !important;
+}
+.text-block.nbr-separation p {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin: 0;
+  font-size: clamp(16px, 1.6vw, 20px);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--nbr-bordeaux, #7a0820);
+}
+.text-block.nbr-separation p::before,
+.text-block.nbr-separation p::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--nbr-bordeaux, #7a0820);
+  opacity: 0.35;
+}
+
+/* Accueil, bloc Livraison : fond beige un peu plus foncé que le blanc de la page, textes foncés. */
+.shopify-section .nbr-delivery {
+  background: #e8dbc4;
+  color: #2b1a10;
+}
+.shopify-section .nbr-delivery .nbr-delivery__kicker {
+  color: rgb(43 26 16 / 0.65);
+}
+.shopify-section .nbr-delivery .nbr-delivery__title,
+.shopify-section .nbr-delivery .nbr-delivery__points,
+.shopify-section .nbr-delivery .nbr-delivery__points li {
+  color: #2b1a10;
+}
+.shopify-section .nbr-delivery .nbr-delivery__subtitle {
+  color: var(--nbr-bordeaux, #7a0820);
+}
+.shopify-section .nbr-delivery a[href*="wa.me"] {
+  border-color: var(--nbr-bordeaux, #7a0820);
+}
+
+/* Carte produit Baraka : titre court en capitales, pastille du goût, ligne format. */
+.nbr-card-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  color: #2b1a10;
+}
+
+.nbr-card-info__link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.nbr-card-info .nbr-card-info__title {
+  margin: 0;
+  font-family: var(--font-heading--family);
+  font-size: clamp(15px, 1.25vw, 19px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.nbr-card-info__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: #f4e8d8;
+  color: var(--nbr-bordeaux, #7a0820);
+}
+
+.nbr-card-info__pill--piquant {
+  background: #c2321f;
+  color: #ffffff;
+}
+
+.nbr-card-info__pill--poivre {
+  background: #2b2b2b;
+  color: #ffffff;
+}
+
+.nbr-card-info__pill--truffe {
+  background: #e9dfc4;
+  color: #4a3b12;
+}
+
+.nbr-card-info__pill svg {
+  width: 16px;
+  height: 16px;
+}
+
+.nbr-card-info__pill--piquant svg path:first-child {
+  fill: #ffffff;
+}
+
+.nbr-card-info .nbr-card-info__details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.nbr-card-info__details svg {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  color: var(--nbr-bordeaux, #7a0820);
+}
+
+/* Chevron après « Nous contacter ». */
+.nbr-vitrine .nbr-vitrine__contact::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  margin-left: 10px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+  transform: rotate(45deg);
+}
+
+@media screen and (max-width: 749px) {
+  .nbr-vitrine .nbr-vitrine__contact {
+    padding-inline: 6px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .nbr-vitrine .nbr-vitrine__contact::after {
+    width: 6px;
+    height: 6px;
+    margin-left: 6px;
+  }
+}
+
+/* Vert foncé du logo Baraka : boutons téléphone et puces du bloc Livraison. */
+:root {
+  --nbr-vert: #0f3a22;
+  --nbr-vert-clair: #1a5233;
+}
+
+.text-block.nbr-hero-phone a,
+.shopify-section .nbr-delivery .nbr-delivery__button {
+  background: var(--nbr-vert) !important;
+}
+
+.text-block.nbr-hero-phone a:hover,
+.shopify-section .nbr-delivery .nbr-delivery__button:hover {
+  background: var(--nbr-vert-clair) !important;
+}
+
+.shopify-section .nbr-delivery a[href*="wa.me"] {
+  border-color: var(--nbr-vert);
+}
+
+.shopify-section .nbr-delivery .nbr-delivery__point svg {
+  background: var(--nbr-vert);
+}
+
+/* Accueil : le logo rond Baraka remplace le mot « Charcuterie » au centre de la bannière.
+   Le texte reste dans le H1 pour le référencement, seul son affichage est masqué. */
+.text-block.nbr-hero-name > h1 {
+  font-size: 0 !important;
+  text-shadow: none;
+}
+
+.text-block.nbr-hero-name > h1::before {
+  content: '';
+  display: block;
+  align-self: center;
+  width: min(240px, 18vw, 30vh);
+  aspect-ratio: 1;
+  background: url('https://cdn.shopify.com/s/files/1/1090/2480/5201/files/logo-baraka-cercle-blanc-entier.webp?v=1793119546&width=600') center / contain no-repeat;
+  filter: drop-shadow(0 6px 16px rgb(0 0 0 / 0.45));
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-name > h1::before {
+    width: min(170px, 45vw);
+  }
+}
+
+/* Bannière d'accueil : logo plus grand, numéro plus discret, textes et filets en noir. */
+.text-block.nbr-hero-name > h1::before {
+  width: min(330px, 24vw, 42vh);
+}
+
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em {
+  color: #111111 !important;
+}
+
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *::before,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *::after,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em::before,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em::after {
+  background: rgb(0 0 0 / 0.6);
+}
+
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-phone a {
+  gap: 8px;
+  padding: 9px 20px;
+  font-size: clamp(0.85rem, 1vw, 1rem) !important;
+  border-width: 1px;
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-name > h1::before {
+    width: min(240px, 62vw);
+  }
+
+  [id$='__image_banner_VXNP89'] .text-block.nbr-hero-phone a {
+    padding: 8px 16px;
+    font-size: 0.9rem !important;
+  }
+}
+
+/* Correction : textes de la bannière en blanc avec un contour noir (filets blancs bordés de noir). */
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em {
+  color: #ffffff !important;
+  text-shadow:
+    -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000,
+    0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000, 1px 0 0 #000;
+}
+
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *::before,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *::after,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em::before,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em::after {
+  background: #ffffff;
+  box-shadow: 0 0 0 1px #000;
+}
+
+/* Bannière d'accueil : textes noirs bordés de blanc, filets noirs bordés de blanc. */
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em {
+  color: #111111 !important;
+  text-shadow:
+    -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff,
+    0 -1px 0 #fff, 0 1px 0 #fff, -1px 0 0 #fff, 1px 0 0 #fff;
+}
+
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *::before,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > *::after,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em::before,
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-name > h1 em::after {
+  background: #111111;
+  box-shadow: 0 0 0 1px #fff;
+}
+
+/* Mobile : numéro de la bannière plus grand. */
+@media screen and (max-width: 749px) {
+  [id$='__image_banner_VXNP89'] .text-block.nbr-hero-phone a {
+    gap: 10px;
+    padding: 12px 24px;
+    font-size: 1.15rem !important;
+  }
+}
+
+/* Barre d'annonce : fond vert du logo, écriture blanche. */
+.announcement-bar.color-scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4 {
+  --color-background: var(--nbr-vert, #0f3a22);
+  background-color: var(--nbr-vert, #0f3a22);
+}
+
+/* Bannière d'accueil : « Maison » un peu plus grand. */
+[id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > * {
+  font-size: clamp(1rem, 1.4vw, 1.3rem) !important;
+}
+
+@media screen and (max-width: 749px) {
+  [id$='__image_banner_VXNP89'] .text-block.nbr-hero-line > * {
+    font-size: 1rem !important;
+  }
+}
+
+/* Accueil : titre « Charcuterie » remplacé par l'image du lettrage. Le mot reste dans le H2 pour le référencement. */
+.text-block.nbr-script-title > h2 {
+  width: min(420px, 70vw);
+  aspect-ratio: 1200 / 208;
+  margin-inline: auto;
+  background: url('https://cdn.shopify.com/s/files/1/1090/2480/5201/files/titre-charcuterie-baraka.webp?v=1793120899') center / contain no-repeat;
+  color: transparent !important;
+  font-size: 0 !important;
+  -webkit-text-stroke: 0;
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-script-title > h2 {
+    width: min(260px, 70vw);
+  }
+}
+
+/* Accueil : bannière sur fond blanc (sans le marbre), sections du dessous sur fond crème. */
+[id$='__image_banner_VXNP89'] .hero__media-wrapper {
+  display: none !important;
+}
+
+[id$='__image_banner_VXNP89'],
+[id$='__image_banner_VXNP89'] .hero__container {
+  background-color: #ffffff !important;
+}
+
+[id$='__image_banner_VXNP89'] ~ .shopify-section .section-background {
+  background-color: #e8dbc4 !important;
+}
+/* Accueil : logo de la bannière sans ombre noire autour. */
+.text-block.nbr-hero-name > h1::before {
+  filter: none !important;
+}
+/* En-tête : menu centré en hauteur avec le logo et les icônes. */
+.header__column--center .overflow-menu {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+}
+/* Accueil : logo de la bannière sans le fin contour gris (image retouchée). */
+.text-block.nbr-hero-name > h1::before {
+  background-image: url('logo-baraka-cercle-sans-contour.webp');
+}
+/* Mobile : logo de la bannière presque sur toute la largeur. */
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-name > h1::before {
+    width: min(460px, 88vw);
+  }
+}
+/* Mobile : « Maison » sous la barre du menu (le menu passe par-dessus le haut de la bannière). */
+@media screen and (max-width: 749px) {
+  [id$='__image_banner_VXNP89'] .hero__container {
+    padding-block-start: calc(var(--header-height, 81px) + 20px) !important;
+  }
+}
+/* PC : logo de la bannière agrandi (toute la largeur des filets, sans dépasser l'écran en hauteur). */
+@media screen and (min-width: 750px) {
+  .text-block.nbr-hero-name > h1::before {
+    width: min(620px, 38vw, 60vh);
+  }
+}
+/* Mobile : bannière moins haute pour voir le début des produits sous le numéro. */
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-name > h1::before {
+    width: min(460px, 88vw, 40vh);
+  }
+
+  [id$='__image_banner_VXNP89'] .hero__container {
+    padding-block-start: calc(var(--header-height, 81px) + 8px) !important;
+    padding-block-end: 20px !important;
+  }
+
+  [id$='__collection_featured_688mD9'] .section {
+    padding-block-start: 28px !important;
+  }
+}
+/* Mobile : barre du menu moins haute (plus d'espace vide sous les icônes). */
+@media screen and (max-width: 749px) {
+  .header__row--top .header__columns {
+    min-height: 0 !important;
+    padding-block: 4px !important;
+  }
+
+  .header__row--top .header__drawer {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+
+  .header__row--top .header__icon--summary {
+    padding-block: 8px !important;
+    height: auto !important;
+  }
+}
+/* Logo de la bannière : blanc du haut et du bas coupé, pour un logo plus large sans prendre plus de hauteur. */
+.text-block.nbr-hero-name > h1::before {
+  aspect-ratio: 800 / 640;
+  background-size: 100% auto;
+  background-position: center;
+}
+
+@media screen and (max-width: 749px) {
+  .text-block.nbr-hero-name > h1::before {
+    width: min(460px, 90vw, 50vh);
+  }
+}
+/* En-tête : plus de trait gris sous la barre du menu. */
+.header__row--top {
+  border-bottom: 0 !important;
+}

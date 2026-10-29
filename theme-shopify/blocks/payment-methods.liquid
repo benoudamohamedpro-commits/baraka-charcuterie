@@ -1,0 +1,201 @@
+<div
+  class="
+    payment-methods
+    {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+  "
+  style="
+    --margin-top: {{ block.settings.margin_top }}px;
+    --margin-bottom: {{ block.settings.margin_bottom }}px;
+    --icon-size: {{ block.settings.icon_size }}px;
+    --alignment: {{ block.settings.alignment_desktop }};
+    --alignment-mobile: {{ block.settings.alignment_mobile }};
+  "
+  {{ block.shopify_attributes }}
+  {% if request.visual_preview_mode %}
+    data-visual-preview-mode
+  {% endif %}
+>
+  {%- assign payment_types = block.settings.payment_types | default: 'visa,master,apple_pay,google_pay,paypal,shopify_pay' | split: ',' -%}
+  {%- for type in payment_types -%}
+    {{ type | strip | payment_type_svg_tag }}
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+  .payment-methods {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.33rem;
+    margin: var(--margin-top) 0 var(--margin-bottom) 0;
+    width: 100%;
+    justify-content: var(--alignment-mobile);
+  }
+
+  shopify-visual-preview-block-list .payment-methods[data-visual-preview-mode] {
+    width: max-content;
+  }
+
+  @media (width > 750px) {
+    .payment-methods {
+      justify-content: var(--alignment);
+    }
+  }
+
+  .payment-methods svg {
+    width: var(--icon-size);
+    height: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Icônes de paiement",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Icônes"
+    },
+    {
+      "type": "paragraph",
+      "content": "Le paramétrage des icônes est unifié dans les paramètres de thème pour vous garantir de garder une cohérence sur l'ensemble de votre boutique."
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "select",
+      "id": "alignment_desktop",
+      "label": "Alignement sur ordinateur",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_on_display != 'mobile_only' }}"
+    },
+    {
+      "type": "select",
+      "id": "alignment_mobile",
+      "label": "Alignement sur mobile",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_on_display != 'desktop_only' }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Taille de l'icône",
+      "min": 30,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "default": 35
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    },
+    {
+      "type": "text",
+      "id": "payment_types",
+      "label": "Moyens de paiement affichés",
+      "info": "Noms séparés par des virgules.",
+      "default": "visa,master,apple_pay,google_pay,paypal,shopify_pay"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icônes de paiement",
+      "category": "Pied de page",
+      "settings": {}
+    }
+  ]
+}
+{% endschema %}

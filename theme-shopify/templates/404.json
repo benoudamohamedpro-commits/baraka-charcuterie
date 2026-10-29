@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_alignment_flex_direction_column": "center",
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_on_mobile": true,
+        "gap": 20,
+        "section_width": "page-width",
+        "padding-block-start": 100,
+        "padding-block-end": 100
+      },
+      "blocks": {
+        "text_3Dx7Ue": {
+          "type": "text",
+          "settings": {
+            "width": "fit-content",
+            "max_width": "none",
+            "rich_text_styles": false,
+            "alignment": "center",
+            "alignment_mobile": "center",
+            "type_preset": "h1",
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          }
+        },
+        "text_YktYzA": {
+          "type": "text",
+          "settings": {
+            "width": "fit-content",
+            "max_width": "none",
+            "rich_text_styles": false,
+            "alignment": "center",
+            "alignment_mobile": "center",
+            "type_preset": "paragraph",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "font_weight": "600"
+          }
+        },
+        "button_nEQ4R9": {
+          "type": "button",
+          "settings": {
+            "label": "Retour sur l'accueil",
+            "open_in_new_tab": false,
+            "style_class": "button",
+            "size": "default",
+            "icon": "arrow_back",
+            "icon_position": "start",
+            "margin_top": 20
+          }
+        }
+      },
+      "block_order": [
+        "text_3Dx7Ue",
+        "text_YktYzA",
+        "button_nEQ4R9"
+      ]
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

@@ -1,0 +1,150 @@
+{% doc %}
+  Sélecteur de quantité d'un produit.
+
+  @param {string} name - Nom du sélecteur
+  @param {string} [id] - Identifiant du sélecteur
+  @param {number} [min] - Quantité minimale
+  @param {number} [max] - Quantité maximale (si 0, pas de maximum)
+  @param {number} [value] - Quantité initiale
+  @param {boolean} [small] - Indique si le sélecteur est petit
+  @param {boolean} [disabled] - Indique si le sélecteur est désactivé
+  @param {string} [data_input] - Données à ajouter à l'input
+  @param {string} [data_buttons] - Données à ajouter aux boutons
+
+  @example
+  {% render 'quantity-selector', value: 1, min: 1, max: 100, name: 'quantity-1' %}
+{% enddoc %}
+
+{% assign value = value | default: 1 %}
+{% assign min = min | default: 1 %}
+{% assign name = name | default: 'quantity' %}
+{% assign small = small | default: false %}
+
+{% assign style_class = 'svf-qte' %}
+
+{% if disabled %}
+  {% assign style_class = style_class | append: ' svf-qte--disabled' %}
+{% endif %}
+
+{% if small %}
+  {% assign style_class = style_class | append: ' svf-qte--small' %}
+{% endif %}
+
+<!-- Classique -->
+<quantity-selector class="{{ style_class }}">
+  <button
+    name="minus"
+    {% if data_buttons %}
+      {{ data_buttons }}
+    {% endif %}
+  >
+    {% render 'svf-icon', icon: 'remove' %}
+  </button>
+
+  <input
+    type="number"
+    {% if id %}
+      id="{{ id }}"
+    {% endif %}
+    name="{{ name }}"
+    value="{{ value }}"
+    min="{{ min }}"
+    {% if max > 0 %}
+      max="{{ max }}"
+    {% endif %}
+    {% if data_input %}
+      {{ data_input }}
+    {% endif %}
+  >
+
+  <button
+    name="plus"
+    {% if data_buttons %}
+      {{ data_buttons }}
+    {% endif %}
+  >
+    {% render 'svf-icon', icon: 'add' %}
+  </button>
+</quantity-selector>
+
+{% stylesheet %}
+  .svf-panier {
+    & {
+      --quantity-selector-button-width: 30px;
+    }
+  
+    .svf-qte {
+      border: 1px solid var(--color-input-border);
+      border-radius: 10px;
+      background-color: var(--color-input-background);
+      height: 50px;
+      overflow: hidden;
+      display: flex;
+      min-width: calc(var(--quantity-selector-button-width) * 3 + 1px * 2);
+      width: calc(var(--quantity-selector-button-width) * 3 + 1px * 2);
+    }
+  
+    .svf-qte--disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+  
+    .svf-qte button,
+    .svf-qte input {
+      appearance: textfield;
+      background-color: var(--color-input-background);
+      border: none;
+      transition: 0.2s;
+      cursor: pointer;
+      min-width: var(--quantity-selector-button-width);
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0;
+      color: var(--color-input-text);
+    }
+  
+    .svf-qte--small {
+      height: calc(0.7 * 50px);
+      border-radius: calc(0.7 * 10px);
+    }
+  
+    .svf-qte--small button,
+    .svf-qte--small input {
+      height: calc(0.7 * 50px - 2 * 1px);
+      width: calc(0.7 * 50px - 2 * 1px);
+    }
+  
+    .svf-qte button[disabled] {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+  
+    .svf-qte button:not(:disabled):hover svg {
+      transform: scale(1.1);
+    }
+  
+    .svf-qte .svf-icon {
+      pointer-events: none;
+      font-size: 20px !important;
+      color: var(--color-input-text);
+    }
+  
+    .svf-qte input::-webkit-inner-spin-button,
+    .svf-qte input::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  
+    .svf-qte input:focus-visible {
+      outline: none;
+      outline-offset: 0;
+      box-shadow: none;
+      z-index: 1;
+    }
+  
+  }
+{% endstylesheet %}

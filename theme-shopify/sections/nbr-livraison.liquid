@@ -1,0 +1,296 @@
+{% comment %}
+  Section « Livraison » (Nabilerie) : fond noir, accroche qui rime à gauche avec les promesses de livraison
+  et un bouton d'appel, le fourgon détouré à droite. Sur mobile, le fourgon passe sous le texte.
+{% endcomment %}
+{%- assign title_font = section.settings.title_font -%}
+<style>
+  {{ title_font | font_face: font_display: 'swap' }}
+  {%- comment -%} Dans <style> et pas dans un attribut : le nom de la police contient des guillemets. {%- endcomment %}
+  #shopify-section-{{ section.id }} .nbr-delivery {
+    --nbr-delivery-title-font: {{ title_font.family }}, {{ title_font.fallback_families }};
+    --nbr-delivery-title-weight: {{ title_font.weight }};
+  }
+</style>
+
+<div class="nbr-delivery" id="livraison">
+  <div class="nbr-delivery__inner">
+    <div class="nbr-delivery__text">
+      {%- if section.settings.kicker != blank -%}
+        <p class="nbr-delivery__kicker">{{ section.settings.kicker }}</p>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 class="nbr-delivery__title">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subtitle != blank -%}
+        <p class="nbr-delivery__subtitle">{{ section.settings.subtitle }}</p>
+      {%- endif -%}
+
+      {%- if section.blocks.size > 0 -%}
+        <ul class="nbr-delivery__points">
+          {%- for block in section.blocks -%}
+            <li class="nbr-delivery__point" {{ block.shopify_attributes }}>
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>{{ block.settings.text }}</span>
+            </li>
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}" class="nbr-delivery__button">{{ section.settings.button_label }}</a>
+      {%- endif -%}
+    </div>
+
+    {%- if section.settings.image != blank -%}
+      <div class="nbr-delivery__media">
+        {{
+          section.settings.image
+          | image_url: width: 1400
+          | image_tag:
+            widths: '400, 600, 800, 1000, 1200, 1400',
+            sizes: '(min-width: 750px) 55vw, 90vw',
+            loading: 'lazy',
+            class: 'nbr-delivery__image'
+        }}
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+{%- comment -%}
+  Le thème remet la page en haut au chargement : on descend nous-mêmes jusqu'à la section quand le lien
+  « Livraison » (/#livraison) est suivi.
+{%- endcomment -%}
+<script>
+  (function () {
+    if (location.hash !== '#livraison') return;
+    var scroll = function () {
+      var target = document.getElementById('livraison');
+      // 'instant' : le défilement doux du thème (scroll-behavior: smooth) peut ne pas aller au bout.
+      if (target) target.scrollIntoView({ block: 'start', behavior: 'instant' });
+    };
+    if (document.readyState === 'complete') setTimeout(scroll, 100);
+    else window.addEventListener('load', function () { setTimeout(scroll, 100); });
+  })();
+</script>
+
+{% stylesheet %}
+  .nbr-delivery {
+    padding: 90px 20px;
+    background: var(--nbr-brun, #3e2516);
+    color: #ffffff;
+    overflow: hidden;
+    /* L'en-tête est collant : on garde la section visible sous lui après le saut d'ancre. */
+    scroll-margin-top: 90px;
+  }
+
+  .nbr-delivery__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: center;
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .nbr-delivery__kicker {
+    margin: 0 0 14px;
+    font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  .nbr-delivery__title {
+    margin: 0;
+    /* !important : les titres h2 du thème imposent leur police (Oswald). */
+    font-family: var(--nbr-delivery-title-font) !important;
+    font-weight: var(--nbr-delivery-title-weight) !important;
+    font-size: clamp(1.8rem, 3vw, 2.7rem) !important;
+    line-height: 1.15 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+    color: #ffffff;
+  }
+
+  .nbr-delivery__subtitle {
+    margin: 16px 0 0;
+    font-family: var(--nbr-delivery-title-font);
+    font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+    font-style: italic;
+    line-height: 1.35;
+    color: #e8b9c2;
+  }
+
+  .nbr-delivery__points {
+    display: grid;
+    gap: 12px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.35;
+  }
+
+  .nbr-delivery__point {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nbr-delivery__point svg {
+    flex: 0 0 auto;
+    width: 26px;
+    height: 26px;
+    padding: 4px;
+    border-radius: 50%;
+    background: var(--nbr-bordeaux, #7a0820);
+    color: #ffffff;
+  }
+
+  .nbr-delivery__button {
+    display: inline-block;
+    margin-top: 32px;
+    padding: 14px 30px;
+    border: 2px solid #ffffff;
+    border-radius: 999px;
+    background: var(--nbr-bordeaux, #7a0820);
+    font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #ffffff;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .nbr-delivery__button:hover {
+    background: #93112b;
+  }
+
+  .nbr-delivery__media {
+    position: relative;
+  }
+
+  /* Halo clair sous le fourgon pour le détacher du fond noir. */
+  .nbr-delivery__media::before {
+    content: '';
+    position: absolute;
+    inset: 12% 4% 0;
+    background: radial-gradient(ellipse at center, rgb(255 255 255 / 0.16) 0%, rgb(255 255 255 / 0) 65%);
+  }
+
+  .nbr-delivery__image {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    filter: drop-shadow(0 24px 22px rgb(0 0 0 / 0.6));
+  }
+
+  @media screen and (max-width: 749px) {
+    .nbr-delivery {
+      padding: 60px 20px;
+    }
+
+    .nbr-delivery__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+      text-align: center;
+    }
+
+    /* Liste alignée à gauche mais centrée en bloc sous le titre. */
+    .nbr-delivery__points {
+      width: fit-content;
+      max-width: 100%;
+      margin-inline: auto;
+      text-align: left;
+    }
+
+    .nbr-delivery__button {
+      box-sizing: border-box;
+      max-width: 100%;
+      padding: 13px 18px;
+      font-size: clamp(0.78rem, 3.9vw, 0.9rem);
+      letter-spacing: 0.01em;
+      text-align: center;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Livraison",
+  "tag": "section",
+  "class": "section-wrapper nbr-delivery-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "kicker",
+      "label": "Petit texte au-dessus du titre",
+      "default": "Livraison"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Commandez à la maison, on s'occupe de la livraison"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Sous-titre",
+      "default": "Fraîcheur et rapidité, c'est notre spécialité."
+    },
+    {
+      "type": "font_picker",
+      "id": "title_font",
+      "label": "Police du titre",
+      "default": "playfair_display_n7"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image (fond transparent)"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texte du bouton"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Lien du bouton"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "point",
+      "name": "Point fort",
+      "settings": [
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Texte",
+          "default": "Livraison partout en Belgique en 48 h"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Livraison",
+      "blocks": [
+        { "type": "point" }
+      ]
+    }
+  ]
+}
+{% endschema %}

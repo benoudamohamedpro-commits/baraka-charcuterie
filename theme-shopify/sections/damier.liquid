@@ -1,0 +1,86 @@
+{% comment %}
+  Bande damier pleine largeur, dessinée en CSS (aucune image à charger).
+  La première case en haut à gauche prend la couleur 1.
+{% endcomment %}
+
+<div
+  class="damier"
+  aria-hidden="true"
+  style="--damier-size-mobile: {{ section.settings.square_size_mobile }}px; --damier-size-desktop: {{ section.settings.square_size }}px; --damier-rows: {{ section.settings.rows }}; --damier-color-1: {{ section.settings.color_1 }}; --damier-color-2: {{ section.settings.color_2 }};"
+  data-testid="damier-{{ section.id }}"
+></div>
+
+{% stylesheet %}
+  .damier {
+    --damier-size: var(--damier-size-mobile);
+
+    height: calc(var(--damier-size) * var(--damier-rows));
+    background: conic-gradient(
+        var(--damier-color-2) 25%,
+        var(--damier-color-1) 0 50%,
+        var(--damier-color-2) 0 75%,
+        var(--damier-color-1) 0
+      )
+      0 0 / calc(var(--damier-size) * 2) calc(var(--damier-size) * 2);
+  }
+
+  @media screen and (min-width: 750px) {
+    .damier {
+      --damier-size: var(--damier-size-desktop);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Bande damier",
+  "settings": [
+    {
+      "type": "color",
+      "id": "color_1",
+      "label": "Couleur 1",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "color_2",
+      "label": "Couleur 2",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "square_size",
+      "label": "Taille des cases (ordinateur)",
+      "min": 20,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "default": 66
+    },
+    {
+      "type": "range",
+      "id": "square_size_mobile",
+      "label": "Taille des cases (mobile)",
+      "min": 10,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "rows",
+      "label": "Nombre de rangées",
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "default": 2
+    }
+  ],
+  "presets": [
+    {
+      "name": "Bande damier"
+    }
+  ]
+}
+{% endschema %}

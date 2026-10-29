@@ -1,0 +1,290 @@
+{%- doc -%}
+  Carrousel simple pour les sections reprises du thème d'origine (avis).
+  Les diapositives sont des <li class="splide__slide">, comme à l'origine.
+
+  @param {string} slides - Le HTML des diapositives
+  @param {number} [gap] - Espace entre deux diapositives, en pixels
+  @param {number} [per_page_desktop] - Nombre de diapositives visibles sur ordinateur
+  @param {number} [per_page_mobile] - Nombre de diapositives visibles sur mobile
+  @param {boolean} [show_arrows] - Afficher les flèches
+  @param {boolean} [show_pagination] - Afficher les points de pagination
+  @param {boolean} [rewind] - Revenir au début après la dernière diapositive
+
+  @example
+  {% render 'svf-slider', slides: slides, gap: 16, per_page_desktop: 4, per_page_mobile: 1, show_pagination: true %}
+{%- enddoc -%}
+
+<svf-slider
+  class="svf-slider"
+  style="--svf-slider-gap: {{ gap | default: 16 }}px; --svf-per-page: {{ per_page_desktop | default: 4 }}; --svf-per-page-mobile: {{ per_page_mobile | default: 1 }};"
+  data-per-page-desktop="{{ per_page_desktop | default: 4 }}"
+  data-per-page-mobile="{{ per_page_mobile | default: 1 }}"
+  data-rewind="{{ rewind }}"
+>
+  <div class="splide" role="group">
+    {% if show_arrows %}
+      <div class="splide__arrows">
+        <button type="button" class="splide__arrow splide__arrow--prev button-secondary" aria-label="Précédent" data-svf-slider-prev>
+          {% render 'svf-icon', icon: 'arrow_back' %}
+        </button>
+        <button type="button" class="splide__arrow splide__arrow--next button-secondary" aria-label="Suivant" data-svf-slider-next>
+          {% render 'svf-icon', icon: 'arrow_forward' %}
+        </button>
+      </div>
+    {% endif %}
+
+    <div class="splide__track{% if show_pagination %} splide__track--with-pagination{% endif %}">
+      <ul class="splide__list" data-svf-slider-list>
+        {{ slides }}
+      </ul>
+    </div>
+
+    {% if show_pagination %}
+      <ul class="splide__pagination" data-svf-slider-pagination></ul>
+    {% endif %}
+  </div>
+</svf-slider>
+
+{% stylesheet %}
+  .svf-slider {
+    display: block;
+    position: relative;
+  }
+
+  .svf-slider .splide {
+    position: relative;
+  }
+
+  .svf-slider .splide__track {
+    overflow: hidden;
+  }
+
+  .svf-slider .splide__list {
+    display: flex;
+    gap: var(--svf-slider-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .svf-slider .splide__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Pendant un glissement à la souris : le carrousel suit le pointeur, sans aimantation ni sélection de texte. */
+  .svf-slider.is-dragging .splide__list {
+    scroll-snap-type: none;
+    user-select: none;
+  }
+
+  .svf-slider .splide__slide {
+    flex: 0 0 calc((100% - (var(--svf-per-page-mobile) - 1) * var(--svf-slider-gap)) / var(--svf-per-page-mobile));
+    min-width: 0;
+    list-style: none;
+    scroll-snap-align: start;
+  }
+
+  @media screen and (min-width: 750px) {
+    .svf-slider .splide__slide {
+      flex-basis: calc((100% - (var(--svf-per-page) - 1) * var(--svf-slider-gap)) / var(--svf-per-page));
+    }
+  }
+
+  /* Pagination en petits traits, comme le carrousel du thème d'origine (12 × 2 px, 3 px de marge). */
+  .svf-slider .splide__pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    min-height: 16px;
+    margin: 0;
+    padding: 0 16px;
+    list-style: none;
+
+    /* Comme à l'origine : posée 24px sous le carrousel, sans ajouter de hauteur à la section. */
+    position: absolute;
+    right: 0;
+    bottom: -24px;
+    left: 0;
+    z-index: 1;
+  }
+
+  .svf-slider .splide__pagination li {
+    display: inline-block;
+    line-height: 1;
+  }
+
+  .svf-slider .splide__pagination__page {
+    display: inline-block;
+    width: 12px;
+    height: 2px;
+    margin: 3px;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    background: rgb(var(--color-foreground-rgb) / 0.3);
+    cursor: pointer;
+  }
+
+  .svf-slider .splide__pagination__page.is-active {
+    background: var(--color-foreground);
+  }
+
+  .svf-slider .splide__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 35px;
+    min-width: 35px;
+    height: 35px;
+    min-height: 35px;
+    padding: 0;
+    border-radius: 7px;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .svf-slider .splide__arrow--prev {
+    left: 10px;
+  }
+
+  .svf-slider .splide__arrow--next {
+    right: 10px;
+  }
+
+  .svf-slider .splide__arrow:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  if (!customElements.get('svf-slider')) {
+    customElements.define(
+      'svf-slider',
+      class extends HTMLElement {
+        connectedCallback() {
+          this.list = this.querySelector('[data-svf-slider-list]');
+          this.pagination = this.querySelector('[data-svf-slider-pagination]');
+          if (!this.list) return;
+
+          this.querySelector('[data-svf-slider-prev]')?.addEventListener('click', () => this.go(this.page - 1));
+          this.querySelector('[data-svf-slider-next]')?.addEventListener('click', () => this.go(this.page + 1));
+          this.list.addEventListener('scroll', () => this.sync(), { passive: true });
+          window.addEventListener('resize', () => this.build());
+
+          // Glisser avec la souris, comme le carrousel du thème d'origine (au doigt, le défilement natif suffit).
+          this.list.addEventListener('pointerdown', (event) => this.dragStart(event));
+          this.list.addEventListener('dragstart', (event) => event.preventDefault());
+          this.list.addEventListener(
+            'click',
+            (event) => {
+              // Le clic qui termine un glissement n'ouvre pas de lien.
+              if (!this.dragged) return;
+              event.preventDefault();
+              event.stopPropagation();
+            },
+            true
+          );
+          this.build();
+        }
+
+        dragStart(event) {
+          if (event.pointerType !== 'mouse' || event.button !== 0) return;
+
+          const startX = event.clientX;
+          const startScroll = this.list.scrollLeft;
+          const startPage = this.page;
+          let moved = false;
+
+          const move = (e) => {
+            const delta = e.clientX - startX;
+            if (!moved && Math.abs(delta) < 5) return;
+            if (!moved) {
+              moved = true;
+              clearTimeout(this.dragTimeout);
+              this.classList.add('is-dragging');
+              window.getSelection()?.removeAllRanges();
+            }
+            this.list.scrollLeft = startScroll - delta;
+          };
+
+          const end = (e) => {
+            window.removeEventListener('pointermove', move);
+            window.removeEventListener('pointerup', end);
+            window.removeEventListener('pointercancel', end);
+            if (!moved) return;
+
+            this.dragged = true;
+            setTimeout(() => (this.dragged = false), 0);
+
+            // Page la plus proche ; un glissement net (plus de 40px) avance d'au moins une page.
+            const delta = e.clientX - startX;
+            this.sync();
+            let target = this.page;
+            if (target === startPage && Math.abs(delta) > 40) target = startPage + (delta < 0 ? 1 : -1);
+            this.go(Math.max(0, Math.min(target, this.pages - 1)));
+
+            // L'aimantation revient une fois le carrousel arrivé sur sa page.
+            this.dragTimeout = setTimeout(() => this.classList.remove('is-dragging'), 600);
+          };
+
+          window.addEventListener('pointermove', move);
+          window.addEventListener('pointerup', end);
+          window.addEventListener('pointercancel', end);
+        }
+
+        get perPage() {
+          const key = window.matchMedia('(min-width: 750px)').matches ? 'perPageDesktop' : 'perPageMobile';
+          return Math.max(1, Math.floor(Number(this.dataset[key]) || 1));
+        }
+
+        get slides() {
+          return [...this.list.children];
+        }
+
+        build() {
+          this.pages = Math.max(1, Math.ceil(this.slides.length / this.perPage));
+          if (this.pagination) {
+            this.pagination.hidden = this.pages < 2;
+            this.pagination.innerHTML = '';
+            for (let i = 0; i < this.pages; i++) {
+              const item = document.createElement('li');
+              const dot = document.createElement('button');
+              dot.type = 'button';
+              dot.className = 'splide__pagination__page';
+              dot.setAttribute('aria-label', `Aller à la page ${i + 1}`);
+              dot.addEventListener('click', () => this.go(i));
+              item.append(dot);
+              this.pagination.append(item);
+            }
+          }
+          this.sync();
+        }
+
+        go(page) {
+          let target = page;
+          if (target >= this.pages) target = this.dataset.rewind === 'true' ? 0 : this.pages - 1;
+          if (target < 0) target = this.dataset.rewind === 'true' ? this.pages - 1 : 0;
+          const slide = this.slides[Math.min(target * this.perPage, this.slides.length - 1)];
+          if (slide) this.list.scrollTo({ left: slide.offsetLeft - this.list.offsetLeft, behavior: 'smooth' });
+        }
+
+        sync() {
+          const first = this.slides[0];
+          if (!first) return;
+          const step = first.getBoundingClientRect().width + (parseFloat(getComputedStyle(this.list).columnGap) || 0);
+          const atEnd = this.list.scrollLeft + this.list.clientWidth >= this.list.scrollWidth - 2;
+          this.page = atEnd ? this.pages - 1 : Math.round(this.list.scrollLeft / (step * this.perPage));
+          this.pagination?.querySelectorAll('.splide__pagination__page').forEach((dot, i) => dot.classList.toggle('is-active', i === this.page));
+        }
+      }
+    );
+  }
+{% endjavascript %}

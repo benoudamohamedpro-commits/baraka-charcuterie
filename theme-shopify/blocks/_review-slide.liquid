@@ -1,0 +1,459 @@
+{% liquid
+  assign ratio = 1
+
+  case block.settings.image_ratio
+    when 'landscape'
+      assign ratio = '4 / 3'
+    when 'portrait'
+      assign ratio = '4 / 5'
+    when 'adapt'
+      assign ratio = block.settings.image.aspect_ratio
+  endcase
+
+  if ratio == 0 or ratio == null
+    assign ratio = 1
+  endif
+%}
+
+{% comment %} data-review-rating sert au résumé des notes de la section Avis (mise en page « liste ») {% endcomment %}
+<li
+  class="splide__slide"
+  data-review-rating="{% if block.settings.rating > 0 %}{{ block.settings.rating }}{% else %}none{% endif %}"
+>
+  <div
+    class="
+      review review--{{ block.settings.display_type }}
+      {% if block.settings.wrap_in_card %} card svf-card color-{{ block.settings.color_scheme }}{% if block.settings.show_card_border %} card--with-border svf-card--with-border{% endif %}{% endif %}
+    "
+    style="--image-ratio: {{ ratio }};"
+    {{ block.shopify_attributes }}
+    {% if request.visual_preview_mode %}
+      data-visual-preview-mode
+    {% endif %}
+  >
+    {% render 'svf-review', block: block %}
+  </div>
+</li>
+
+{% schema %}
+{
+  "name": "Avis",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "select",
+      "id": "display_type",
+      "label": "Disposition",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "label": "Disposition 1"
+        },
+        {
+          "value": "2",
+          "label": "Disposition 2"
+        },
+        {
+          "value": "3",
+          "label": "Disposition 3"
+        },
+        {
+          "value": "4",
+          "label": "Disposition 4"
+        },
+        {
+          "value": "5",
+          "label": "Disposition 5"
+        },
+        {
+          "value": "6",
+          "label": "Disposition 6 (vidéo)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "wrap_in_card",
+      "label": "Envelopper dans une carte",
+      "default": true
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-1",
+      "visible_if": "{{ block.settings.wrap_in_card }}",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "checkbox",
+      "id": "show_card_border",
+      "label": "Afficher une bordure autour de la carte",
+      "default": true,
+      "visible_if": "{{ block.settings.wrap_in_card }}"
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Note",
+      "default": 4.5,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Résolution recommandée → 300 x 300.",
+      "visible_if": "{{ block.settings.display_type == '3' or block.settings.display_type == '4' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Photo supplémentaire 2",
+      "info": "Affichée à côté de la première dans la mise en page « liste » de la section Avis.",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Photo supplémentaire 3",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Photo supplémentaire 4",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Photo supplémentaire 5",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_6",
+      "label": "Photo supplémentaire 6",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_7",
+      "label": "Photo supplémentaire 7",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Rapport d’aspect de l’image",
+      "options": [
+        {
+          "value": "adapt",
+          "label": "Automatique"
+        },
+        {
+          "value": "portrait",
+          "label": "Portrait"
+        },
+        {
+          "value": "square",
+          "label": "Carré"
+        },
+        {
+          "value": "landscape",
+          "label": "Paysage"
+        }
+      ],
+      "default": "landscape",
+      "visible_if": "{{ block.settings.display_type == '3' }}"
+    },
+    {
+      "type": "select",
+      "id": "source",
+      "label": "Source de la vidéo",
+      "options": [
+        {
+          "value": "uploaded",
+          "label": "Vidéo téléchargée"
+        },
+        {
+          "value": "url",
+          "label": "Vidéo depuis une URL"
+        }
+      ],
+      "default": "uploaded",
+      "visible_if": "{{ block.settings.display_type == '6' }}"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Vidéo",
+      "visible_if": "{{ block.settings.display_type == '6' and block.settings.source == 'uploaded' }}"
+    },
+    {
+      "type": "video_url",
+      "id": "video_url",
+      "label": "Vidéo depuis une URL",
+      "info": "Vous pouvez utiliser une vidéo depuis une URL au lieu d'un objet vidéo Shopify.",
+      "accept": [
+        "youtube",
+        "vimeo"
+      ],
+      "visible_if": "{{ block.settings.display_type == '6' and block.settings.source == 'url' }}"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Excellent produit !",
+      "visible_if": "{{ block.settings.display_type == '2' or block.settings.display_type == '5' }}"
+    },
+    {
+      "type": "richtext",
+      "id": "content",
+      "label": "Contenu",
+      "default": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>"
+    },
+    {
+      "type": "image_picker",
+      "id": "author_profile",
+      "label": "Photo de profil de l'auteur",
+      "info": "Résolution recommandée → 100 x 100.",
+      "visible_if": "{{ block.settings.display_type == '5' }}"
+    },
+    {
+      "type": "text",
+      "id": "author",
+      "label": "Auteur",
+      "default": "John Doe"
+    },
+    {
+      "type": "text",
+      "id": "date",
+      "label": "Date",
+      "default": "11/03/2025"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Avis",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "display_type": "1",
+        "wrap_in_card": true,
+        "color_scheme": "scheme-1",
+        "show_card_border": true,
+        "rating": 4.5,
+        "image_ratio": "landscape",
+        "title": "Excellent produit !",
+        "content": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>",
+        "author": "John Doe",
+        "date": "Le 11/03/2025",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    },
+    {
+      "name": "Avis (avec titre)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "display_type": "2",
+        "wrap_in_card": true,
+        "color_scheme": "",
+        "show_card_border": true,
+        "rating": 4.5,
+        "image_ratio": "landscape",
+        "title": "Excellent produit !",
+        "content": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>",
+        "author": "John Doe",
+        "date": "Le 11/03/2025",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    },
+    {
+      "name": "Avis (avec image)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "display_type": "3",
+        "wrap_in_card": true,
+        "color_scheme": "",
+        "show_card_border": true,
+        "rating": 4.5,
+        "image_ratio": "landscape",
+        "title": "Excellent produit !",
+        "content": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>",
+        "author": "John Doe",
+        "date": "Le 11/03/2025",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    },
+    {
+      "name": "Avis (avec image sur le côté)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "display_type": "4",
+        "wrap_in_card": true,
+        "color_scheme": "",
+        "show_card_border": true,
+        "rating": 4.5,
+        "image_ratio": "landscape",
+        "title": "Excellent produit !",
+        "content": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>",
+        "author": "John Doe",
+        "date": "11/03/2025",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    },
+    {
+      "name": "Avis (avec avatar)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "display_type": "5",
+        "wrap_in_card": true,
+        "color_scheme": "",
+        "show_card_border": true,
+        "rating": 4.5,
+        "image_ratio": "landscape",
+        "title": "Excellent produit !",
+        "content": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>",
+        "author": "John Doe",
+        "date": "11/03/2025",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    },
+    {
+      "name": "Avis (avec vidéo)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "display_type": "6",
+        "wrap_in_card": true,
+        "color_scheme": "",
+        "show_card_border": true,
+        "rating": 4.5,
+        "image_ratio": "landscape",
+        "title": "Excellent produit !",
+        "content": "<p>Écrivez un retour à propos de vos produits. Ajustez le nombre de colonnes en fonction de la taille moyenne des messages.</p>",
+        "author": "John Doe",
+        "date": "11/03/2025",
+        "margin_top": 0,
+        "margin_bottom": 0,
+        "additional_class": ""
+      }
+    }
+  ]
+}
+{% endschema %}

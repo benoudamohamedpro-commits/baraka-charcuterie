@@ -1,0 +1,749 @@
+{% doc %}
+  Affiche une icône avec un texte.
+
+  @example
+  {% content_for 'block', type: 'icon_with_text', id: 'icon_with_text' %}
+{% enddoc %}
+
+<div
+  class="
+    icon-with-text icon-with-text--{{ block.settings.layout_direction_desktop }}-desktop{% if block.settings.same_as_desktop == false %} icon-with-text--{{ block.settings.layout_direction_mobile }}-mobile{% else %} icon-with-text--{{ block.settings.layout_direction_desktop }}-mobile{% endif %} icon-with-text--{{ block.settings.text_style }}
+    {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+  "
+  style="
+    --gap: {{ block.settings.layout_gap_desktop }}px;
+    --margin-top: {{ block.settings.margin_top }}px;
+    --margin-bottom: {{ block.settings.margin_bottom }}px;
+    {% if block.settings.same_as_desktop == false -%}
+    --gap-mobile: {{ block.settings.layout_gap_mobile }}px;
+    {%- else -%}
+    --gap-mobile: {{ block.settings.layout_gap_desktop }}px;
+    {%- endif -%}
+  "
+  {{ block.shopify_attributes }}
+  {% if request.visual_preview_mode %}
+    data-visual-preview-mode
+  {% endif %}
+>
+  {% if block.settings.icon_type == 'icon' %}
+    {% if block.settings.icon_custom != blank %}
+      {% assign icon = block.settings.icon_custom %}
+    {% elsif block.settings.icon != 'none' %}
+      {% assign icon = block.settings.icon %}
+    {% endif %}
+  {% else %}
+    {% assign image_width = block.settings.icon_size | times: 2 %}
+    {% capture icon_image %}
+      <img
+        src="{{ block.settings.icon_image | image_url: width: image_width }}"
+        alt="{{ block.settings.icon_image.alt }}"
+        width="{{ block.settings.icon_size }}"
+        height="{{ block.settings.icon_size | divided_by: block.settings.icon_image.aspect_ratio | ceil }}"
+      >
+    {% endcapture %}
+  {% endif %}
+
+  {% if block.settings.icon_position == 'start' and icon != blank %}
+    {% render 'svf-icon', icon: icon, size: block.settings.icon_size %}
+  {% elsif block.settings.icon_position == 'start' and icon_image != blank %}
+    {{- icon_image -}}
+  {% endif %}
+
+  <div
+    class="text-block {{ block.settings.text_style }}"
+    style="--font-weight: {{ block.settings.font_weight }};"
+  >
+    {{ block.settings.text }}
+  </div>
+
+  {% if block.settings.icon_position == 'end' and icon != blank %}
+    {% render 'svf-icon', icon: icon, size: block.settings.icon_size %}
+  {% elsif block.settings.icon_position == 'end' and icon_image != blank %}
+    {{- icon_image -}}
+  {% endif %}
+</div>
+
+{% style %}
+  #shopify-block-{{ block.id }} .svf-icon {
+    font-size: {{ block.settings.icon_size }}px !important;
+    height: {{ block.settings.icon_size }}px;
+  }
+{% endstyle %}
+
+{% stylesheet %}
+  .icon-with-text {
+    display: flex;
+    gap: var(--gap-mobile);
+    overflow: hidden;
+    width: 100%;
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+  }
+
+  .icon-with-text .text-block {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .icon-with-text--row-mobile {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  .icon-with-text--column-mobile {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .text-block.paragraph p {
+      text-align: center;
+    }
+  }
+
+  shopify-visual-preview-block-list .icon-with-text[data-visual-preview-mode] {
+    width: 100%;
+    max-width: 350px;
+  }
+
+  .icon-with-text .text-block.paragraph p {
+    font-weight: var(--font-weight);
+  }
+
+  .icon-with-text .text-block.paragraph a {
+    color: inherit;
+  }
+
+  @media (width > 750px) {
+    .icon-with-text {
+      gap: var(--gap);
+    }
+
+    .icon-with-text--row-desktop {
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+
+      .text-block.paragraph p {
+        text-align: left;
+      }
+    }
+
+    .icon-with-text--column-desktop {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      .text-block.paragraph p {
+        text-align: center;
+      }
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Icône avec texte",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mise en page (ordinateur)"
+    },
+    {
+      "type": "select",
+      "id": "layout_direction_desktop",
+      "label": "Direction",
+      "default": "row",
+      "options": [
+        {
+          "value": "row",
+          "label": "→"
+        },
+        {
+          "value": "column",
+          "label": "↓"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "layout_gap_desktop",
+      "label": "Espacement entre les éléments",
+      "default": 5,
+      "step": 1,
+      "min": 5,
+      "max": 20,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Mise en page (mobile)"
+    },
+    {
+      "type": "checkbox",
+      "id": "same_as_desktop",
+      "label": "Identique à la mise en page ordinateur",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout_direction_mobile",
+      "label": "Direction",
+      "default": "column",
+      "options": [
+        {
+          "value": "row",
+          "label": "→"
+        },
+        {
+          "value": "column",
+          "label": "↓"
+        }
+      ],
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "range",
+      "id": "layout_gap_mobile",
+      "label": "Espacement entre les éléments",
+      "default": 10,
+      "step": 1,
+      "min": 0,
+      "max": 100,
+      "unit": "px",
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Icône"
+    },
+    {
+      "type": "select",
+      "id": "icon_type",
+      "label": "Type d'icône",
+      "default": "icon",
+      "options": [
+        {
+          "value": "icon",
+          "label": "Icône"
+        },
+        {
+          "value": "image",
+          "label": "Image"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icône",
+      "options": [
+        {
+          "value": "none",
+          "label": "Aucun"
+        },
+        {
+          "value": "home",
+          "label": "Accueil"
+        },
+        {
+          "value": "genetics",
+          "label": "ADN"
+        },
+        {
+          "value": "alarm",
+          "label": "Alarme"
+        },
+        {
+          "value": "lightbulb",
+          "label": "Ampoule"
+        },
+        {
+          "value": "anchor",
+          "label": "Ancre"
+        },
+        {
+          "value": "verified",
+          "label": "Badge vérifié"
+        },
+        {
+          "value": "support",
+          "label": "Bouée de sauvetage"
+        },
+        {
+          "value": "explore",
+          "label": "Boussole"
+        },
+        {
+          "value": "featured_seasonal_and_gifts",
+          "label": "Cadeaux"
+        },
+        {
+          "value": "delivery_truck_speed",
+          "label": "Camion rapide"
+        },
+        {
+          "value": "delivery_truck_bolt",
+          "label": "Camion avec éclair"
+        },
+        {
+          "value": "package_2",
+          "label": "Carton"
+        },
+        {
+          "value": "redeem",
+          "label": "Carte cadeau"
+        },
+        {
+          "value": "priority",
+          "label": "Case cochée"
+        },
+        {
+          "value": "school",
+          "label": "Chapeau de diplômé"
+        },
+        {
+          "value": "target",
+          "label": "Cible"
+        },
+        {
+          "value": "checkroom",
+          "label": "Cintre"
+        },
+        {
+          "value": "notifications",
+          "label": "Cloche de notification"
+        },
+        {
+          "value": "barcode",
+          "label": "Code barre"
+        },
+        {
+          "value": "savings",
+          "label": "Cochon tirelire"
+        },
+        {
+          "value": "favorite",
+          "label": "Coeur"
+        },
+        {
+          "value": "volunteer_activism",
+          "label": "Coeur dans la main"
+        },
+        {
+          "value": "check",
+          "label": "Coche"
+        },
+        {
+          "value": "architecture",
+          "label": "Compas"
+        },
+        {
+          "value": "edit",
+          "label": "Crayon"
+        },
+        {
+          "value": "close",
+          "label": "Croix"
+        },
+        {
+          "value": "diamond_shine",
+          "label": "Diamant"
+        },
+        {
+          "value": "forum",
+          "label": "Discussion"
+        },
+        {
+          "value": "bolt",
+          "label": "Éclair"
+        },
+        {
+          "value": "ecg_heart",
+          "label": "ECG"
+        },
+        {
+          "value": "send",
+          "label": "Envoi"
+        },
+        {
+          "value": "experiment",
+          "label": "Erlenmeyer"
+        },
+        {
+          "value": "star",
+          "label": "Étoile"
+        },
+        {
+          "value": "kid_star",
+          "label": "Étoile enfant"
+        },
+        {
+          "value": "star_half",
+          "label": "Étoile à moitié remplie"
+        },
+        {
+          "value": "sell",
+          "label": "Étiquette"
+        },
+        {
+          "value": "celebration",
+          "label": "Fête"
+        },
+        {
+          "value": "eco",
+          "label": "Feuille"
+        },
+        {
+          "value": "loyalty",
+          "label": "Fidélité"
+        },
+        {
+          "value": "mode_heat",
+          "label": "Flamme"
+        },
+        {
+          "value": "arrow_back",
+          "label": "Flèche vers la gauche"
+        },
+        {
+          "value": "arrow_downward",
+          "label": "Flèche vers le bas"
+        },
+        {
+          "value": "arrow_forward",
+          "label": "Flèche vers la droite"
+        },
+        {
+          "value": "arrow_upward",
+          "label": "Flèche vers le haut"
+        },
+        {
+          "value": "cake",
+          "label": "Gâteau"
+        },
+        {
+          "value": "globe",
+          "label": "Globe"
+        },
+        {
+          "value": "all_inclusive",
+          "label": "Infini"
+        },
+        {
+          "value": "info",
+          "label": "Info"
+        },
+        {
+          "value": "language",
+          "label": "International"
+        },
+        {
+          "value": "play_circle",
+          "label": "Lecture"
+        },
+        {
+          "value": "search",
+          "label": "Loupe"
+        },
+        {
+          "value": "dark_mode",
+          "label": "Lune"
+        },
+        {
+          "value": "store",
+          "label": "Magasin"
+        },
+        {
+          "value": "storefront",
+          "label": "Magasin 2"
+        },
+        {
+          "value": "bookmark",
+          "label": "Marque-page"
+        },
+        {
+          "value": "menu",
+          "label": "Menu"
+        },
+        {
+          "value": "remove",
+          "label": "Moins"
+        },
+        {
+          "value": "music_note",
+          "label": "Note de musique"
+        },
+        {
+          "value": "cloud",
+          "label": "Nuage"
+        },
+        {
+          "value": "visibility",
+          "label": "Oeil"
+        },
+        {
+          "value": "open_in_new",
+          "label": "Ouvrir dans un nouvel onglet"
+        },
+        {
+          "value": "local_mall",
+          "label": "Panier"
+        },
+        {
+          "value": "pause_circle",
+          "label": "Pause"
+        },
+        {
+          "value": "attach_file",
+          "label": "Pièce jointe"
+        },
+        {
+          "value": "add",
+          "label": "Plus"
+        },
+        {
+          "value": "delete",
+          "label": "Poubelle"
+        },
+        {
+          "value": "ramen_dining",
+          "label": "Ramen"
+        },
+        {
+          "value": "moped_package",
+          "label": "Scooter"
+        },
+        {
+          "value": "encrypted",
+          "label": "Sécurisé"
+        },
+        {
+          "value": "sprint",
+          "label": "Sprint"
+        },
+        {
+          "value": "support_agent",
+          "label": "Support"
+        },
+        {
+          "value": "apparel",
+          "label": "T-shirt"
+        },
+        {
+          "value": "camping",
+          "label": "Tente"
+        },
+        {
+          "value": "chef_hat",
+          "label": "Toque de cuisinier"
+        },
+        {
+          "value": "air",
+          "label": "Vent"
+        },
+        {
+          "value": "lock",
+          "label": "Verrou"
+        },
+        {
+          "value": "download",
+          "label": "Téléchargement"
+        },
+        {
+          "value": "key",
+          "label": "Clé"
+        },
+        {
+          "value": "mail",
+          "label": "Email"
+        },
+        {
+          "value": "phone_enabled",
+          "label": "Téléphone"
+        },
+        {
+          "value": "shop",
+          "label": "Achat en ligne"
+        },
+        {
+          "value": "toggle_on",
+          "label": "Interrupteur"
+        }
+      ],
+      "default": "favorite",
+      "visible_if": "{{ block.settings.icon_type == 'icon' }}"
+    },
+    {
+      "type": "text",
+      "id": "icon_custom",
+      "label": "Icône personnalisée",
+      "info": "Le thème FullStack utilise les icônes de la librairie Material Symbols. Vous pouvez trouver la liste des icônes sur le [site de Material Symbols](https://fonts.google.com/icons?icon.set=Material+Symbols&icon.size=24&icon.color=%231f1f1f). Il suffit de copier le \"Icon name\" et de l'utiliser dans le champ ci-dessus. Consultez le [guide](https://hub.themefullstack.com/training-center/master-theme-fullstack/custom-icons) pour plus d'informations.",
+      "visible_if": "{{ block.settings.icon_type == 'icon' }}"
+    },
+    {
+      "type": "image_picker",
+      "id": "icon_image",
+      "label": "Image",
+      "visible_if": "{{ block.settings.icon_type == 'image' }}"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "label": "Taille de l'icône",
+      "min": 18,
+      "max": 70,
+      "step": 1,
+      "default": 22
+    },
+    {
+      "type": "select",
+      "id": "icon_position",
+      "label": "Position de l'icône",
+      "visible_if": "{{ block.settings.icon != 'none' or block.settings.icon_custom != blank }}",
+      "options": [
+        {
+          "value": "start",
+          "label": "Début"
+        },
+        {
+          "value": "end",
+          "label": "Fin"
+        }
+      ],
+      "default": "start"
+    },
+    {
+      "type": "header",
+      "content": "Texte"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Texte",
+      "default": "<p>Icône avec texte</p>",
+      "info": "La balise (SEO) se change avec le deuxième bouton de l'encart d'édition ci-dessus ↑"
+    },
+    {
+      "type": "header",
+      "content": "Style de texte"
+    },
+    {
+      "type": "select",
+      "id": "text_style",
+      "label": "Style de texte",
+      "options": [
+        {
+          "value": "h1",
+          "label": "Titre H1"
+        },
+        {
+          "value": "h2",
+          "label": "Titre H2"
+        },
+        {
+          "value": "h3",
+          "label": "Titre H3"
+        },
+        {
+          "value": "h4",
+          "label": "Titre H4"
+        },
+        {
+          "value": "h5",
+          "label": "Titre H5"
+        },
+        {
+          "value": "h6",
+          "label": "Titre H6"
+        },
+        {
+          "value": "paragraph",
+          "label": "Paragraphe"
+        }
+      ],
+      "default": "paragraph"
+    },
+    {
+      "type": "range",
+      "id": "font_weight",
+      "label": "Épaisseur de la police",
+      "default": 400,
+      "min": 100,
+      "max": 900,
+      "step": 100,
+      "visible_if": "{{  block.settings.text_style == 'paragraph' }}"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Icône avec texte",
+      "category": "Composants de base"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,414 @@
+{% doc %}
+  Affiche un groupe de blocs avec une mise en page configurable.
+
+  @example
+  {% content_for 'block', type: 'group', id: 'group' %}
+{% enddoc %}
+
+<div
+  class="
+    article-card-group{% if block.settings.wrap_in_card %} card svf-card color-{{ block.settings.color_scheme }}{% endif %}
+    {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+  "
+  style="
+    --direction: {{ block.settings.layout_direction_desktop }};
+    --wrap: {{ block.settings.layout_wrap_desktop }};
+    --justify: {{ block.settings.layout_justify_desktop }};
+    --align_items: {{ block.settings.layout_align_items_desktop }};
+    --gap: {{ block.settings.layout_gap_desktop }}px;
+    --margin-top: {{ block.settings.margin_top }}px;
+    --margin-bottom: {{ block.settings.margin_bottom }}px;
+    {% if block.settings.same_as_desktop == false -%}
+    --direction-mobile: {{ block.settings.layout_direction_mobile }};
+    --wrap-mobile: {{ block.settings.layout_wrap_mobile }};
+    --justify-mobile: {{ block.settings.layout_justify_mobile }};
+    --align_items-mobile: {{ block.settings.layout_align_items_mobile }};
+    --gap-mobile: {{ block.settings.layout_gap_mobile }}px;
+    {%- else -%}
+    --direction-mobile: {{ block.settings.layout_direction_desktop }};
+    --wrap-mobile: {{ block.settings.layout_wrap_desktop }};
+    --justify-mobile: {{ block.settings.layout_justify_desktop }};
+    --align_items-mobile: {{ block.settings.layout_align_items_desktop }};
+    --gap-mobile: {{ block.settings.layout_gap_desktop }}px;
+    {%- endif -%}
+  "
+  {{ block.shopify_attributes }}
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .article-card-group {
+    display: flex;
+    flex-direction: var(--direction-mobile);
+    flex-wrap: var(--wrap-mobile);
+    justify-content: var(--justify-mobile);
+    align-items: var(--align_items-mobile);
+    gap: var(--gap-mobile);
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+    overflow: hidden;
+    width: 100%;
+  }
+
+  @media (width > 750px) {
+    .article-card-group {
+      flex-direction: var(--direction);
+      flex-wrap: var(--wrap);
+      justify-content: var(--justify);
+      align-items: var(--align_items);
+      gap: var(--gap);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Groupe",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "image"
+    },
+    {
+      "type": "_article-group"
+    },
+    {
+      "type": "article-date"
+    },
+    {
+      "type": "text"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "checkbox",
+      "id": "wrap_in_card",
+      "label": "Envelopper dans une carte",
+      "default": false
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-2",
+      "visible_if": "{{ block.settings.wrap_in_card }}",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mise en page (ordinateur)"
+    },
+    {
+      "type": "select",
+      "id": "layout_direction_desktop",
+      "label": "Direction",
+      "default": "row",
+      "options": [
+        {
+          "value": "row",
+          "label": "→"
+        },
+        {
+          "value": "column",
+          "label": "↓"
+        },
+        {
+          "value": "column-reverse",
+          "label": "↑"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "layout_gap_desktop",
+      "label": "Espacement entre les éléments",
+      "default": 10,
+      "step": 1,
+      "min": 0,
+      "max": 30,
+      "unit": "px"
+    },
+    {
+      "type": "select",
+      "id": "layout_wrap_desktop",
+      "label": "En cas de manque de place",
+      "default": "nowrap",
+      "options": [
+        {
+          "value": "nowrap",
+          "label": "Compacter les éléments"
+        },
+        {
+          "value": "wrap",
+          "label": "Retourner à la ligne"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "layout_justify_desktop",
+      "label": "Justification des éléments",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        },
+        {
+          "value": "space-between",
+          "label": "Espaces entre les éléments"
+        },
+        {
+          "value": "space-around",
+          "label": "Espaces autour des éléments"
+        },
+        {
+          "value": "space-evenly",
+          "label": "Espaces égaux entre les éléments"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "layout_align_items_desktop",
+      "label": "Alignement des éléments",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mise en page (mobile)"
+    },
+    {
+      "type": "checkbox",
+      "id": "same_as_desktop",
+      "label": "Identique à la mise en page ordinateur",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "layout_direction_mobile",
+      "label": "Direction",
+      "default": "column",
+      "options": [
+        {
+          "value": "row",
+          "label": "→"
+        },
+        {
+          "value": "column",
+          "label": "↓"
+        },
+        {
+          "value": "column-reverse",
+          "label": "↑"
+        }
+      ],
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "range",
+      "id": "layout_gap_mobile",
+      "label": "Espacement entre les éléments",
+      "default": 10,
+      "step": 1,
+      "min": 0,
+      "max": 30,
+      "unit": "px",
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "select",
+      "id": "layout_wrap_mobile",
+      "label": "En cas de manque de place",
+      "default": "nowrap",
+      "options": [
+        {
+          "value": "nowrap",
+          "label": "Compacter les éléments"
+        },
+        {
+          "value": "wrap",
+          "label": "Retourner à la ligne"
+        }
+      ],
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "select",
+      "id": "layout_justify_mobile",
+      "label": "Justification des éléments",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        },
+        {
+          "value": "space-between",
+          "label": "Espaces entre les éléments"
+        },
+        {
+          "value": "space-around",
+          "label": "Espaces autour des éléments"
+        },
+        {
+          "value": "space-evenly",
+          "label": "Espaces égaux entre les éléments"
+        }
+      ],
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "select",
+      "id": "layout_align_items_mobile",
+      "label": "Alignement des éléments",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        }
+      ],
+      "visible_if": "{{ block.settings.same_as_desktop == false }}"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Groupe",
+      "category": "Article"
+    }
+  ]
+}
+{% endschema %}

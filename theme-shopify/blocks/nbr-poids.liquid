@@ -1,0 +1,50 @@
+{%- comment -%}
+  Nabilerie : « Poids du colis » suivi du poids de la variante (champ Poids de Shopify) dans un carré bordeaux.
+  Rien ne s'affiche si le poids n'est pas renseigné.
+{%- endcomment -%}
+{%- liquid
+  assign variant = closest.product.selected_or_first_available_variant
+  assign grams = variant.weight | default: 0
+
+  if grams >= 1000
+    assign kilos = grams | divided_by: 1000.0 | round: 2
+    assign kilos_entier = kilos | round
+    if kilos == kilos_entier
+      assign poids = kilos_entier | append: ' kg'
+    else
+      assign poids = kilos | append: '' | replace: '.', ',' | append: ' kg'
+    endif
+  elsif grams > 0
+    assign poids = grams | round | append: ' g'
+  endif
+-%}
+
+{%- if poids != blank -%}
+  <div class="nbr-poids" {{ block.shopify_attributes }}>
+    {%- if block.settings.label != blank -%}
+      <p class="nbr-poids__label">{{ block.settings.label }}</p>
+    {%- endif -%}
+    <span class="nbr-poids__valeur">{{ poids }}</span>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Poids du colis",
+  "tag": null,
+  "settings": [
+    {
+      "type": "text",
+      "id": "label",
+      "label": "Intitulé",
+      "default": "Poids du colis",
+      "info": "Le poids affiché est celui renseigné dans la fiche produit (champ Poids de l'expédition)."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Poids du colis"
+    }
+  ]
+}
+{% endschema %}

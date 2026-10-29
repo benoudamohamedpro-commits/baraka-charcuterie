@@ -1,0 +1,918 @@
+<div
+  class="
+    reviews{% if section.settings.layout_type == 'list' %} reviews--list{% endif %} color-{{ section.settings.color_scheme }}
+    {%- if section.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if section.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {{ section.settings.additional_class }}
+  "
+  style="
+    --margin-top: {{ section.settings.margin_top }}px;
+    --margin-bottom: {{ section.settings.margin_bottom }}px;
+    --padding-top: {{ section.settings.padding_top }}px;
+    --padding-bottom: {{ section.settings.padding_bottom }}px;
+  "
+  id="{{ section.settings.anchor }}"
+>
+  <div class="page-width">
+    {% content_for 'block', type: 'text', id: 'title' %}
+
+    {% capture reviews %}
+      {% content_for 'blocks' %}
+    {% endcapture %}
+
+    {% if section.settings.layout_type == 'grid' %}
+      <ul
+        class="reviews__grid"
+        style="
+          --grid-columns: {{ section.settings.grid_columns }};
+          --grid-columns-mobile: {{ section.settings.grid_columns_mobile }};
+        "
+      >
+        {{ reviews }}
+      </ul>
+    {% elsif section.settings.layout_type == 'slider' %}
+      {% render 'svf-slider',
+        slides: reviews,
+        gap: 16,
+        show_arrows: section.settings.show_arrows,
+        show_pagination: section.settings.show_pagination,
+        per_page_desktop: section.settings.slider_items,
+        per_page_mobile: section.settings.slider_items_mobile,
+        rewind: section.settings.rewind
+      %}
+    {% elsif section.settings.layout_type == 'list' %}
+      {% liquid
+        assign review_count = 0
+        assign rating_sum = 0.0
+        assign photo_count = 0
+        assign count_5 = 0
+        assign count_4 = 0
+        assign count_3 = 0
+        assign count_2 = 0
+        assign count_1 = 0
+
+        # La section n'a pas accès aux réglages des blocs : on relit les attributs data-review-* du HTML rendu
+        assign rating_parts = reviews | split: 'data-review-rating="'
+        # Photos : celles réellement affichées dans les avis (boutons d'agrandissement), sans doublon
+        assign photo_urls = ''
+        assign lightbox_parts = reviews | split: 'data-review-lightbox="'
+        for lightbox_part in lightbox_parts offset: 1
+          assign lightbox_url = lightbox_part | split: '"' | first
+          unless photo_urls contains lightbox_url
+            assign photo_urls = photo_urls | append: lightbox_url | append: '|||'
+          endunless
+        endfor
+        assign photo_list = photo_urls | split: '|||'
+        assign photo_count = photo_list.size
+
+        # listed_count : tous les avis affichés ; review_count : ceux dont la note individuelle est connue
+        assign listed_count = rating_parts.size | minus: 1
+
+        for rating_part in rating_parts offset: 1
+          assign review_rating_text = rating_part | split: '"' | first
+          if review_rating_text == 'none'
+            continue
+          endif
+          assign review_rating = review_rating_text | plus: 0
+
+          assign review_count = review_count | plus: 1
+          assign rating_sum = rating_sum | plus: review_rating
+
+          assign rounded_rating = review_rating | round
+          case rounded_rating
+            when 5
+              assign count_5 = count_5 | plus: 1
+            when 4
+              assign count_4 = count_4 | plus: 1
+            when 3
+              assign count_3 = count_3 | plus: 1
+            when 2
+              assign count_2 = count_2 | plus: 1
+            else
+              assign count_1 = count_1 | plus: 1
+          endcase
+        endfor
+
+        assign bars_total = review_count | at_least: 1
+
+        # Répartition réelle saisie dans les réglages de la section (ex. reprise d'un export d'avis) :
+        # elle remplace celle calculée sur les seuls avis affichés.
+        assign manual_5 = section.settings.star_count_5 | plus: 0
+        assign manual_4 = section.settings.star_count_4 | plus: 0
+        assign manual_3 = section.settings.star_count_3 | plus: 0
+        assign manual_2 = section.settings.star_count_2 | plus: 0
+        assign manual_1 = section.settings.star_count_1 | plus: 0
+        assign manual_total = manual_5 | plus: manual_4 | plus: manual_3 | plus: manual_2 | plus: manual_1
+        assign uses_manual_distribution = false
+        if manual_total > 0
+          assign uses_manual_distribution = true
+          assign count_5 = manual_5
+          assign count_4 = manual_4
+          assign count_3 = manual_3
+          assign count_2 = manual_2
+          assign count_1 = manual_1
+          assign bars_total = manual_total
+        endif
+
+        assign star_counts = count_5 | append: ',' | append: count_4 | append: ',' | append: count_3 | append: ',' | append: count_2 | append: ',' | append: count_1 | split: ','
+      %}
+
+      {% if listed_count > 0 %}
+        {% liquid
+          assign average = 0
+          if review_count > 0
+            assign average = rating_sum | divided_by: review_count | round: 1
+          endif
+          assign displayed_count = listed_count
+
+          # Note saisie par le marchand sur le produit (métachamps reviews.rating / reviews.rating_count,
+          # repris de la ligne de note en haut de la fiche) : elle remplace la note calculée.
+          assign merchant_rating = product.metafields.reviews.rating.value
+          assign merchant_count = product.metafields.reviews.rating_count.value
+          assign uses_merchant_rating = false
+          if merchant_rating != blank and merchant_count != blank
+            assign uses_merchant_rating = true
+            assign average = merchant_rating.rating
+            assign displayed_count = merchant_count
+          endif
+
+          # Les nombres par étoile ne s'affichent que s'ils correspondent à la note montrée
+          assign show_bar_counts = true
+          if uses_merchant_rating and uses_manual_distribution == false
+            assign show_bar_counts = false
+          endif
+        %}
+
+        <div class="reviews-summary{% unless show_bar_counts %} reviews-summary--merchant-rating{% endunless %}">
+          <div class="reviews-summary__score">
+            <p class="reviews-summary__average">{{ average | replace: '.', ',' }}</p>
+            {% render 'svf-rating-stars', rating: average %}
+            <p class="reviews-summary__count">{{ displayed_count }} avis</p>
+          </div>
+
+          {% unless section.settings.hide_distribution %}
+          <ul class="reviews-summary__bars">
+            {% for star_count in star_counts %}
+              {% liquid
+                assign stars = 6 | minus: forloop.index
+                assign star_count_number = star_count | plus: 0
+                assign share = star_count_number | times: 100.0 | divided_by: bars_total | round
+              %}
+              <li class="reviews-summary__bar-row">
+                <span class="reviews-summary__bar-label">
+                  {{- stars -}}
+                  <span class="reviews-summary__bar-star" aria-hidden="true">★</span>
+                  <span class="visually-hidden">étoile{% if stars > 1 %}s{% endif %}</span>
+                </span>
+                <span class="reviews-summary__bar" aria-hidden="true">
+                  <span class="reviews-summary__bar-fill" style="width: {{ share }}%"></span>
+                </span>
+                {% if show_bar_counts %}
+                  <span class="reviews-summary__bar-count">{{ star_count_number }}</span>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+          {% endunless %}
+
+          {% if photo_count > 0 %}
+            {% assign hidden_photos = photo_count | minus: 4 %}
+            <div class="reviews-summary__photos">
+              <p class="reviews-summary__photos-title">Photos des clients</p>
+              <div class="reviews-summary__photos-list">
+                {% for photo_url in photo_list limit: 4 %}
+                  {% assign thumb_url = photo_url | replace: 'width=1600', 'width=160' %}
+                  {% if forloop.last and hidden_photos > 0 %}
+                    {% comment %} Vignette « +N » : simple indication, non cliquable {% endcomment %}
+                    <div class="reviews-summary__photo reviews-summary__photo--more">
+                      <img src="{{ thumb_url }}" alt="" width="72" height="72" loading="lazy">
+                      <span class="reviews-summary__photo-more">+{{ hidden_photos }}</span>
+                    </div>
+                  {% else %}
+                    <button
+                      type="button"
+                      class="reviews-summary__photo"
+                      data-review-lightbox="{{ photo_url }}"
+                      aria-label="Agrandir la photo de l'avis"
+                    >
+                      <img src="{{ thumb_url }}" alt="" width="72" height="72" loading="lazy">
+                    </button>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <ul class="reviews__list" data-reviews-list>
+        {{ reviews }}
+      </ul>
+
+      {% if listed_count > 3 %}
+        <button type="button" class="button-secondary svf-button svf-button--default reviews__more" data-reviews-more>
+          Voir plus d'avis
+        </button>
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+
+{% stylesheet %}
+  .section-reviews {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .reviews {
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+    width: 100%;
+  }
+
+  /* Arrivée depuis un lien « #reviews » (note en haut de la fiche produit) : défilement doux,
+     et le titre de la section se place juste sous l'en-tête fixe */
+  html:has(.reviews) {
+    scroll-behavior: smooth;
+  }
+
+  .reviews {
+    scroll-margin-top: calc(var(--header-height, 0px) - 20px);
+  }
+
+  .reviews__title {
+    margin-bottom: 2rem;
+  }
+
+  .reviews__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+    column-gap: 1rem;
+    row-gap: 2rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  @media (width > 750px) {
+    .reviews__grid {
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+    }
+  }
+
+  .reviews .splide {
+    padding-bottom: 20px;
+  }
+
+  /* Mise en page « liste » : résumé des notes + avis les uns sous les autres */
+  .reviews-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    margin-bottom: 1rem;
+  }
+
+  .reviews-summary__score {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 12px;
+  }
+
+  .reviews-summary__average {
+    font-size: 2.8rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .reviews-summary__bars {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .reviews-summary__bar-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 26px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* Note saisie par le marchand : pas de nombre par étoile, donc pas de troisième colonne */
+  .reviews-summary--merchant-rating .reviews-summary__bar-row {
+    grid-template-columns: 32px 1fr;
+  }
+
+  .reviews-summary__bar-label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .reviews-summary__bar-star {
+    color: var(--color-stars-icons);
+    font-family: Arial, sans-serif;
+    line-height: 1;
+  }
+
+  .reviews-summary__bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgb(0 0 0 / 8%);
+    overflow: hidden;
+  }
+
+  .reviews-summary__bar-fill {
+    display: block;
+    height: 100%;
+    border-radius: 4px;
+    background: var(--color-stars-icons);
+  }
+
+  .reviews-summary__bar-count {
+    text-align: right;
+  }
+
+  .reviews-summary__photos-title {
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+
+  .reviews-summary__photos-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .reviews-summary__photo {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    overflow: hidden;
+    cursor: zoom-in;
+  }
+
+  .reviews-summary__photo--more {
+    cursor: default;
+  }
+
+  .reviews-summary__photo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .reviews-summary__photo-more {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgb(0 0 0 / 55%);
+    color: #fff;
+    font-weight: 700;
+  }
+
+  /* Titre de la section aligné à gauche comme le résumé */
+  .reviews--list .text-block {
+    text-align: left;
+  }
+
+  .reviews__list {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+    list-style: none;
+  }
+
+  .reviews__list > li {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .reviews__list:not(.is-expanded) > li:nth-child(n + 4) {
+    display: none;
+  }
+
+  .reviews__list .review,
+  .reviews__list .review.svf-card {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'author'
+      'date'
+      'rating'
+      'content'
+      'image';
+    gap: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+  }
+
+  .reviews__list .review__author-name {
+    grid-area: author;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .reviews__list .review__avatar {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 8%);
+    font-weight: 500;
+  }
+
+  .reviews__list .review__date {
+    grid-area: date;
+    margin-top: 6px;
+    font-size: 0.85em;
+    font-style: normal;
+    opacity: 0.6;
+  }
+
+  .reviews__list .review__rating {
+    grid-area: rating;
+    margin-top: 10px;
+  }
+
+  .reviews__list .review__content {
+    grid-area: content;
+    margin-top: 8px;
+  }
+
+  .reviews__list .review__images {
+    grid-area: image;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .reviews__list .review__image-button {
+    display: block;
+    width: 100px;
+  }
+
+  .reviews__list .review .review__image {
+    aspect-ratio: 1;
+    border-radius: 6px;
+  }
+
+  .reviews__more {
+    display: block;
+    margin: 1rem auto 0;
+  }
+
+  @media (width > 750px) {
+    .reviews-summary {
+      flex-direction: row;
+      align-items: center;
+      gap: 0;
+    }
+
+    .reviews-summary__score {
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 60px;
+    }
+
+    .reviews-summary__bars {
+      max-width: 320px;
+      padding: 0 50px;
+      border-left: 1px solid var(--color-border);
+      box-sizing: content-box;
+    }
+
+    .reviews-summary__photos {
+      flex: 1;
+      padding-left: 50px;
+      border-left: 1px solid var(--color-border);
+    }
+
+    .reviews__list .review,
+    .reviews__list .review.svf-card {
+      grid-template-columns: 200px 1fr;
+      grid-template-areas:
+        'author rating'
+        'date content'
+        '. image';
+      column-gap: 20px;
+      align-items: start;
+    }
+
+    .reviews__list .review__rating {
+      margin-top: 0;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  // Mise en page « liste » : affiche les avis masqués au-delà des trois premiers
+  document.addEventListener('click', (event) => {
+    const button = event.target.closest('[data-reviews-more]');
+    if (!button) return;
+
+    button.closest('.reviews')?.querySelector('[data-reviews-list]')?.classList.add('is-expanded');
+    button.remove();
+  });
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Avis",
+  "class": "section-reviews",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "custom.cart_drawer",
+      "custom.auto_gifts",
+      "custom.breadcrumbs"
+    ]
+  },
+  "blocks": [
+    {
+      "type": "_review-slide"
+    },
+    {
+      "type": "text"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "text",
+      "id": "anchor",
+      "label": "Ancre",
+      "default": "reviews",
+      "info": "Ancre utile pour créer un lien qui scroll vers cette section. Consultez [le guide](https://hub.themefullstack.com/training-center/master-theme-fullstack/review-anchor-link)"
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-1",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Type de mise en page",
+      "default": "grid",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grille"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        },
+        {
+          "value": "list",
+          "label": "Liste avec résumé des notes"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Répartition réelle des notes (mise en page liste)",
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "paragraph",
+      "content": "Nombre d'avis par étoile, à reprendre d'un export d'avis. Laisser à 0 pour calculer les barres sur les avis affichés.",
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_distribution",
+      "label": "Masquer les barres par étoiles",
+      "info": "N'affiche que la note globale et le nombre d'avis.",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "number",
+      "id": "star_count_5",
+      "label": "Avis 5 étoiles",
+      "default": 0,
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "number",
+      "id": "star_count_4",
+      "label": "Avis 4 étoiles",
+      "default": 0,
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "number",
+      "id": "star_count_3",
+      "label": "Avis 3 étoiles",
+      "default": 0,
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "number",
+      "id": "star_count_2",
+      "label": "Avis 2 étoiles",
+      "default": 0,
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "number",
+      "id": "star_count_1",
+      "label": "Avis 1 étoile",
+      "default": 0,
+      "visible_if": "{{ section.settings.layout_type == 'list' }}"
+    },
+    {
+      "type": "header",
+      "content": "Grille",
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Nombre de colonnes (ordinateur)",
+      "min": 2,
+      "max": 5,
+      "default": 4,
+      "step": 1,
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "select",
+      "id": "grid_columns_mobile",
+      "label": "Nombre de colonnes (mobile)",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "header",
+      "content": "Slider",
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "range",
+      "id": "slider_items",
+      "label": "Nombre d'éléments à afficher à la fois",
+      "min": 2,
+      "max": 5,
+      "default": 4,
+      "step": 1,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "select",
+      "id": "slider_items_mobile",
+      "label": "Nombre d'éléments à afficher à la fois (mobile)",
+      "default": "1.8",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "1.8",
+          "label": "1,8"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Afficher les flèches de navigation",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "select",
+      "id": "arrows_button_style",
+      "label": "Style des flèches de navigation",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primaire"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondaire"
+        },
+        {
+          "value": "tertiary",
+          "label": "Tertiaire"
+        }
+      ],
+      "default": "secondary",
+      "visible_if": "{{ section.settings.layout_type == 'slider' and section.settings.show_arrows }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Afficher les points de navigation",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "rewind",
+      "label": "Boucle infinie",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "header",
+      "content": "Espacements internes"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge interne en haut",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge interne en bas",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Avis (grille)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "anchor": "reviews",
+        "color_scheme": "scheme-1",
+        "layout_type": "grid",
+        "grid_columns": 3,
+        "grid_columns_mobile": "1",
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    },
+    {
+      "name": "Avis (slider)",
+      "category": "Avis",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "anchor": "reviews",
+        "color_scheme": "scheme-1",
+        "layout_type": "slider",
+        "slider_items": 3,
+        "slider_items_mobile": "1",
+        "show_arrows": false,
+        "arrows_button_style": "secondary",
+        "show_pagination": true,
+        "rewind": false,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    }
+  ]
+}
+{% endschema %}

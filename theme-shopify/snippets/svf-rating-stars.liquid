@@ -1,0 +1,61 @@
+{% doc %}
+  Affiche les étoiles de notation d'un produit.
+
+  @param {number} rating - Note du produit
+  @param {number} [rating_count] - Nombre d'avis
+  @param {boolean} [show_note] - Afficher la note
+
+  @example
+  {% render 'rating-stars', rating: 4.5, rating_count: 100 %}
+{% enddoc %}
+
+<div class="svf-rating">
+  <div class="rating__stars">
+    {% assign rating = rating | replace: '.0', '' | plus: 0 %}
+    {% assign rating_plus_one = rating | plus: 1 %}
+    {% assign rating_floor = rating | floor %}
+    {% assign has_decimal = rating | minus: rating_floor %}
+
+    {% for i in (1..5) %}
+      {% if i <= rating %}
+        {% render 'svf-icon', icon: 'star_rate', class: 'rating-star', fill: 1 %}
+      {% elsif i <= rating_plus_one and has_decimal > 0 %}
+        {% render 'svf-icon', icon: 'star_rate_half', class: 'rating-star', fill: 1 %}
+      {% else %}
+        {% render 'svf-icon', icon: 'star_rate', class: 'rating-star', fill: 0 %}
+      {% endif %}
+    {% endfor %}
+  </div>
+  {% if show_note %}
+    <p class="rating__note">{{ rating }}/5</p>
+  {% endif %}
+  {% if rating_count %}
+    <p class="rating__count">
+      ({{ rating_count }}
+      avis)
+    </p>
+  {% endif %}
+</div>
+
+{% stylesheet %}
+  .svf-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .rating__stars {
+    height: 22px;
+  }
+
+  .rating-star {
+    font-size: 22px !important;
+    margin: 0 -4.5px;
+    color: var(--color-stars-icons);
+  }
+
+  .rating__count {
+    line-height: 22px;
+  }
+{% endstylesheet %}

@@ -1,0 +1,380 @@
+<script src="{{ 'svf-delivery-estimation.js' | asset_url }}" type="module"></script>
+
+{%- liquid
+  assign shop_locale = shop.locale | default: 'fr'
+-%}
+
+<delivery-estimation
+  class="
+    delivery-estimation
+    {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+  "
+  style="
+    --margin-top: {{ block.settings.margin_top }}px;
+    --margin-bottom: {{ block.settings.margin_bottom }}px;
+    --alignment: {{ block.settings.alignment_desktop }};
+    --alignment-mobile: {{ block.settings.alignment_mobile }};
+  "
+  data-locale="{{ shop_locale }}"
+  data-min-days="{{ block.settings.minimum_delivery_days }}"
+  data-max-days="{{ block.settings.maximum_delivery_days }}"
+  data-no-saturday="{{ block.settings.no_delivery_on_saturday }}"
+  data-no-sunday="{{ block.settings.no_delivery_on_sunday }}"
+  data-date-format="{{ block.settings.date_format }}"
+  data-show-weekday="{{ block.settings.show_weekday }}"
+  data-cutoff-hour="{{ block.settings.cutoff_hour }}"
+  {{ block.shopify_attributes }}
+  {% if request.visual_preview_mode %}
+    data-visual-preview-mode
+  {% endif %}
+>
+  <p class="delivery-estimation__content" data-ref="delivery-content">
+    {% if block.settings.icon_custom != blank %}
+      {% assign icon = block.settings.icon_custom %}
+    {% elsif block.settings.icon != 'none' %}
+      {% assign icon = block.settings.icon %}
+    {% endif %}
+
+    {% if icon != blank %}
+      {% render 'svf-icon', icon: icon %}
+    {% endif %}
+
+    <span data-ref="delivery-text">{{ block.settings.delivery_estimation_text }}</span>
+    <span data-ref="min-date"></span>
+    <span data-ref="between-text">{{ block.settings.translation_between_dates }}</span>
+    <span data-ref="max-date"></span>
+  </p>
+</delivery-estimation>
+
+{% stylesheet %}
+  .delivery-estimation {
+    display: block;
+    font-size: 0.875rem;
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+  }
+
+  shopify-visual-preview-block-list .delivery-estimation[data-visual-preview-mode] {
+    width: 300px;
+  }
+
+  .delivery-estimation__content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+    justify-content: var(--alignment-mobile);
+
+    .svf-icon {
+      font-size: 18px !important;
+      width: 18px !important;
+      height: 18px !important;
+      margin-right: 0.33rem;
+    }
+  }
+
+  @media (width > 750px) {
+    .delivery-estimation__content {
+      justify-content: var(--alignment);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Estimation de livraison",
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Icône"
+    },
+    {
+      "type": "select",
+      "id": "icon",
+      "label": "Icône",
+      "options": [
+        {
+          "value": "none",
+          "label": "Aucun"
+        },
+        {
+          "value": "alarm",
+          "label": "Alarme"
+        },
+        {
+          "value": "bolt",
+          "label": "Éclair"
+        },
+        {
+          "value": "check",
+          "label": "Coche"
+        },
+        {
+          "value": "delivery_truck_bolt",
+          "label": "Camion avec éclair"
+        },
+        {
+          "value": "delivery_truck_speed",
+          "label": "Camion rapide"
+        },
+        {
+          "value": "explore",
+          "label": "Boussole"
+        },
+        {
+          "value": "info",
+          "label": "Info"
+        },
+        {
+          "value": "moped_package",
+          "label": "Scooter"
+        },
+        {
+          "value": "package_2",
+          "label": "Carton"
+        },
+        {
+          "value": "priority",
+          "label": "Case cochée"
+        },
+        {
+          "value": "sell",
+          "label": "Étiquette"
+        },
+        {
+          "value": "send",
+          "label": "Envoi"
+        },
+        {
+          "value": "sprint",
+          "label": "Sprint"
+        },
+        {
+          "value": "target",
+          "label": "Cible"
+        },
+        {
+          "value": "download",
+          "label": "Téléchargement"
+        },
+        {
+          "value": "key",
+          "label": "Clé"
+        },
+        {
+          "value": "mail",
+          "label": "Email"
+        },
+        {
+          "value": "phone_enabled",
+          "label": "Téléphone"
+        },
+        {
+          "value": "shop",
+          "label": "Achat en ligne"
+        },
+        {
+          "value": "toggle_on",
+          "label": "Interrupteur"
+        }
+      ],
+      "default": "moped_package"
+    },
+    {
+      "type": "text",
+      "id": "icon_custom",
+      "label": "Icône personnalisée",
+      "info": "Le thème FullStack utilise les icônes de la librairie Material Symbols. Vous pouvez trouver la liste des icônes sur le [site de Material Symbols](https://fonts.google.com/icons?icon.set=Material+Symbols&icon.size=24&icon.color=%231f1f1f). Il suffit de copier le \"Icon name\" et de l'utiliser dans le champ ci-dessus. Consultez le [guide](https://hub.themefullstack.com/training-center/master-theme-fullstack/custom-icons) pour plus d'informations."
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "select",
+      "id": "alignment_desktop",
+      "label": "Alignement sur ordinateur",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_on_display != 'mobile_only' }}"
+    },
+    {
+      "type": "select",
+      "id": "alignment_mobile",
+      "label": "Alignement sur mobile",
+      "default": "flex-start",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Au début"
+        },
+        {
+          "value": "center",
+          "label": "Centré"
+        },
+        {
+          "value": "flex-end",
+          "label": "À la fin"
+        }
+      ],
+      "visible_if": "{{ block.settings.show_on_display != 'desktop_only' }}"
+    },
+    {
+      "type": "header",
+      "content": "Délais de livraison"
+    },
+    {
+      "type": "select",
+      "id": "date_format",
+      "options": [
+        {
+          "value": "numbers",
+          "label": "Chiffres (24/12)"
+        },
+        {
+          "value": "in_letters",
+          "label": "Lettres (24 décembre)"
+        }
+      ],
+      "default": "in_letters",
+      "label": "Format de date"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_weekday",
+      "default": true,
+      "label": "Afficher le jour de la semaine"
+    },
+    {
+      "type": "number",
+      "id": "minimum_delivery_days",
+      "default": 3,
+      "label": "Nombre de jours minimum"
+    },
+    {
+      "type": "number",
+      "id": "maximum_delivery_days",
+      "default": 5,
+      "label": "Nombre de jours maximum"
+    },
+    {
+      "type": "number",
+      "id": "cutoff_hour",
+      "label": "Heure de coupure pour l'expédition",
+      "info": "Commandes passées après cette heure seront expédiées le jour suivant (format 24h, ex: 14 pour 14h00)",
+      "default": 14
+    },
+    {
+      "type": "checkbox",
+      "id": "no_delivery_on_saturday",
+      "default": false,
+      "label": "Ne livre pas le samedi"
+    },
+    {
+      "type": "checkbox",
+      "id": "no_delivery_on_sunday",
+      "default": false,
+      "label": "Ne livre pas le dimanche"
+    },
+    {
+      "type": "header",
+      "content": "Traductions"
+    },
+    {
+      "type": "text",
+      "id": "delivery_estimation_text",
+      "default": "Livré entre le",
+      "label": "Texte"
+    },
+    {
+      "type": "text",
+      "id": "translation_between_dates",
+      "default": "et le",
+      "label": "Traduction entre les dates"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Estimation de livraison",
+      "category": "Produit"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,422 @@
+{% if section.settings.blog %}
+  {% liquid
+    assign blog = section.settings.blog | default: blogs.news
+
+    assign blog_articles = blog.articles
+
+    if template.name == 'article'
+      assign blog_articles = blog_articles | reject: 'id', article.id
+    endif
+  %}
+
+  <div
+    {% if section.settings.anchor_id != blank %}
+      id="{{ section.settings.anchor_id }}"
+    {% endif %}
+    class="
+      blog-featured color-{{ section.settings.color_scheme }}
+      {%- if section.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+      {%- if section.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+      {{ section.settings.additional_class }}
+    "
+    style="
+      --margin-top: {{ section.settings.margin_top }}px;
+      --margin-bottom: {{ section.settings.margin_bottom }}px
+    "
+  >
+    <div
+      class="blog-featured__inner page-width"
+      style="
+        --padding-top: {{ section.settings.padding_top }}px;
+        --padding-bottom: {{ section.settings.padding_bottom }}px
+      "
+    >
+      {% content_for 'blocks' %}
+
+      {% if section.settings.layout_type == 'grid' %}
+        <div
+          class="blog-featured__grid"
+          style="
+            --grid-columns: {{ section.settings.grid_columns }};
+            --grid-columns-mobile: {{ section.settings.grid_columns_mobile }};
+          "
+        >
+          {% for article in blog_articles limit: section.settings.max_articles %}
+            {% content_for 'block', type: '_article-card', id: 'article-card', closest.article: article %}
+          {% endfor %}
+        </div>
+      {% elsif section.settings.layout_type == 'slider' %}
+        {% capture slides %}
+        {% for article in blog_articles limit: section.settings.max_articles %}
+          <li class="splide__slide"> 
+            <div class="slide" style="--margin-top: 0px; --margin-bottom: 0px;">
+              {% # theme-check-disable %}
+              {% content_for 'block', type: '_article-card', id: 'article-card', closest.article: article %}
+              {% # theme-check-enable %}
+            </div>
+          </li>
+        {% endfor %}
+      {% endcapture %}
+
+        {% render 'svf-slider',
+          slides: slides,
+          gap: 16,
+          show_arrows: section.settings.show_arrows,
+          show_pagination: section.settings.show_pagination,
+          per_page_desktop: section.settings.slider_items,
+          per_page_mobile: section.settings.slider_items_mobile,
+          rewind: section.settings.rewind
+        %}
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .blog-featured {
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+  }
+
+  .blog-featured__inner {
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+  }
+
+  .blog-featured__grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns-mobile), 1fr);
+    column-gap: 1rem;
+    row-gap: 2rem;
+  }
+
+  @media (width > 750px) {
+    .blog-featured__grid {
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Blog en vedette",
+  "disabled_on": {
+    "groups": [
+      "header",
+      "footer",
+      "custom.cart_drawer",
+      "custom.auto_gifts",
+      "custom.breadcrumbs"
+    ]
+  },
+  "blocks": [
+    {
+      "type": "@theme"
+    },
+    {
+      "type": "@app"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-1",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog"
+    },
+    {
+      "type": "range",
+      "id": "max_articles",
+      "label": "Nombre maximum d'articles",
+      "min": 2,
+      "max": 20,
+      "default": 8,
+      "step": 1
+    },
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "select",
+      "id": "layout_type",
+      "label": "Type de mise en page",
+      "default": "grid",
+      "options": [
+        {
+          "value": "grid",
+          "label": "Grille"
+        },
+        {
+          "value": "slider",
+          "label": "Slider"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Grille",
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "range",
+      "id": "grid_columns",
+      "label": "Nombre de colonnes (ordinateur)",
+      "min": 2,
+      "max": 5,
+      "default": 4,
+      "step": 1,
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "select",
+      "id": "grid_columns_mobile",
+      "label": "Nombre de colonnes (mobile)",
+      "default": "2",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
+    },
+    {
+      "type": "header",
+      "content": "Slider",
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "range",
+      "id": "slider_items",
+      "label": "Nombre d'éléments à afficher à la fois",
+      "min": 2,
+      "max": 5,
+      "default": 4,
+      "step": 1,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "select",
+      "id": "slider_items_mobile",
+      "label": "Nombre d'éléments à afficher à la fois (mobile)",
+      "default": "1.8",
+      "options": [
+        {
+          "value": "1",
+          "label": "1"
+        },
+        {
+          "value": "1.8",
+          "label": "1,8"
+        },
+        {
+          "value": "2",
+          "label": "2"
+        }
+      ],
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Afficher les flèches de navigation",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "select",
+      "id": "arrows_button_style",
+      "label": "Style des flèches de navigation",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primaire"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondaire"
+        },
+        {
+          "value": "tertiary",
+          "label": "Tertiaire"
+        }
+      ],
+      "default": "secondary",
+      "visible_if": "{{ section.settings.layout_type == 'slider' and section.settings.show_arrows }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "Afficher les points de navigation",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "rewind",
+      "label": "Boucle infinie",
+      "default": false,
+      "visible_if": "{{ section.settings.layout_type == 'slider' }}"
+    },
+    {
+      "type": "header",
+      "content": "Espacements internes"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge interne en haut",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge interne en bas",
+      "default": 50,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "anchor_id",
+      "label": "Ancre (ID)",
+      "info": "Utilisez cette ancre pour créer un lien qui scroll vers cette section. Consultez [le guide](https://hub.themefullstack.com/training-center/master-theme-fullstack/review-anchor-link). ⚠️ Attention : Un ID ne doit pas contenir d'espace."
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog en vedette",
+      "category": "Blog",
+      "settings": {
+        "blog": "news",
+        "max_articles": 3,
+        "layout_type": "grid",
+        "grid_columns": 3,
+        "grid_columns_mobile": "1",
+        "slider_items": 4,
+        "slider_items_mobile": "2",
+        "show_arrows": true,
+        "arrows_button_style": "secondary",
+        "show_pagination": false,
+        "rewind": false,
+        "padding_top": 60,
+        "padding_bottom": 60,
+        "margin_top": 0,
+        "margin_bottom": 0
+      }
+    }
+  ]
+}
+{% endschema %}

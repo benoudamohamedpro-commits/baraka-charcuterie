@@ -1,0 +1,33 @@
+{%- unless settings.type_body_font.system? -%}
+  {{ settings.type_body_font | font_url | preload_tag: as: 'font', type: 'font/woff2', fetchpriority: 'low' }}
+{%- endunless -%}
+{%- unless settings.type_subheading_font.system? -%}
+  {{ settings.type_subheading_font | font_url | preload_tag: as: 'font', type: 'font/woff2', fetchpriority: 'low' }}
+{%- endunless -%}
+{%- unless settings.type_heading_font.system? -%}
+  {{ settings.type_heading_font | font_url | preload_tag: as: 'font', type: 'font/woff2', fetchpriority: 'low' }}
+{%- endunless -%}
+{%- unless settings.type_accent_font.system? -%}
+  {{ settings.type_accent_font | font_url | preload_tag: as: 'font', type: 'font/woff2', fetchpriority: 'low' }}
+{%- endunless -%}
+
+{%- comment -%} Police de la barre d'annonce (Montserrat, demande du commerçant Nabilerie). {%- endcomment -%}
+{%- assign svf_announce_font_bold = settings.svf_announce_font | font_modify: 'weight', '600' -%}
+<style>
+  {{ settings.svf_announce_font | font_face: font_display: 'swap' }}
+  {{ svf_announce_font_bold | font_face: font_display: 'swap' }}
+  :root { --svf-announce-font: {{ settings.svf_announce_font.family }}, {{ settings.svf_announce_font.fallback_families }}; }
+</style>
+
+{%- comment -%} Police manuscrite des titres de luxe (Pinyon Script, demande Nabilerie). {%- endcomment -%}
+<style>
+  {{ settings.svf_script_font | font_face: font_display: 'swap' }}
+  :root { --svf-script-font: {{ settings.svf_script_font.family }}, {{ settings.svf_script_font.fallback_families }}; }
+</style>
+
+{%- comment -%} Logo du site, réutilisé en bas du menu mobile (Nabilerie). {%- endcomment -%}
+{%- if settings.logo != blank -%}
+  <style>
+    :root { --nbr-logo-url: url('{{ settings.logo | image_url: width: 800 }}'); }
+  </style>
+{%- endif -%}

@@ -1,0 +1,115 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main-page": {
+      "type": "section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_alignment_flex_direction_column": "flex-start",
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_on_mobile": true,
+        "gap": 20,
+        "section_width": "page-width",
+        "padding-block-start": 60,
+        "padding-block-end": 60,
+        "max_width": 900
+      },
+      "blocks": {
+        "text_QE8Lc7": {
+          "type": "text",
+          "settings": {
+            "text": "<h1>{{ closest.page.title }}</h1>",
+            "width": "fit-content",
+            "max_width": "none",
+            "rich_text_styles": false,
+            "alignment": "left",
+            "alignment_mobile": "left",
+            "type_preset": "h2",
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          }
+        },
+        "text_LXnWMw": {
+          "type": "text",
+          "settings": {
+            "text": "{{ closest.page.content }}",
+            "width": "fit-content",
+            "max_width": "none",
+            "rich_text_styles": false,
+            "alignment": "left",
+            "alignment_mobile": "left",
+            "type_preset": "paragraph",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "custom_class": "svf-contenu-page"
+          }
+        },
+        "nbr_contact_label_tel": {
+          "type": "text",
+          "settings": {
+            "text": "<p>1. Par téléphone</p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "center",
+            "alignment_mobile": "center",
+            "type_preset": "paragraph",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "custom_class": "nbr-contact-label"
+          }
+        },
+        "nbr_contact_label_mail": {
+          "type": "text",
+          "settings": {
+            "text": "<p>2. Par mail</p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "center",
+            "alignment_mobile": "center",
+            "type_preset": "paragraph",
+            "padding-block-start": 30,
+            "padding-block-end": 0,
+            "custom_class": "nbr-contact-label"
+          }
+        },
+        "nbr_phone_contact": {
+          "type": "text",
+          "settings": {
+            "text": "<p><a href=\"https://wa.me/32495315500\">+32 (0) 495 315 500</a></p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "center",
+            "alignment_mobile": "center",
+            "type_preset": "paragraph",
+            "padding-block-start": 0,
+            "padding-block-end": 10,
+            "custom_class": "nbr-hero-phone"
+          }
+        },
+        "contact_form_QBTWqt": {
+          "type": "svf-contact-form",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "text_QE8Lc7",
+        "text_LXnWMw",
+        "nbr_contact_label_tel",
+        "nbr_phone_contact",
+        "nbr_contact_label_mail",
+        "contact_form_QBTWqt"
+      ]
+    }
+  },
+  "order": [
+    "main-page"
+  ]
+}

@@ -1,0 +1,180 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:names.header",
+  "sections": {
+    "announcement_bar_r8QCCw": {
+      "type": "announcement-bar",
+      "settings": {
+        "show_on_display": "desktop_and_mobile",
+        "color_scheme": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+        "show_arrows": false,
+        "arrows_button_style": "secondary",
+        "rewind": true,
+        "autoplay": true,
+        "autoplay_speed": 4,
+        "padding_top": 10,
+        "padding_bottom": 10,
+        "additional_class": "",
+        "rating_label": ""
+      },
+      "blocks": {
+        "announcement_y7tnxm": {
+          "type": "_announcement-group",
+          "settings": {
+            "layout_gap": 14,
+            "additional_class": ""
+          },
+          "blocks": {
+            "icone_livraison": {
+              "type": "material-icon",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "icon_type": "icon",
+                "icon": "delivery_truck_speed",
+                "icon_custom": "",
+                "icon_size": 26,
+                "margin_top": 0,
+                "margin_bottom": 0,
+                "additional_class": "svf-announce-icon"
+              }
+            },
+            "text_Lk3QUw": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Livraison gratuite à Bruxelles dès 80€</p>",
+                "width": "fit-content",
+                "max_width": "none",
+                "rich_text_styles": false,
+                "alignment": "center",
+                "alignment_mobile": "center",
+                "type_preset": "paragraph",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-end": 10,
+                "font_weight": "500",
+                "custom_class": "svf-announce-text",
+                "text_color": "#ffffff"
+              }
+            },
+            "icone_chrono": {
+              "type": "material-icon",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "icon_type": "icon",
+                "icon": "none",
+                "icon_custom": "timer",
+                "icon_size": 24,
+                "margin_top": 0,
+                "margin_bottom": 0,
+                "additional_class": "svf-announce-icon"
+              }
+            },
+            "texte_48h": {
+              "type": "text",
+              "settings": {
+                "text": "<p>Livraison dans toute la Belgique en 48H</p>",
+                "width": "fit-content",
+                "max_width": "none",
+                "rich_text_styles": false,
+                "alignment": "center",
+                "alignment_mobile": "center",
+                "type_preset": "paragraph",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "font_weight": "500",
+                "custom_class": "svf-announce-text",
+                "text_color": "#ffffff"
+              }
+            }
+          },
+          "block_order": [
+            "icone_livraison",
+            "text_Lk3QUw",
+            "icone_chrono",
+            "texte_48h"
+          ]
+        }
+      },
+      "block_order": [
+        "announcement_y7tnxm"
+      ]
+    },
+    "header": {
+      "type": "header",
+      "blocks": {
+        "header-logo": {
+          "type": "_header-logo",
+          "static": true,
+          "settings": {
+            "hide_logo_on_home_page": true,
+            "padding-block-start": 0,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "header-menu": {
+          "type": "_header-menu",
+          "static": true,
+          "settings": {
+            "menu": "main-menu",
+            "background_color": "#e8dbc4",
+            "text_color": "#2b1a10",
+            "type_font_primary_size": "0.875rem",
+            "menu_font_style": "regular",
+            "type_font_primary_link": "heading",
+            "type_case_primary_link": "uppercase",
+            "menu_style": "text",
+            "image_border_radius": 0,
+            "navigation_bar": false,
+            "drawer_accordion": true,
+            "drawer_accordion_expand_first": false,
+            "drawer_dividers": false
+          },
+          "blocks": {}
+        }
+      },
+      "settings": {
+        "logo_position": "left",
+        "menu_position": "center",
+        "menu_row": "top",
+        "show_search": true,
+        "search_position": "right",
+        "search_row": "top",
+        "show_country": true,
+        "country_selector_style": true,
+        "show_language": true,
+        "localization_font": "body",
+        "localization_font_size": "0.875rem",
+        "localization_position": "right",
+        "localization_row": "top",
+        "section_width": "page-width",
+        "section_height": "standard",
+        "enable_sticky_header": "always",
+        "divider_width": 0,
+        "border_width": 0,
+        "actions_display_style": "icon",
+        "background_color_top": "#e8dbc4",
+        "text_color_top": "#2b1a10",
+        "bubble_style": "default",
+        "enable_transparent_header_home": true,
+        "home_inverse_logo": false,
+        "text_color_transparent_home": "#2b1a10",
+        "enable_transparent_header_product": false,
+        "enable_transparent_header_collection": false
+      }
+    }
+  },
+  "order": [
+    "announcement_bar_r8QCCw",
+    "header"
+  ]
+}

@@ -1,0 +1,191 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "svf-cart",
+      "blocks": {
+        "cart_header_blocks": {
+          "type": "_cart-header-blocks",
+          "static": true,
+          "settings": {
+            "wrap_in_card": true,
+            "color_scheme": "scheme-2",
+            "margin_top": 15,
+            "margin_bottom": 0
+          },
+          "blocks": {
+            "cart_progress_bar_kkwckk": {
+              "type": "_cart-progress-bar",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "progress_bar_based_on": "value",
+                "step1_value": 30,
+                "step1_quantity": 1,
+                "step2_value": 0,
+                "margin_top": 0,
+                "margin_bottom": 0,
+                "additional_class": ""
+              }
+            }
+          },
+          "block_order": [
+            "cart_progress_bar_kkwckk"
+          ]
+        },
+        "cart_footer_resume_blocks": {
+          "type": "_cart-footer-resume-blocks",
+          "static": true,
+          "settings": {
+            "wrap_in_card": false,
+            "color_scheme": "",
+            "margin_top": 0,
+            "margin_bottom": 0
+          },
+          "blocks": {
+            "discount_code_3WJdxK": {
+              "type": "_discount-code",
+              "settings": {
+                "style": "normal",
+                "accordion_heading": "Ajouter un code de réduction",
+                "button_text": "Appliquer",
+                "placeholder": "Code de réduction",
+                "margin_top": 0,
+                "margin_bottom": 10,
+                "additional_class": ""
+              }
+            }
+          },
+          "block_order": [
+            "discount_code_3WJdxK"
+          ]
+        },
+        "cart_footer_blocks": {
+          "type": "_cart-footer-blocks",
+          "static": true,
+          "settings": {
+            "wrap_in_card": false,
+            "color_scheme": "",
+            "margin_top": 0,
+            "margin_bottom": 0
+          },
+          "blocks": {
+            "cart_accelerated_checkout_pCRFtz": {
+              "type": "_cart-accelerated-checkout",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "button_style": "primary",
+                "margin_top": 0,
+                "margin_bottom": 0,
+                "additional_class": ""
+              }
+            },
+            "payment_methods_TfmeJy": {
+              "type": "payment-methods",
+              "settings": {
+                "show_on_display": "desktop_and_mobile",
+                "alignment_desktop": "flex-start",
+                "alignment_mobile": "center",
+                "icon_size": 35,
+                "margin_top": 10,
+                "margin_bottom": 20,
+                "additional_class": ""
+              },
+              "blocks": {}
+            },
+            "accordions_UBXTAD": {
+              "type": "accordion",
+              "settings": {
+                "icon": "caret",
+                "dividers": true,
+                "type_preset": "paragraph",
+                "custom_class": "svf-accordion--small"
+              },
+              "blocks": {
+                "accordion_eYqGh9": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Politique de retour",
+                    "open_by_default": false,
+                    "icon": "none"
+                  },
+                  "blocks": {
+                    "text_9gnHYi": {
+                      "type": "text",
+                      "settings": {
+                        "width": "fit-content",
+                        "max_width": "none",
+                        "alignment": "left",
+                        "type_preset": "paragraph",
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "rich_text_styles": false,
+                        "alignment_mobile": "left"
+                      }
+                    }
+                  },
+                  "block_order": [
+                    "text_9gnHYi"
+                  ]
+                },
+                "accordion_dYtf9Y": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Livraison",
+                    "open_by_default": false,
+                    "icon": "none"
+                  },
+                  "blocks": {
+                    "text_jGApxp": {
+                      "type": "text",
+                      "settings": {
+                        "width": "fit-content",
+                        "max_width": "none",
+                        "alignment": "left",
+                        "type_preset": "paragraph",
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "rich_text_styles": false,
+                        "alignment_mobile": "left"
+                      }
+                    }
+                  },
+                  "block_order": [
+                    "text_jGApxp"
+                  ]
+                }
+              },
+              "block_order": [
+                "accordion_eYqGh9",
+                "accordion_dYtf9Y"
+              ]
+            }
+          },
+          "block_order": [
+            "cart_accelerated_checkout_pCRFtz",
+            "payment_methods_TfmeJy",
+            "accordions_UBXTAD"
+          ]
+        }
+      },
+      "settings": {
+        "color_scheme": "scheme-1",
+        "show_variant_options_labels": false,
+        "show_remove_button": true,
+        "show_cart_count": true,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}

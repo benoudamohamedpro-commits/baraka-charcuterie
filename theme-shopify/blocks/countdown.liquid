@@ -1,0 +1,374 @@
+<script src="{{ 'svf-countdown.js' | asset_url }}" type="module"></script>
+
+<div
+  class="
+    countdown{% if block.settings.wrap_in_card %} card svf-card color-{{ block.settings.color_scheme }}{% endif %}
+    {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+    {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+    {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+  "
+  style="
+    --margin-top: {{ block.settings.margin_top }}px;
+    --margin-bottom: {{ block.settings.margin_bottom }}px;
+  "
+  data-ref="countdown"
+  {{ block.shopify_attributes }}
+  {% if request.visual_preview_mode %}
+    data-visual-preview-mode
+  {% endif %}
+>
+  <date-counter
+    data-end-date="{{ block.settings.date_end }}"
+    data-timer-ended-text="{{ block.settings.timer_ended_text }}"
+    style="
+      --countdown-timer-font-size: {{ block.settings.timer_font_size }}px;
+      --countdown-timer-font-weight: {{ block.settings.timer_font_weight }};
+    "
+  >
+    <div
+      class="countdown__timer countdown__timer--{{ block.settings.timer_style }}"
+      data-ref="countdown-timer"
+    >
+      <div class="countdown__timer-card{% unless block.settings.show_days %} hidden{% endunless %}">
+        <span data-ref="days" class="countdown__timer-value"></span>
+        <span class="countdown__timer-label">Jours</span>
+      </div>
+      <div class="countdown__timer-card{% unless block.settings.show_hours %} hidden{% endunless %}">
+        <span data-ref="hours" class="countdown__timer-value"></span>
+        <span class="countdown__timer-label">Heures</span>
+      </div>
+      <div class="countdown__timer-card{% unless block.settings.show_minutes %} hidden{% endunless %}">
+        <span data-ref="minutes" class="countdown__timer-value"></span>
+        <span class="countdown__timer-label">Minutes</span>
+      </div>
+      <div class="countdown__timer-card{% unless block.settings.show_seconds %} hidden{% endunless %}">
+        <span data-ref="seconds" class="countdown__timer-value"></span>
+        <span class="countdown__timer-label">Secondes</span>
+      </div>
+    </div>
+
+    <div
+      class="countdown__timer-ended hidden"
+      data-show-message="{% if block.settings.ended_timer_style == 'hide_timer' %}false{% else %}true{% endif %}"
+      data-ref="timer-ended"
+    >
+      <p>{{ block.settings.timer_ended_text }}</p>
+    </div>
+  </date-counter>
+</div>
+
+{% stylesheet %}
+  .countdown {
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+    padding: 1rem;
+  }
+
+  .countdown:not(.svf-card) {
+    padding: 0;
+    background-color: inherit;
+    color: inherit;
+  }
+
+  shopify-visual-preview-block-list .countdown[data-visual-preview-mode] {
+    width: 300px;
+  }
+
+  date-counter {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .countdown__timer {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .countdown__timer-card:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: calc(-1 * 0.5rem / 2 - 1px);
+    top: calc(50%);
+    transform: translateY(-50%);
+    width: 1.5px;
+    border-radius: 3px;
+    height: 60%;
+    background-color: var(--color-foreground);
+    opacity: 0.2;
+  }
+
+  .countdown__timer--background .countdown__timer-card:not(:last-child)::after,
+  .countdown__timer--border .countdown__timer-card:not(:last-child)::after {
+    display: none;
+  }
+
+  .countdown__timer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: fit-content;
+    position: relative;
+  }
+
+  .countdown__timer-value {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem 0.33rem;
+    height: calc(var(--countdown-timer-font-size) + 0.33rem);
+    border-radius: 3px;
+    line-height: 1;
+    font-weight: var(--countdown-timer-font-weight);
+    font-size: var(--countdown-timer-font-size);
+  }
+
+  .countdown__timer--background .countdown__timer-value {
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+    padding: 0.75rem;
+    margin-bottom: 0.33rem;
+  }
+
+  .countdown__timer--border .countdown__timer-value {
+    background-color: var(--color-background);
+    border: 1px solid var(--color-border);
+    padding: 0.75rem;
+    margin-bottom: 0.33rem;
+  }
+
+  .countdown__timer-label {
+    font-size: 10px;
+    text-align: center;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    opacity: 0.8;
+  }
+
+  .countdown__timer-ended p {
+    font-weight: 500;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Compte à rebours",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "checkbox",
+      "id": "wrap_in_card",
+      "label": "Envelopper dans une carte",
+      "default": true
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-3",
+      "visible_if": "{{ block.settings.wrap_in_card }}",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "range",
+      "id": "timer_font_size",
+      "label": "Taille de la police",
+      "min": 14,
+      "max": 50,
+      "step": 1,
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "timer_font_weight",
+      "label": "Épaisseur de la police",
+      "min": 400,
+      "max": 600,
+      "step": 100,
+      "default": 500
+    },
+    {
+      "type": "select",
+      "id": "timer_style",
+      "label": "Style du timer",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "background",
+          "label": "Arrière-plan"
+        },
+        {
+          "value": "border",
+          "label": "Bordure de séparation"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "text",
+      "id": "date_end",
+      "label": "Date et heure de fin",
+      "default": "01/01/2028 00:00",
+      "info": "Exemple de format : DD/MM/YYYY HH:MM. L'heure utilisée est l'heure locale du visiteur (celle de son navigateur web)."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_days",
+      "label": "Afficher les jours",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hours",
+      "label": "Afficher les heures",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_minutes",
+      "label": "Afficher les minutes",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_seconds",
+      "label": "Afficher les secondes",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "ended_timer_style",
+      "label": "Style de l'affichage lorsque le compte à rebours est écoulé",
+      "options": [
+        {
+          "value": "message",
+          "label": "Afficher un message"
+        },
+        {
+          "value": "hide_timer",
+          "label": "Masquer le timer"
+        }
+      ],
+      "default": "hide_timer"
+    },
+    {
+      "type": "text",
+      "id": "timer_ended_text",
+      "label": "Texte à afficher lorsque le compte à rebours est écoulé",
+      "default": "L'offre est terminée",
+      "visible_if": "{{ block.settings.ended_timer_style == 'message' }}"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Compte à rebours",
+      "category": "Offres"
+    }
+  ]
+}
+{% endschema %}

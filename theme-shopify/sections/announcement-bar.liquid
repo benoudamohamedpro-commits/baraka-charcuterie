@@ -1,0 +1,327 @@
+{% if section.blocks.size > 0 %}
+  <div
+    class="
+      announcement-bar color-{{ section.settings.color_scheme }}
+      {%- if section.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+      {%- if section.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+      {{ section.settings.additional_class }}
+    "
+    style="
+      --padding-top: {{ section.settings.padding_top }}px;
+      --padding-bottom: {{ section.settings.padding_bottom }}px;
+    "
+  >
+    {% if section.settings.rating_label != blank %}
+      {% liquid
+        assign rating_full = section.settings.rating_value | floor
+        assign rating_partial = section.settings.rating_value | minus: rating_full | times: 100 | round
+      %}
+      <div
+        class="announcement-bar__rating"
+        role="img"
+        aria-label="{{ section.settings.rating_label | escape }} : {{ section.settings.rating_value }}/5"
+      >
+        <span class="announcement-bar__rating-label">{{ section.settings.rating_label }}</span>
+        <span class="announcement-bar__rating-stars" aria-hidden="true">
+          {% for i in (1..5) %}
+            {% liquid
+              assign fill = 0
+              if i <= rating_full
+                assign fill = 100
+              elsif forloop.index0 == rating_full
+                assign fill = rating_partial
+              endif
+            %}
+            <span class="announcement-bar__rating-star" style="--fill: {{ fill }}%">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.5l2.9 6.2 6.6.8-4.9 4.6 1.3 6.6L12 17.4l-5.9 3.3 1.3-6.6L2.5 9.5l6.6-.8z"/>
+              </svg>
+            </span>
+          {% endfor %}
+        </span>
+      </div>
+    {% endif %}
+
+    <div class="announcement-bar__content">
+      {% capture announcements %}
+        {% content_for 'blocks' %}
+      {% endcapture %}
+
+      {% if section.blocks.size > 1 %}
+        {% render 'svf-slider', slides: announcements, per_page_desktop: 1, per_page_mobile: 1, gap: 0, show_arrows: section.settings.show_arrows, show_pagination: false, rewind: section.settings.rewind %}
+      {% else %}
+        {{ announcements }}
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .announcement-bar {
+    width: 100%;
+    padding-top: var(--padding-top);
+    padding-bottom: var(--padding-bottom);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .announcement-bar__content {
+    width: 100%;
+  }
+
+  /* Badge de note à gauche du bandeau (ordinateur uniquement, faute de place sur mobile) */
+  .announcement-bar__rating {
+    display: none;
+  }
+
+  @media (width > 1000px) {
+    .announcement-bar__rating {
+      position: absolute;
+      top: 50%;
+      /* Aligné sur le bord gauche du contenu (logo de l'en-tête) */
+      left: max(
+        10px,
+        calc((100% - 1600px) / 2 + 10px)
+      );
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transform: translateY(-50%);
+    }
+  }
+
+  .announcement-bar__rating-label {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  .announcement-bar__rating-stars {
+    display: flex;
+    gap: 3px;
+  }
+
+  .announcement-bar__rating-star {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 22px;
+    height: 22px;
+    background: linear-gradient(90deg, #e10600 var(--fill), #6b6b6b var(--fill));
+    color: #000;
+  }
+
+  .announcement-bar__content .splide__arrow {
+    background: transparent;
+    border: none;
+
+    .svf-icon {
+      font-size: 20px !important;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Barre d'annonce",
+  "blocks": [
+    {
+      "type": "_announcement-group"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-3",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Badge de note (à gauche, ordinateur)"
+    },
+    {
+      "type": "text",
+      "id": "rating_label",
+      "label": "Texte du badge",
+      "info": "Laisser vide pour masquer le badge.",
+      "default": "Excellent"
+    },
+    {
+      "type": "range",
+      "id": "rating_value",
+      "label": "Note sur 5",
+      "default": 4.8,
+      "min": 0,
+      "max": 5,
+      "step": 0.1
+    },
+    {
+      "type": "header",
+      "content": "Slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Afficher les flèches de navigation",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "arrows_button_style",
+      "label": "Style des flèches de navigation",
+      "options": [
+        {
+          "value": "primary",
+          "label": "Primaire"
+        },
+        {
+          "value": "secondary",
+          "label": "Secondaire"
+        },
+        {
+          "value": "tertiary",
+          "label": "Tertiaire"
+        }
+      ],
+      "default": "secondary",
+      "visible_if": "{{ section.settings.show_arrows }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "rewind",
+      "label": "Boucle infinie",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Défilement automatique",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "Vitesse de défilement",
+      "default": 4,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "unit": "sec",
+      "visible_if": "{{ section.settings.autoplay }}"
+    },
+    {
+      "type": "header",
+      "content": "Espacements internes"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Marge interne en haut",
+      "default": 12,
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Marge interne en bas",
+      "default": 12,
+      "min": 5,
+      "max": 30,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "enabled_on": {
+    "groups": [
+      "header"
+    ]
+  },
+  "presets": [
+    {
+      "name": "Barre d'annonce",
+      "category": "En-tête"
+    }
+  ]
+}
+{% endschema %}

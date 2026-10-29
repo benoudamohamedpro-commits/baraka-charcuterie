@@ -1,0 +1,207 @@
+<td class="comparison-table__cell">
+  {%- content_for 'blocks' -%}
+</td>
+
+{% stylesheet %}
+  .comparison-table__cell {
+    padding: 1rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .comparison-table__cell > *:not(.text-block) {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .comparison-table__cell img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .comparison-table__cell:empty {
+    opacity: 0;
+    background-color: transparent;
+  }
+
+  @media (width < 750px) {
+    .comparison-table__cell {
+      padding: 0.75rem;
+      overflow: hidden;
+      min-width: var(--cell-min-width-mobile);
+    }
+  }
+
+  .highlight-column-1 {
+    tr td:nth-child(1):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(1):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(1):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-2 {
+    tr td:nth-child(2):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(2):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(2):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-3 {
+    tr td:nth-child(3):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(3):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(3):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-4 {
+    tr td:nth-child(4):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(4):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(4):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-5 {
+    tr td:nth-child(5):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(5):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(5):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-6 {
+    tr td:nth-child(6):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(6):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(6):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-7 {
+    tr td:nth-child(7):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(7):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(7):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+
+  .highlight-column-8 {
+    tr td:nth-child(8):not(:empty) {
+      color: var(--color-highlighted-column);
+      background-color: var(--color-highlighted-background-column);
+    }
+
+    tr:first-child td:nth-child(8):not(:empty) {
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+    }
+
+    tr:last-child td:nth-child(8):not(:empty) {
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Cellule",
+  "tag": null,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "image"
+    },
+    {
+      "type": "material-icon"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "rating-stars"
+    },
+    {
+      "type": "logo"
+    },
+    {
+      "type": "icon-with-text"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cellule"
+    }
+  ]
+}
+{% endschema %}

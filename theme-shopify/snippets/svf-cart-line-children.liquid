@@ -1,0 +1,61 @@
+<details class="cart-line-children">
+  <summary class="cart-line-children__toggle">
+    <span>{% if children_count == 1 %}Voir le produit{% else %}Voir les {{ children_count }} produits{% endif %}</span>
+    {% render 'svf-icon', icon: 'keyboard_arrow_down' %}
+  </summary>
+
+  <div class="cart-line-children__list">
+      {% if has_bundle_components %}
+        {%- for child in item.item_components -%}
+          {% render 'svf-cart-line-child', child: child, is_nested: false %}
+        {%- endfor -%}
+      {% else %}
+        {%- for other in cart.items -%}
+          {%- if other.parent_relationship.parent.key == item.key -%}
+            {% render 'svf-cart-line-child', child: other, is_nested: true %}
+          {%- endif -%}
+        {%- endfor -%}
+      {% endif %}
+  </div>
+</details>
+
+{% stylesheet %}
+  .svf-panier {
+    .cart-line-children__toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.33rem;
+      cursor: pointer;
+      font-size: 0.78125rem;
+      color: rgba(var(--color-foreground), 0.8);
+      list-style: none;
+      user-select: none;
+    }
+  
+    .cart-line-children__toggle::-webkit-details-marker {
+      display: none;
+    }
+  
+    .cart-line-children__toggle span {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+  
+    .cart-line-children__toggle .svf-icon {
+      transition: transform 0.25s ease-in-out;
+      font-size: 20px !important;
+    }
+  
+    .cart-line-children[open] .cart-line-children__toggle .svf-icon {
+      transform: rotate(180deg);
+    }
+  
+    .cart-line-children__list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+  
+  }
+{% endstylesheet %}

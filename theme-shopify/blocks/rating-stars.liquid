@@ -1,0 +1,195 @@
+{% doc %}
+  Affiche les étoiles de notation d'un produit.
+
+  @example
+  {% content_for 'block', type: 'rating-stars', id: 'rating_stars' %}
+{% enddoc %}
+
+{% liquid
+  assign product = block.settings.product
+
+  if product != blank
+    assign rating = product.metafields.reviews.rating.value | default: 0
+    assign rating_count = product.metafields.reviews.rating_count.value | default: 0
+
+    if product.metafields.reviews.rating.value == blank
+      assign rating = product.metafields.loox.avg_rating.value | default: 0
+      assign rating_count = product.metafields.loox.num_reviews.value | default: 0
+    endif
+  else
+    assign rating = block.settings.rating
+    assign rating_count = block.settings.review_count
+  endif
+%}
+
+{% assign show_rating = true %}
+
+{% if block.settings.product != blank and block.settings.hide_rating_when_no_reviews and rating_count == 0 %}
+  {% assign show_rating = false %}
+{% endif %}
+
+{% if show_rating %}
+  <div
+    style="margin-top: {{ block.settings.margin_top }}px; margin-bottom: {{ block.settings.margin_bottom }}px"
+    class="
+      {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+      {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+      {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+    "
+    {{ block.shopify_attributes }}
+  >
+    {% capture ratings_stars %}
+    {% if block.settings.show_review_count %}
+      {% render 'svf-rating-stars', rating: rating, rating_count: rating_count, show_note: block.settings.show_note %}
+    {% else %}
+      {% render 'svf-rating-stars', rating: rating, show_note: block.settings.show_note %}
+    {% endif %}
+  {% endcapture %}
+
+    {% if block.settings.link != blank %}
+      <a href="{{ block.settings.link }}" class="rating-stars__link">
+        {{ ratings_stars }}
+      </a>
+    {% else %}
+      {{ ratings_stars }}
+    {% endif %}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .rating-stars__link {
+    text-decoration: none;
+    color: inherit;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Étoiles d'avis",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "product",
+      "id": "product",
+      "label": "Produit",
+      "info": "Si aucun produit n'est sélectionné, vous pouvez définir une note manuellement ci-dessous. Sinon, les avis gérés dans votre application d'avis (Loox, Judge.me, etc.) sont affichés"
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_rating_when_no_reviews",
+      "label": "Masquer les étoiles de notation lorsqu'il n'y a pas d'avis",
+      "default": true,
+      "visible_if": "{{ block.settings.product != blank }}"
+    },
+    {
+      "type": "range",
+      "id": "rating",
+      "label": "Note",
+      "default": 4.5,
+      "min": 0,
+      "max": 5,
+      "step": 0.1,
+      "visible_if": "{{ block.settings.product == blank }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_note",
+      "label": "Afficher la note",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_review_count",
+      "label": "Afficher le nombre d'avis",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "review_count",
+      "label": "Nombre d'avis",
+      "default": 123,
+      "placeholder": "{{ block.settings.show_review_count }}",
+      "visible_if": "{{ block.settings.product == blank and block.settings.show_review_count == true }}"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Lien",
+      "info": "Conseil: Vous pouvez utiliser un lien vers une ancre afin de descendre jusqu'à la section des avis. Consultez [le guide](https://hub.themefullstack.com/training-center/master-theme-fullstack/review-anchor-link)",
+      "visible_if": "{{ block.settings.show_review_count }}"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "step": 1,
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "step": 1,
+      "min": 0,
+      "max": 100,
+      "default": 0,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Étoiles d'avis",
+      "category": "Avis"
+    }
+  ]
+}
+{% endschema %}

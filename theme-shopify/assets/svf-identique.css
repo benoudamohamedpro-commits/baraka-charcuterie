@@ -1,0 +1,2555 @@
+/*
+ * Sacoche Vélo France : reprise à l'identique des dimensions et de la typographie du thème d'origine.
+ * Ce fichier est chargé après base.css. Il ne change aucun texte ni aucune balise, seulement l'apparence.
+ */
+
+/* Largeur de page : 1600px, marges de 20px sur mobile et 10px sur ordinateur.
+   « :root:root » : Horizon déclare ses variables dans la page après ce fichier ; il faut une priorité plus forte. */
+:root:root {
+  --narrow-page-width: 1600px;
+  --normal-page-width: 1600px;
+  --wide-page-width: 1600px;
+
+  /* Le thème d'origine ne réduit pas les marges ni les espacements sur mobile. */
+  --spacing-scale-md: 1;
+  --spacing-scale-default: 1;
+
+  /* Tailles de titres fixes : valeurs mobile, puis ordinateur à partir de 750px. */
+  --font-size--h1: 3rem;
+  --font-size--h2: 2rem;
+  --font-size--h3: 1.5rem;
+  --font-size--h4: 1.25rem;
+  --font-size--h5: 1.125rem;
+  --font-size--h6: 1rem;
+  --font-size--paragraph: 0.875rem;
+
+  --font-h1--line-height: 1.25;
+  --font-h2--line-height: 1.25;
+  --font-h3--line-height: 1.25;
+  --font-h4--line-height: 1.25;
+  --font-h5--line-height: 1.25;
+  --font-h6--line-height: 1.25;
+  --font-paragraph--line-height: 1.4;
+
+  /* Espacement entre deux éléments d'un même bloc de texte : 1rem, comme à l'origine. */
+  --font-heading--spacing: 1rem;
+  --font-paragraph--spacing: 1rem;
+
+  /* Boutons. */
+  --button-padding-block: 10px;
+  --button-padding-inline: 20px;
+  --svf-button-min-height: 50px;
+  --svf-button-min-width: 120px;
+
+  /* Cartes. */
+  --svf-card-radius: 16px;
+  --svf-card-padding: 15px;
+}
+
+@media screen and (min-width: 750px) {
+  :root:root {
+    --font-size--h1: 4.5rem;
+    --font-size--h2: 3rem;
+    --font-size--h3: 2rem;
+    --font-size--h4: 1.5rem;
+    --font-size--h5: 1.25rem;
+    --font-size--h6: 1.125rem;
+    --svf-card-padding: 20px;
+  }
+}
+
+.page-width-wide,
+.page-width-normal,
+.page-width-narrow {
+  --page-margin: max(20px, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
+}
+
+@media screen and (min-width: 750px) {
+  .page-width-wide,
+  .page-width-normal,
+  .page-width-narrow {
+    --page-margin: max(10px, var(--safe-area-inset-left, 0px), var(--safe-area-inset-right, 0px));
+  }
+}
+
+strong {
+  font-weight: 600;
+}
+
+/* Retours à la ligne du thème d'origine : paragraphes sans mot seul sur la dernière ligne, tout le reste en
+   retour à la ligne normal (Horizon équilibre la longueur des lignes des titres : un titre se coupait ailleurs). */
+p {
+  text-wrap: pretty;
+}
+
+/* Classe triplée : la feuille des sections d'Horizon, chargée après celle-ci, a la même priorité à deux classes. */
+.text-block.text-block.text-block:is(.rte, .paragraph, .h1, .h2, .h3, .h4, .h5, .h6) {
+  text-wrap: wrap;
+}
+
+.text-block.text-block.text-block p {
+  text-wrap: pretty;
+}
+
+/* Alignement du texte, différent sur mobile si besoin. On passe par la variable d'Horizon (--text-align) :
+   les styles écrits dans le contenu lui-même gardent ainsi la priorité. */
+.text-block.svf-align {
+  --text-align: var(--svf-text-align-mobile);
+
+  text-align: var(--svf-text-align-mobile);
+}
+
+@media screen and (min-width: 750px) {
+  .text-block.svf-align {
+    --text-align: var(--svf-text-align);
+
+    text-align: var(--svf-text-align);
+  }
+}
+
+/* Comme dans le thème d'origine : pas de marge par défaut sur les textes. Priorité nulle (:where) :
+   toute marge écrite par Horizon ou dans un code personnalisé reste appliquée. */
+:where(p, h1, h2, h3, h4, h5, h6, ul, ol, dl, dd, figure, blockquote, pre) {
+  margin: 0;
+}
+
+:where(.rte) > :where(*) {
+  margin-block: 1rem;
+}
+
+.text-block.svf-weight.paragraph > * {
+  font-weight: var(--svf-font-weight);
+}
+
+/* Textes « sans styles de texte riche » et blocs de code du commerçant : mêmes règles de base que le thème
+   d'origine, avec la même priorité. Les styles écrits dans le contenu (pages et articles en HTML) se combinent
+   donc avec elles exactement comme sur le thème d'origine. Le bloc de texte est un conteneur ordinaire. */
+.text-block.svf-plain {
+  display: block;
+}
+
+/* « * { margin: 0 } » du thème d'origine (priorité nulle). */
+:where(.svf-plain, .svf-code) :where(*) {
+  margin: 0;
+}
+
+/* Espace entre deux éléments d'un bloc de texte : « .text-block > * » du thème d'origine. Même priorité, pour
+   passer comme lui devant une remise à zéro écrite dans le contenu (« * { margin: 0 } »). */
+.svf-plain > * {
+  margin-block: 1rem 0;
+}
+
+.svf-plain > *:first-child {
+  margin-top: 0;
+}
+
+.svf-plain > *:last-child {
+  margin-bottom: 0;
+}
+
+:where(.svf-plain, .svf-code) :is(img, picture, video, canvas, svg) {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Dans le thème d'origine, le texte hors paragraphe (cellules de tableau, encadrés) est en 16px, interligne normal ;
+   les paragraphes et les listes sont en 14px. On retrouve ces bases dans les contenus rédigés (articles, pages,
+   descriptions) et dans les blocs de code personnalisé du commerçant. */
+.text-block.svf-plain.auto,
+.svf-code {
+  font-size: 1rem;
+  line-height: normal;
+}
+
+/* « p, ul li, ol li » du thème d'origine. */
+:where(.svf-plain, .svf-code) p,
+:where(.svf-plain, .svf-code) ul li,
+:where(.svf-plain, .svf-code) ol li {
+  font-family: var(--font-paragraph--family);
+  font-style: var(--font-paragraph--style);
+  font-weight: var(--font-paragraph--weight);
+  font-size: var(--font-paragraph--size);
+  line-height: var(--font-paragraph--line-height);
+  letter-spacing: normal;
+  -webkit-font-smoothing: antialiased;
+}
+
+:where(.svf-plain, .svf-code) p {
+  text-wrap: pretty;
+}
+
+:where(.svf-plain, .svf-code) button {
+  font-family: var(--font-paragraph--family);
+}
+
+/* Titres : couleur du texte de la page, même à l'intérieur d'un encadré coloré (comme dans le thème d'origine). */
+:where(.svf-plain, .svf-code) :is(h1, h2, h3, h4, h5, h6) {
+  color: var(--color, var(--color-foreground));
+  -webkit-font-smoothing: auto;
+}
+
+/* Bloc de texte « paragraphe » : graisse choisie pour tous ses paragraphes ; liens de la couleur du texte. */
+.svf-plain.paragraph p {
+  font-weight: var(--svf-font-weight, 400);
+}
+
+.svf-plain a,
+.svf-plain.paragraph a {
+  color: inherit;
+}
+
+/* Contenu d'une page : comme dans le thème d'origine, le bloc s'élargit quand son contenu ne peut pas être plus étroit. */
+.text-block.svf-plain.svf-contenu-page {
+  min-width: min-content;
+  max-width: none;
+}
+
+/* Les styles écrits dans le contenu d'une page (la page « Guide » déclare « .section { padding: 100px 0 } ») ne
+   doivent pas atteindre les sections du thème, qui portent le même nom de classe : on y rétablit les marges
+   intérieures d'Horizon, avec une priorité plus forte que celle de ces styles. */
+.section:not(.spacing-style, .product-grid-container):not(:where(.svf-plain *, .svf-code *)) {
+  padding: 0;
+}
+
+.section.spacing-style:not(:where(.svf-plain *, .svf-code *)) {
+  padding-block: calc(var(--padding-block-start) + var(--section-top-offset, 0px)) var(--padding-block-end);
+  padding-inline: var(--padding-inline-start) var(--padding-inline-end);
+}
+
+.section.product-grid-container:not(.spacing-style) {
+  padding-block: var(--padding-block-start) var(--padding-block-end);
+  padding-inline: 0;
+}
+
+/* Rien ne fait défiler la page de côté, comme dans le thème d'origine. */
+body {
+  overflow-x: clip;
+}
+
+/* Page article : contenu sur 1200px au plus (92 % de l'écran sur ordinateur). */
+@media screen and (min-width: 750px) {
+  /* Classe « svf-max-width » ajoutée au sélecteur : il doit passer devant la règle générale de largeur maximale. */
+  .section.svf-article.svf-max-width > .custom-section-content {
+    width: calc(min(92vw, 1200px) - 20px);
+    max-width: 100%;
+  }
+}
+
+/* Un contenu large (tableau, bloc de largeur fixe) ne doit jamais élargir la page : il défile dans son cadre. */
+.section > .custom-section-content,
+.section-content-wrapper,
+.text-block.svf-plain {
+  min-width: 0;
+}
+
+.text-block.svf-plain {
+  max-width: 100%;
+}
+
+/* Bannière « image entière » : la hauteur suit le format de l'image sans dépasser la hauteur choisie ;
+   l'image n'est pas rognée, les côtés éventuels sont remplis par la même image floutée. */
+.hero.svf-hero-fit.svf-hero-fit {
+  min-height: 0;
+}
+
+.hero.svf-hero-fit:not(:has(img.hero__media)) {
+  display: none;
+}
+
+.hero.svf-hero-fit.svf-hero-fit > .hero__container {
+  min-height: 0;
+  padding-block: 0;
+}
+
+.hero.svf-hero-fit .hero__media-grid {
+  position: relative;
+  height: min(calc(100vw / var(--svf-hero-ratio, 1.777)), var(--svf-hero-height-mobile, 70vh));
+  background: var(--svf-hero-backdrop) center / cover no-repeat;
+}
+
+.hero.svf-hero-fit .hero__media-grid::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  backdrop-filter: blur(30px) brightness(0.75);
+}
+
+.hero.svf-hero-fit .hero__media-wrapper {
+  height: 100%;
+}
+
+.hero.svf-hero-fit .hero__media {
+  object-fit: contain;
+}
+
+.hero.svf-hero-fit .hero__content-wrapper:not(:has(*)) {
+  display: none;
+}
+
+/* Bannière ajustée avec un titre (Nabilerie) : le texte se pose sur la photo au lieu de passer dessous. */
+.hero.svf-hero-fit .hero__content-wrapper:has(*) {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  justify-content: center;
+  padding-inline: clamp(20px, 5vw, 80px);
+}
+
+@media screen and (min-width: 750px) {
+  .hero.svf-hero-fit .hero__media-grid {
+    height: min(calc(100vw / var(--svf-hero-ratio, 1.777)), var(--svf-hero-height, 70vh));
+  }
+}
+
+.text-block.svf-text-small > * {
+  font-size: 0.78125rem;
+}
+
+/* Texte « plus grand » : 15px sur ordinateur seulement ; sur mobile il reste à 14px, comme dans le thème d'origine. */
+.text-block.svf-text-large > * {
+  font-size: 0.875rem;
+}
+
+@media screen and (min-width: 750px) {
+  .text-block.svf-text-large > * {
+    font-size: 0.9375rem;
+  }
+}
+
+/* Boutons : mêmes dimensions qu'à l'origine. */
+.button,
+.button-secondary,
+.button-custom {
+  min-height: var(--svf-button-min-height);
+  min-width: var(--svf-button-min-width);
+  letter-spacing: 0.025rem;
+  font-weight: 400;
+}
+
+.button-secondary {
+  font-weight: 600;
+}
+
+.svf-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  max-width: max-content;
+  margin-top: var(--svf-margin-top, 0);
+}
+
+.svf-button--small {
+  padding: 5px 14px;
+  min-height: 35px;
+  min-width: 84px;
+  border-radius: 7px;
+}
+
+.svf-button--full {
+  width: 100%;
+  max-width: 100%;
+}
+
+.svf-button .svf-icon {
+  font-size: 18px !important;
+}
+
+.svf-fw-600 {
+  font-weight: 600;
+}
+
+/* Icônes Material Symbols (mêmes icônes que le thème d'origine) : la taille suit font-size. */
+.svf-icon {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 1em;
+  height: 1em;
+  font-size: 24px;
+  background-color: currentColor;
+  -webkit-mask: var(--icon-url) center / contain no-repeat;
+  mask: var(--icon-url) center / contain no-repeat;
+}
+
+/* Jeux de couleurs du thème d'origine, pour les sections reprises telles quelles. */
+.color-scheme-1,
+.color-scheme-2,
+.color-scheme-3,
+.color-scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4,
+.color-scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8 {
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  --gradient-background: var(--color-background);
+}
+
+:root:root,
+.color-scheme-1 {
+  --color-stars-icons: #e10600;
+}
+
+/* Texte « mis en avant » du thème d'origine : 14px sur mobile, 15px sur ordinateur. */
+:root:root {
+  --svf-font-size-emphasized: 0.875rem;
+}
+
+@media screen and (min-width: 750px) {
+  :root:root {
+    --svf-font-size-emphasized: 0.9375rem;
+  }
+}
+
+.color-scheme-1 {
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-foreground-rgb: 0 0 0;
+  --color: #000000;
+  --color-border: #0000000f;
+}
+
+.color-scheme-2 {
+  --color-background: #ffffff;
+  --color-foreground: #000000;
+  --color-foreground-rgb: 0 0 0;
+  --color: #000000;
+  --color-border: #00000030;
+  --color-stars-icons: #000000;
+  --color-primary-button-background: #e10600;
+  --color-primary-button-text: #ffffff;
+  --color-primary-button-border: #e10600;
+  --color-secondary-button-background: #e10600;
+  --color-secondary-button-text: #ffffff;
+  --color-secondary-button-border: #e10600;
+}
+
+.color-scheme-3 {
+  --color-background: #e10600;
+  --color-foreground: #ffffff;
+  --color-foreground-rgb: 255 255 255;
+  --color: #ffffff;
+  --color-border: #ffffff4f;
+  --color-stars-icons: #ffffff;
+}
+
+.color-scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4 {
+  --color-background: #000000;
+  --color-foreground: #ffffff;
+  --color-foreground-rgb: 255 255 255;
+  --color: #ffffff;
+  --color-border: #0000000f;
+  --color-stars-icons: #000000;
+}
+
+.color-scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8 {
+  --color-background: #ffffff;
+  --color-foreground: #ffffff;
+  --color-foreground-rgb: 255 255 255;
+  --color: #ffffff;
+  --color-border: #0000000f;
+  --color-stars-icons: #e10600;
+}
+
+/* Conteneur de largeur de page et cartes des sections reprises telles quelles. */
+/* Même priorité que dans le thème d'origine (une classe) : une section, dont la feuille est chargée après, peut
+   ajouter ses propres marges (fil d'Ariane…), mais une remise à zéro écrite dans une page (« * { padding: 0 } »)
+   ne les efface pas. */
+.page-width:not(:where(.hero__content-wrapper)) {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media screen and (min-width: 750px) {
+  .page-width:not(:where(.hero__content-wrapper)) {
+    padding: 0 10px;
+  }
+
+  .page-width:where(.page-width--narrow) {
+    max-width: 900px;
+  }
+}
+
+/* Fil d'Ariane (repris du thème d'origine) : police du texte courant, même si une page change celle du site. */
+.breadcrumbs li {
+  font-family: var(--font-paragraph--family);
+  font-style: var(--font-paragraph--style);
+  font-weight: var(--font-paragraph--weight);
+  font-size: var(--font-paragraph--size);
+  line-height: var(--font-paragraph--line-height);
+}
+
+.svf-card.svf-card {
+  border-radius: 16px;
+  padding: var(--svf-card-padding);
+  height: auto;
+}
+
+.svf-card.svf-card--with-border {
+  border: 1px solid var(--color-border);
+}
+
+/* Avis : paragraphes sans marge, comme dans le thème d'origine. */
+.review p,
+.reviews-summary p,
+.svf-rating p {
+  margin: 0;
+}
+
+/* Résumé des avis : 10px sous « Photos des clients » ; rangée d'étoiles sur la base de texte du thème d'origine
+   (16px, interligne normal), dont dépend sa largeur. */
+.reviews-summary .reviews-summary__photos-title {
+  margin-bottom: 10px;
+}
+
+.reviews-summary .svf-rating {
+  font-size: 1rem;
+  line-height: normal;
+}
+
+@media screen and (max-width: 749px) {
+  .mobile-hide {
+    display: none !important;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .desktop-hide {
+    display: none !important;
+  }
+}
+
+/* Affichage par appareil. */
+@media screen and (max-width: 749px) {
+  .svf-desktop-only {
+    display: none !important;
+  }
+
+  /* Les variables --gap et --padding-* sont posées en ligne par Horizon : on agit sur la propriété elle-même. */
+  .layout-panel-flex.svf-gap-mobile {
+    gap: var(--svf-gap-mobile);
+  }
+
+  .spacing-style.svf-padding-mobile {
+    padding-block: var(--svf-padding-block-mobile, var(--padding-block-start)) var(--svf-padding-block-mobile, var(--padding-block-end));
+    padding-inline: var(--svf-padding-inline-mobile, var(--padding-inline-start)) var(--svf-padding-inline-mobile, var(--padding-inline-end));
+  }
+
+  .layout-panel-flex.svf-mobile-column-reverse {
+    flex-flow: column-reverse nowrap;
+    align-items: var(--horizontal-alignment);
+    justify-content: var(--vertical-alignment-mobile);
+  }
+
+  .layout-panel-flex.svf-mobile-row {
+    flex-flow: row nowrap;
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .svf-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Largeur maximale du contenu d'une section, centré. Le contenu ne dépasse jamais la largeur de l'écran :
+   pas de « margin: auto » ici, qui laisserait le bloc s'élargir jusqu'à la largeur de son texte sur mobile. */
+.section.svf-max-width > .custom-section-content {
+  justify-self: center;
+  width: 100%;
+  max-width: min(100%, var(--svf-max-width));
+  min-width: 0;
+}
+
+/* Sur ordinateur, la largeur maximale du thème d'origine comprend ses marges de 10px : le contenu fait 20px de moins
+   (880px pour une section « étroite » de 900px). */
+@media screen and (min-width: 750px) {
+  .section.svf-max-width > .custom-section-content {
+    max-width: min(100%, calc(var(--svf-max-width) - 20px));
+  }
+}
+
+/* Bandeau promo de la barre d'annonce (repris du thème d'origine). */
+.text-block.announcement-promo,
+.text-block.announcement-promo > * {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* Barre d'annonce Nabilerie : texte simple, en minuscules, comme le modèle fourni par le commerçant. */
+.text-block.svf-announce-text,
+.text-block.svf-announce-text > * {
+  font-family: var(--svf-announce-font, 'Helvetica Neue', Arial, sans-serif);
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.2;
+  text-transform: none;
+}
+
+.announcement-promo strong {
+  margin-right: 0.35em;
+  color: #ff2d20;
+}
+
+@media (width <= 750px) {
+  .text-block.announcement-promo,
+  .text-block.announcement-promo > * {
+    font-size: 15px !important;
+  }
+}
+
+/* Lien étendu : toute la carte est cliquable (repris du thème d'origine). */
+.stretched-link {
+  position: relative;
+  cursor: pointer;
+}
+
+.stretched-link__overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.stretched-link a:not(.stretched-link__overlay),
+.stretched-link button,
+.stretched-link input,
+.stretched-link select,
+.stretched-link summary {
+  position: relative;
+  z-index: 1;
+}
+
+/* Étiquette de réduction à côté du prix. */
+/* Ligne de prix : prix, prix barré puis étiquette d'économie, avec les mêmes écarts qu'à l'origine
+   (0,33rem entre les prix, 8px avant l'étiquette). Le prix barré garde la couleur du texte. */
+product-price > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.33rem;
+}
+
+product-price .compare-at-price,
+product-price .compare-at-price bdi {
+  color: var(--color-foreground);
+}
+
+product-price .svf-badge {
+  margin-inline-start: calc(8px - 0.33rem);
+}
+
+.svf-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.33rem 12px;
+  border-radius: 8px;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 0.78125rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/* Groupes : ligne conservée sur mobile, ou alignement au début sur mobile. */
+@media screen and (max-width: 749px) {
+  .svf-row-mobile > .group-block-content.layout-panel-flex--row {
+    flex-wrap: nowrap;
+  }
+
+  .svf-row-mobile > .group-block-content.layout-panel-flex--row > .text-block {
+    flex: 0 1 auto;
+  }
+
+  .svf-mobile-start > .group-block-content.mobile-column,
+  .svf-mobile-start .section-content-wrapper.mobile-column {
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+}
+
+/* Bannière : hauteur exacte, comme le thème d'origine (en % de la hauteur d'écran). */
+.hero.svf-hero-height {
+  min-height: var(--svf-hero-height-mobile);
+}
+
+@media screen and (min-width: 750px) {
+  .hero.svf-hero-height {
+    min-height: var(--svf-hero-height);
+  }
+}
+
+/* Sous l'en-tête transparent de l'accueil : la bannière commence sous la barre d'annonce (pas derrière elle)
+   et son contenu est centré sur toute sa hauteur, comme à l'origine. */
+.hero-wrapper:has(> .hero.svf-hero-height) {
+  margin-top: 0 !important;
+}
+
+.hero.svf-hero-height > .hero__container {
+  --section-top-offset: 0px !important;
+}
+
+/* Bannière « en carte » du thème d'origine : dans la largeur de page (marges de 20px sur mobile, 10px sur
+   ordinateur), coins arrondis, avec l'espace choisi au-dessus et en dessous. */
+.hero.svf-hero-contained {
+  width: calc(100% - 40px);
+  max-width: 1580px;
+  margin: var(--svf-hero-outer-top, 0px) auto var(--svf-hero-outer-bottom, 0px);
+  border-radius: var(--svf-card-radius);
+  overflow: hidden;
+}
+
+@media screen and (min-width: 750px) {
+  .hero.svf-hero-contained {
+    width: calc(100% - 20px);
+  }
+}
+
+/* Barre d'annonce : pas de puce devant le message (elle ajoutait une ligne de hauteur). */
+.announcement-bar .splide__slide {
+  list-style: none;
+}
+
+/* Accordéons : la flèche occupe 24px de haut, comme l'icône du thème d'origine (c'est elle qui fixe la hauteur d'une ligne). */
+.accordion[class*='svf-accordion--'] .details__header .icon-caret {
+  align-items: center;
+  min-height: 24px;
+}
+
+/* Même flèche que le thème d'origine (icône Material de 24px), qui se retourne à l'ouverture. */
+.accordion[class*='svf-accordion--'] .details__header .svg-wrapper.icon-caret {
+  width: 24px;
+  height: 24px;
+}
+
+.accordion[class*='svf-accordion--'] .details__header .icon-caret svg {
+  display: none;
+}
+
+.accordion[class*='svf-accordion--'] .details__header .icon-caret::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: currentcolor;
+  mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/keyboard_arrow_down/wght300/24px.svg') center / contain no-repeat;
+  transition: transform 0.1s ease-in-out;
+}
+
+.accordion[class*='svf-accordion--'] details[open] > .details__header .icon-caret::before {
+  transform: rotate(180deg);
+}
+
+/* Pied de page : titres de menu dans la graisse de leur style (Horizon force celle des grands titres) ;
+   mention de copyright en 12,5px. */
+.footer-content .menu__heading__default.h3 {
+  font-weight: var(--font-h3--weight);
+}
+
+.footer-content .menu__heading__default.h4 {
+  font-weight: var(--font-h4--weight);
+}
+
+.footer-content .menu__heading__default.h5 {
+  font-weight: var(--font-h5--weight);
+}
+
+.footer-content .menu__heading__default.h6 {
+  font-weight: var(--font-h6--weight);
+}
+
+.footer-utilities .footer-utilities__text {
+  font-size: 0.78125rem;
+  line-height: normal;
+}
+/* Bouton « Voir plus » des blocs de texte (repris du thème d'origine). */
+see-more-component {
+  display: block;
+  margin-block: 0 !important;
+}
+
+.see-more__content {
+  position: relative;
+  mask: linear-gradient(to bottom, black calc(100% - 40px), transparent 100%);
+  -webkit-mask: linear-gradient(to bottom, black calc(100% - 40px), transparent 100%);
+  transition: mask 0.3s ease, -webkit-mask 0.3s ease;
+}
+
+.see-more__content > * {
+  margin-block: 1rem 0;
+}
+
+/* Comme à l'origine : taille et graisse du paragraphe pour chaque élément ; un titre garde son propre interligne. */
+.text-block.paragraph .see-more__content > * {
+  font-size: var(--font-paragraph--size);
+  font-weight: var(--svf-font-weight, var(--font-paragraph--weight));
+  text-align: inherit;
+}
+
+.see-more__content--expanded,
+.see-more__content--no-overflow {
+  mask: none;
+  -webkit-mask: none;
+}
+
+.see-more__toggle {
+  background: none;
+  border: none;
+  color: var(--color-foreground);
+  cursor: pointer;
+  font-size: 0.9em;
+  font-weight: 500;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0;
+  text-decoration: underline;
+}
+
+.see-more__toggle:hover {
+  opacity: 0.75;
+}
+
+.see-more__toggle-text {
+  display: inline-block;
+  text-decoration: underline;
+}
+/* Bouton dont le commerçant n'a pas renseigné le lien (« En savoir plus » de l'accueil, « Retour sur l'accueil »
+   de la page 404) : même apparence qu'un bouton normal, comme à l'origine (Horizon l'affichait à moitié estompé). */
+a.button.svf-button[aria-disabled='true'],
+a.button-secondary.svf-button[aria-disabled='true'] {
+  opacity: 1;
+}
+
+/* Variantes de boutons du thème d'origine, utilisées par les éléments repris tels quels (pagination…). */
+.button.button--secondary {
+  --button-color: var(--color-secondary-button-text);
+  --button-background-color: var(--color-secondary-button-background);
+  --button-border-color: var(--color-secondary-button-border);
+  --button-border-width: var(--style-border-width-secondary);
+  font-weight: 600;
+}
+
+.button.button--small {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 14px;
+  min-height: 35px;
+  min-width: 84px;
+  border-radius: 7px;
+}
+
+.button.button--icon-only {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  min-width: 50px;
+}
+
+.button.button--small.button--icon-only {
+  min-width: 35px;
+  min-height: 35px;
+  max-width: 35px;
+  max-height: 35px;
+}
+
+.button.button--icon-only .svf-icon,
+.button.button--small .svf-icon {
+  font-size: 18px;
+}
+
+.list-unstyled {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ---------- En-tête : mêmes dimensions que le thème d'origine ---------- */
+.header .header__columns {
+  padding-block: 5px;
+}
+
+/* Bordure basse de l'en-tête du thème d'origine : 1px presque transparent (hauteur totale 81px). */
+.header .header__row.header__row--top {
+  border-bottom: 1px solid rgb(0 0 0 / 6%);
+}
+
+/* ---------- Demande du commerçant (10/2026), différente du thème d'origine : sur ordinateur, logo plus gros,
+   contenu de l'en-tête resserré vers le centre et entrées du menu plus espacées. À retirer pour revenir à
+   l'en-tête d'origine. ---------- */
+@media screen and (min-width: 1200px) {
+  /* Logo Nabilerie recadré sans marges : la barre grandit avec lui (environ 96px au lieu de 81px) pour qu'il ne soit pas coupé. */
+  .header .header-logo__image {
+    width: auto;
+    height: 85px;
+    max-width: none;
+  }
+
+}
+
+
+/* Demande du commerçant : le menu complet doit rester affiché sur tous les écrans d'ordinateur. Entre 990 et
+   1440px de large, le texte du menu et ses espacements rétrécissent avec la fenêtre pour tenir sur la ligne. */
+@media screen and (min-width: 990px) and (max-width: 1439px) {
+  .header .header-menu .menu-list__link {
+    font-size: clamp(0.78rem, 1.17vw, 1.05rem);
+  }
+
+  .header .menu-list .menu-list__link-title {
+    padding-inline: clamp(4px, 0.7vw, 10px);
+  }
+
+  .header .menu-list__list-item:has(> .menu-list__trigger > .menu-list__disclosure) .menu-list__link-title {
+    padding-inline-end: calc(clamp(4px, 0.7vw, 10px) + 22px);
+  }
+
+  .header .header__column--right,
+  .header header-actions {
+    gap: clamp(8px, 1.1vw, 16px);
+  }
+}
+
+/* Demande du commerçant (Nabilerie) : sur ordinateur, le logo et les icônes ne prennent que leur largeur et les
+   entrées du menu se répartissent sur toute la largeur restante. */
+@media screen and (min-width: 990px) {
+  #header-component[data-menu-style='menu'] .header__columns {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    column-gap: 60px;
+  }
+
+  .header .header__column--center,
+  .header .header-menu,
+  .header .header-menu__inner,
+  .header .menu-list,
+  .header overflow-list.overflow-menu {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  /* Entrées regroupées au centre avec un écart fixe (la répartition sur toute la largeur était trop espacée). */
+  .header overflow-list.overflow-menu::part(list) {
+    justify-content: center;
+    column-gap: 28px;
+    width: 100%;
+  }
+}
+
+.header-menu .menu-list__link {
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.header .localization-selector {
+  font-size: 0.9375rem;
+}
+
+/* Sur mobile, le thème d'origine n'affiche pas l'icône du compte dans l'en-tête. */
+@media screen and (max-width: 749px) {
+  .header header-actions > .account-button.header-actions__action {
+    display: none;
+  }
+
+  .header .header__columns {
+    min-height: 80px;
+  }
+
+  /* Bouton du menu : icône « menu » de 24px du thème d'origine. */
+  .header .header__drawer {
+    width: 24px;
+  }
+
+  .header .header__icon--menu {
+    justify-content: center;
+    width: 24px;
+  }
+
+  .header .header__icon--menu .header-drawer-icon--open {
+    width: 24px;
+    height: 24px;
+  }
+
+  .header .header__icon--menu .header-drawer-icon--open svg {
+    display: none;
+  }
+
+  .header .header__icon--menu .header-drawer-icon--open::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: currentcolor;
+    mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/menu/wght300/24px.svg') center / contain no-repeat;
+  }
+
+  /* Loupe : 16px après le bouton du menu (la colonne de la grille d'Horizon commence 4px plus loin). */
+  .header .header__columns .header__column--left .search-action {
+    width: 24px;
+    margin-inline-start: -4px;
+  }
+}
+
+/* Icônes de l'en-tête : mêmes icônes que le thème d'origine (Material Symbols, 24px), 16px entre elles. */
+.header .header__column .search-action,
+.header .header__column header-actions {
+  margin: 0;
+}
+
+.header .header__column--right,
+.header header-actions {
+  gap: 16px;
+}
+
+.header .search-action > .header-actions__action,
+.header header-actions > .header-actions__action,
+.header .header-actions__cart-icon {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  min-width: 0;
+  height: 24px;
+  padding: 0;
+}
+
+.header .search-action .svg-wrapper > svg,
+.header .account-button svg,
+.header .header-actions__cart-icon > .svg-wrapper > svg {
+  display: none;
+}
+
+.header .search-action .svg-wrapper::before,
+.header .account-button [slot='signed-out-avatar'][aria-hidden]::before,
+.header .header-actions__cart-icon > .svg-wrapper::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: currentcolor;
+  mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/search/wght300/24px.svg') center / contain no-repeat;
+}
+
+.header .account-button [slot='signed-out-avatar'][aria-hidden]::before {
+  mask-image: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/person/wght300/24px.svg');
+}
+
+.header .header-actions__cart-icon > .svg-wrapper::before {
+  mask-image: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/local_mall/wght300/24px.svg');
+}
+
+/* Icône du compte : même couleur que les autres icônes de l'en-tête (Horizon lui donnait la couleur sombre de sa
+   fenêtre de connexion, d'où une icône grise sur l'en-tête noir). */
+.header header-actions {
+  --svf-couleur-entete: var(--color-foreground);
+}
+
+.header .account-button [slot='signed-out-avatar'][aria-hidden]::before {
+  background: var(--svf-couleur-entete, currentcolor);
+}
+
+.header .search-action .header-actions__action .svg-wrapper,
+.header .header-actions__action .header-actions__cart-icon > .svg-wrapper {
+  width: 24px;
+  height: 24px;
+}
+
+/* Pastille du panier, comme à l'origine : petite pastille en bas à droite de l'icône, toujours affichée
+   (« 0 » discret quand le panier est vide, jaune avec chiffre noir en gras dès qu'il contient un article).
+   !important : la pastille vide porte les classes « visually-hidden » et « hidden » d'Horizon. */
+.header .header-actions__cart-icon .cart-bubble {
+  position: absolute !important;
+  inset: auto -6px -6px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 18px !important;
+  height: 18px !important;
+  margin: 0 !important;
+  padding: 0;
+  overflow: visible !important;
+  clip: auto !important;
+  clip-path: none !important;
+  aspect-ratio: auto;
+  border-radius: 10px;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.header[transparent]:not([data-sticky-state='active']) .header-actions__cart-icon .cart-bubble {
+  background-color: transparent;
+}
+
+.header .header-actions__cart-icon .cart-bubble .cart-bubble__background {
+  inset: 2px;
+  border-radius: 10px;
+  background-color: #000000;
+}
+
+.header .header-actions__cart-icon .cart-bubble .cart-bubble__text {
+  color: #ffffff;
+  font-size: 0.6rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.header .header-actions__cart-icon .cart-bubble .cart-bubble__text-count.hidden {
+  display: inline !important;
+}
+
+.header .header-actions__cart-icon--has-cart .cart-bubble .cart-bubble__background {
+  background-color: #e10600;
+}
+
+.header .header-actions__cart-icon--has-cart .cart-bubble .cart-bubble__text {
+  color: #000000;
+  font-weight: 700;
+}
+
+@media screen and (min-width: 750px) {
+  /* Menu principal : 20px entre deux entrées ; flèche de 20px, 4px après le texte, pour les entrées à sous-menu. */
+  .header .menu-list .menu-list__link-title {
+    padding-inline: 10px;
+  }
+
+  .header .menu-list__list-item:has(> .menu-list__trigger > .menu-list__disclosure) .menu-list__link-title {
+    padding-inline-end: 34px;
+  }
+
+  .header .menu-list .menu-list__trigger {
+    position: relative;
+  }
+
+  .header .menu-list .menu-list__disclosure {
+    inset: 50% 10px auto auto;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    transform: translateY(-50%);
+  }
+
+  .header .menu-list .menu-list__disclosure svg {
+    display: none;
+  }
+
+  .header .menu-list .menu-list__disclosure::before,
+  .header .dropdown-localization__button .icon-caret::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: currentcolor;
+    mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/keyboard_arrow_down/wght300/20px.svg') center / contain no-repeat;
+  }
+
+  /* Sélecteur de devise : drapeau, code et flèche serrés (3px), sans largeur ni hauteur minimales de bouton. */
+  .header .dropdown-localization .dropdown-localization__button {
+    gap: 3px;
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  .header .dropdown-localization__button .svg-wrapper.icon-caret {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header .dropdown-localization__button .icon-caret svg {
+    display: none;
+  }
+}
+
+/* ---------- Étiquettes des cartes produit : 12px du bord, 30px de haut, texte de 12,5px ---------- */
+/* Classe doublée : la feuille des sections d'Horizon, chargée après celle-ci, remet 8px sur mobile. */
+.product-badges.product-badges {
+  --badge-inset: 12px;
+}
+
+.product-badges .product-badges__badge {
+  --badge-font-size: 0.78125rem;
+
+  display: flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 5.28px 12px;
+  line-height: normal;
+}
+
+/* ---------- Grilles de collection et de recherche : 4 colonnes sur ordinateur, comme à l'origine ---------- */
+@media screen and (min-width: 750px) {
+  .product-grid {
+    --product-grid-columns-desktop: repeat(4, minmax(0, 1fr)) !important;
+  }
+}
+
+/* Le thème d'origine n'affiche pas le nombre de produits à côté du tri. */
+.facets .facets__form .products-count-wrapper {
+  display: none;
+}
+
+/* Barre de filtres d'une collection (ordinateur) : simple ligne de texte de 21px, flèches de 20px 4px après le
+   libellé, 8px entre deux filtres, 32px avant la grille, comme dans le thème d'origine. */
+@media screen and (min-width: 750px) {
+  .collection-wrapper .facets-block-wrapper--horizontal {
+    margin-bottom: 32px;
+  }
+
+  .facets-block-wrapper--horizontal .facets.facets--horizontal {
+    padding-block: 0;
+  }
+
+  .facets--horizontal .facets__panel > .facets__summary {
+    height: auto;
+    min-height: 0;
+    padding-block: 0;
+    line-height: normal;
+  }
+
+  .facets--horizontal .facets__summary .facets__label {
+    margin-inline-end: 4px;
+  }
+
+  .facets--horizontal .facets__overflow-list::part(list) {
+    gap: 8px;
+  }
+
+  .facets--horizontal .facets__summary .svg-wrapper.icon-caret {
+    width: 20px;
+    height: 20px;
+    margin: 0;
+  }
+
+  .facets--horizontal .facets__summary .icon-caret svg {
+    display: none;
+  }
+
+  /* Le tri reste à droite de la barre. */
+  .facets--horizontal .facets__form .sorting-filter {
+    margin-inline-start: auto;
+  }
+
+  .facets--horizontal .facets__summary .icon-caret::before {
+    content: '';
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: currentcolor;
+    mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/keyboard_arrow_down/wght300/20px.svg') center / contain no-repeat;
+  }
+}
+
+/* ---------- Collection sur mobile : bouton « Filtres et tri » du thème d'origine ---------- */
+/* Icône de 24px, texte de 13,33px, 8px entre les deux, 20px du bord, 32px avant la grille. */
+@media screen and (max-width: 749px) {
+  .facets-toggle.facets-toggle {
+    --icon-offset: 0px;
+
+    height: 24px;
+    margin: 0 0 32px;
+    padding: 0 20px;
+  }
+
+  .facets-toggle .facets-toggle__button.facets-toggle__button {
+    gap: 8px;
+    width: auto;
+    height: 24px;
+    min-height: 0;
+    padding: 0;
+    font-size: 13.3333px;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: normal;
+  }
+
+  .facets-toggle .facets-toggle__button .svg-wrapper {
+    width: 24px;
+    height: 24px;
+  }
+
+  .facets-toggle .facets-toggle__button .svg-wrapper svg {
+    display: none;
+  }
+
+  .facets-toggle .facets-toggle__button .svg-wrapper::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    background: currentcolor;
+    mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/page_info/wght300/24px.svg') center / contain no-repeat;
+  }
+}
+
+/* ---------- Cartes produit : flèches du carrousel d'images, comme à l'origine ---------- */
+/* Toujours visibles, 40px, à 10px des bords, icône noire de 24px ; la flèche inutile (début ou fin) disparaît. */
+product-card .card-gallery slideshow-arrows {
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 10px;
+  mix-blend-mode: normal;
+}
+
+product-card .card-gallery slideshow-arrows .slideshow-control.slideshow-control {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  min-width: 40px;
+  height: 40px;
+  min-height: 40px;
+  padding: 0;
+  border-radius: 10px;
+  color: #000000;
+  opacity: 1;
+  animation: none !important;
+  transition: opacity 0.1s linear;
+}
+
+product-card .card-gallery slideshow-arrows .slideshow-control.slideshow-control:disabled {
+  opacity: 0;
+}
+
+/* Sur ordinateur, les flèches n'apparaissent qu'au survol de la carte. */
+@media screen and (min-width: 751px) {
+  product-card .card-gallery slideshow-arrows .slideshow-control.slideshow-control,
+  product-card .card-gallery slideshow-arrows .slideshow-control.slideshow-control:disabled {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  product-card:hover .card-gallery slideshow-arrows .slideshow-control.slideshow-control {
+    opacity: 1;
+  }
+
+  product-card:hover .card-gallery slideshow-arrows .slideshow-control.slideshow-control:disabled {
+    opacity: 0.5;
+  }
+}
+
+product-card .card-gallery slideshow-arrows .slideshow-control .svg-wrapper {
+  width: 24px;
+  height: 24px;
+}
+
+product-card .card-gallery slideshow-arrows .slideshow-control svg {
+  display: none;
+}
+
+product-card .card-gallery slideshow-arrows .slideshow-control .svg-wrapper::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 24px;
+  background: currentcolor;
+  mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/arrow_forward/wght300/24px.svg') center / contain no-repeat;
+}
+
+/* Image d'une carte : hauteur calculée sur la largeur exacte de la carte (le carrousel d'Horizon arrondit la
+   largeur de ses images au pixel supérieur, ce qui ajoutait un demi-pixel par rangée). */
+product-card .card-gallery slideshow-container {
+  height: auto;
+  min-height: 0;
+  aspect-ratio: var(--gallery-aspect-ratio);
+}
+
+/* Pastilles d'une carte : anneau noir autour de la couleur affichée (la première par défaut), comme à l'origine. */
+product-card product-swatches:not(:has(input:checked)) .variant-option__swatch:first-child .variant-option__button-label,
+product-card product-swatches .variant-option__button-label:has(input:checked) {
+  outline: 1px solid #000000;
+  outline-offset: 1px;
+}
+
+/* Demande du commerçant (10/2026), différente du thème d'origine : dans les cartes produit, les pastilles de
+   couleur passent sous la note et les avis. */
+product-card .group-block-content > product-swatches,
+product-card .group-block-content > :has(product-swatches) {
+  order: 2;
+}
+
+/* Bouton d'une carte : le formulaire occupe exactement la hauteur du bouton (50px). */
+product-card .buy-buttons-block product-form-component {
+  display: block;
+}
+
+/* ---------- Pied de page ---------- */
+/* Quatre colonnes dès 750px, comme à l'origine. */
+@media screen and (min-width: 750px) {
+  .footer-content[style*='--grid-columns: 4'] {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Titre de menu : hauteur du texte seulement, 16px avant les liens. */
+.footer-content .menu__heading {
+  min-height: 0;
+  padding: 0;
+  margin-bottom: 16px;
+}
+
+.svf-menu-heading {
+  margin: 0;
+}
+
+.footer-content .svf-menu-center .menu {
+  width: fit-content;
+}
+
+/* Sur mobile, comme à l'origine : les colonnes du pied de page sont l'une sous l'autre, alignées à gauche,
+   avec 40px entre elles. Le menu n'est centré dans sa colonne que sur ordinateur. */
+@media screen and (max-width: 749px) {
+  /* Classe doublée : la feuille des sections d'Horizon est chargée après celle-ci. */
+  .footer-content.footer-content {
+    gap: 40px;
+  }
+
+  .footer-content .svf-menu-center > .group-block-content.layout-panel-flex {
+    align-items: flex-start;
+  }
+
+  /* Barre du bas : 20px entre les éléments, logo à gauche. */
+  .utilities.utilities {
+    gap: 20px;
+  }
+
+  .utilities > .logo-block {
+    align-self: flex-start;
+  }
+}
+
+/* Inscription aux e-mails : champ de 50px de haut, texte en 14px, bouton carré de 50px avec l'icône « envoyer »,
+   comme dans le thème d'origine. */
+.email-signup-block .email-signup__input.email-signup__input {
+  height: 50px;
+  padding: 0 14px;
+  font-size: 0.875rem;
+}
+
+.email-signup-block .email-signup__input::placeholder {
+  color: inherit;
+  opacity: 1;
+}
+
+.email-signup__button.email-signup__button--integrated.email-signup__button--arrow {
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  min-width: 50px;
+  height: 50px;
+  margin: 0;
+  border: 0;
+  border-radius: 0 10px 10px 0;
+  background: transparent;
+  box-shadow: none;
+  color: #000000;
+}
+
+.email-signup__button--integrated.email-signup__button--arrow .email-signup__button-icon {
+  display: none;
+}
+
+.email-signup__button--integrated.email-signup__button--arrow::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background: currentcolor;
+  mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/send/wght300/20px.svg') center / contain no-repeat;
+}
+
+/* Indicateur de stock : même interligne que dans le thème d'origine. */
+.product-details .product-inventory__status,
+.product-details .product-inventory__text {
+  line-height: normal;
+}
+
+/* Nom de la boutique en texte (logo du pied de page) : lien souligné. */
+.text-block.text-block.svf-footer-logo.svf-footer-logo a {
+  text-decoration-line: underline;
+}
+
+/* Bouton d'ajout au panier sous une carte produit : pleine largeur, sans icône. */
+product-card .product-form-buttons add-to-cart-component,
+product-card .add-to-cart-button {
+  width: 100%;
+  max-width: none;
+}
+
+product-card .add-to-cart-button .add-to-cart-icon {
+  display: none;
+}
+
+/* Dans une grille, les cartes d'une même ligne ont la même hauteur et leur bouton est aligné en bas,
+   comme dans le thème d'origine. */
+.product-grid__item > product-card,
+.product-grid__item > product-card > .product-card__content {
+  height: 100%;
+}
+
+product-card .product-card__content > .buy-buttons-block {
+  margin-top: auto;
+}
+
+/* Bouton d'une carte : 50px de haut (sélecteur renforcé : la feuille des sections d'Horizon est chargée après). */
+product-card .product-form-buttons .add-to-cart-button {
+  height: 50px;
+  min-height: 50px;
+  padding-block: 10px;
+}
+
+/* Libellé du bouton d'ajout : « Ajouter » à la place de « Ajouter au panier » quand le bouton est étroit
+   (moins de 200px dans une carte, moins de 270px sur la fiche produit), comme dans le thème d'origine. */
+product-card .add-to-cart-button,
+.product-details .add-to-cart-button {
+  container-type: inline-size;
+}
+
+.add-to-cart-button .svf-atc-short {
+  display: none;
+}
+
+@container (width < 200px) {
+  product-card .add-to-cart-button .svf-atc-full,
+  .product-details .add-to-cart-button :is(.svf-atc-separator, .svf-atc-price, .svf-atc-compare) {
+    display: none;
+  }
+
+  product-card .add-to-cart-button .svf-atc-short {
+    display: inline;
+  }
+}
+
+@container (width < 270px) {
+  .product-details .add-to-cart-button .svf-atc-full {
+    display: none;
+  }
+
+  .product-details .add-to-cart-button .svf-atc-short {
+    display: inline;
+  }
+}
+
+/* Boutons des applications et du code du commerçant (ex. « Suivre » de la page de suivi) : jamais plus larges que
+   leur texte, comme les boutons du thème d'origine. */
+:is(.shopify-app-block, .svf-code, .svf-plain) .button {
+  max-width: max-content;
+}
+
+/* Formulaire de contact repris du thème d'origine : prénom et nom côte à côte sur ordinateur, l'un sous l'autre
+   sur mobile ; messages de réussite et d'erreur. */
+.textfields-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media screen and (max-width: 749px) {
+  .textfields-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.form-success,
+.form-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.form-success {
+  background-color: color-mix(in srgb, var(--color-success, #1a7f37) 15%, transparent);
+  color: var(--color-success, #1a7f37);
+}
+
+.form-error {
+  background-color: color-mix(in srgb, var(--color-error, #b3261e) 15%, transparent);
+  color: var(--color-error, #b3261e);
+}
+
+/* Champs du formulaire : texte en 14px (Horizon impose 16px aux champs de saisie). */
+.svf-contact-form .textfield input,
+.svf-contact-form .textarea textarea {
+  font-size: 0.875rem;
+}
+
+/* Pagination du blog (reprise du thème d'origine) : la classe « pagination » d'Horizon lui ajoutait des marges
+   et un espace intérieur. */
+.pagination-wrapper > .pagination {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+/* Pagination des collections et de la recherche : mêmes boutons que le thème d'origine (carrés de 35px, coins
+   de 7px, page courante en noir, flèches « précédent / suivant »), toutes les pages visibles sur mobile. */
+results-list .pagination {
+  margin: 0;
+  padding: 30px 0;
+}
+
+results-list .pagination__list {
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+results-list .pagination__item,
+results-list .pagination__item--mobile-hide {
+  display: grid;
+  width: 35px;
+  height: 35px;
+}
+
+results-list .pagination__link {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+  height: 35px;
+  border: 1px solid rgb(0 0 0 / 13%);
+  border-radius: 7px;
+  background: #ffffff;
+  color: #000000;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+results-list .pagination__link--current {
+  border: 0;
+  background: #000000;
+  color: #ffffff;
+  font-weight: 400;
+}
+
+results-list .pagination__link--disabled {
+  opacity: 0.5;
+}
+
+results-list .pagination__link--arrow svg {
+  display: none;
+}
+
+results-list .pagination__link--arrow::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background: currentcolor;
+  mask: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/arrow_back/wght300/20px.svg') center / contain no-repeat;
+}
+
+results-list .pagination__item:last-child .pagination__link--arrow::before {
+  mask-image: url('https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/arrow_forward/wght300/20px.svg');
+}
+
+/* Page de recherche : dans le thème d'origine la pagination est une case de la grille, à la suite de la dernière
+   carte (elle passe sur deux lignes sur mobile). La liste des cartes et la pagination partagent donc ici la même grille. */
+body:has(.svf-search-header) .main-collection-grid > div:has(> .product-grid) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+body:has(.svf-search-header) .main-collection-grid .product-grid {
+  display: contents;
+}
+
+@media screen and (min-width: 750px) {
+  body:has(.svf-search-header) .main-collection-grid > div:has(> .product-grid) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Pastilles de couleur d'une carte produit : 21px, 12px entre deux pastilles, bloc de 36px de haut, comme à l'origine. */
+product-card product-swatches {
+  height: 36px;
+}
+
+product-card product-swatches .variant-option--swatches {
+  padding: 4px 4px 11px;
+}
+
+product-card product-swatches overflow-list,
+product-card product-swatches overflow-list::part(list) {
+  height: auto;
+}
+
+/* !important : l'espace intérieur de cette liste est posé par la feuille interne du composant d'Horizon. */
+product-card product-swatches overflow-list::part(list) {
+  align-items: flex-start;
+  gap: 12px;
+  padding: 0 !important;
+}
+
+product-card product-swatches :is(.variant-option__swatch, .variant-option__button-label, .swatch) {
+  width: 21px;
+  height: 21px;
+}
+
+/* Menu principal : les autres liens ne s'estompent pas quand une entrée est active ou survolée. */
+.header .menu-list .menu-list__list-item .menu-list__link {
+  color: var(--menu-top-level-font-color);
+}
+
+/* Grille d'une collection sur mobile : marges de 20px, comme le reste de la page. */
+@media screen and (max-width: 749px) {
+  .main-collection-grid.main-collection-grid {
+    padding-inline: 20px;
+  }
+}
+
+/* ---------- Carrousels de produits : 4 cartes entières sur ordinateur, 1,8 carte sur mobile ---------- */
+.resource-list__carousel .resource-list__slide {
+  --peek-next-slide-size: 0px;
+}
+
+/* Sur mobile, le thème d'origine donne à chaque carte 65 % de la largeur de l'écran + 14px (258px sur un écran de 375px). */
+@media screen and (max-width: 749px) {
+  .resource-list__carousel .resource-list__slide {
+    --mobile-card-size: calc(65vw + 14px);
+  }
+}
+
+/* Grilles et carrousels : Horizon ramène les espacements à 12px sur mobile ; le thème d'origine garde les mêmes
+   espacements que sur ordinateur (16px entre deux cartes, 32px entre deux lignes). */
+.resource-list.resource-list {
+  --resource-list-mobile-gap-max: 9999px;
+}
+
+/* Groupe dans une ligne : sur mobile, sa largeur mobile s'applique (Horizon garde sinon la largeur d'ordinateur). */
+@media screen and (max-width: 749px) {
+  .layout-panel-flex--row > .group-block--width-custom {
+    flex-basis: var(--size-style-width-mobile, var(--size-style-width));
+  }
+}
+
+/* Prix : même hauteur de ligne que dans le thème d'origine (23px, texte centré en hauteur). */
+product-price.text-block {
+  min-height: 23.05px;
+  justify-content: center;
+}
+
+/* Carte produit sans pastilles de couleur : le thème d'origine garde leur emplacement vide entre le prix et la
+   note, soit 5px de plus. */
+product-card product-price + div:has(> .svf-rating) {
+  padding-top: 5px;
+}
+
+/* Barre d'annonce : base de texte du thème d'origine (16px, interligne normal). */
+.announcement-bar {
+  font-size: 1rem;
+  line-height: normal;
+}
+
+/* ---------- Fiche produit : carte blanche, galerie à 60 %, informations à 40 % ---------- */
+/* Deux classes : la remise à zéro des marges des sections (plus haut dans ce fichier) ne doit pas l'emporter. */
+.product-information.section {
+  padding-block-end: 60px;
+}
+
+@media screen and (min-width: 750px) {
+  .product-information.section {
+    padding-block: 0;
+  }
+
+  .product-information .product-information__grid:not(.product-information--media-none) {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    grid-column: 1 / -1;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto 40px;
+    padding: 40px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgb(0 0 0 / 6%);
+  }
+
+  .product-information .product-information__grid.product-information--media-right {
+    flex-direction: row-reverse;
+  }
+
+  /* !important : Horizon pose ici des marges internes avec un sélecteur plus précis. */
+  .product-information .product-information__grid .product-information__media {
+    flex: none;
+    width: 60%;
+    min-width: 0;
+    padding: 0 !important;
+  }
+
+  .product-information .product-information__grid .product-details {
+    flex: none;
+    width: 100%;
+    max-width: calc(40% - 20px);
+    padding: 0 !important;
+  }
+}
+
+/* Stock, déclencheur de vente croisée et ligne d'achat : 8px entre eux (ils formaient un seul bloc dans le thème
+   d'origine), au lieu des 12px du reste de la colonne. */
+.product-details :is(.variant-picker, product-inventory, .toggle-cross-sell) + :is(product-inventory, .toggle-cross-sell, .buy-buttons-block) {
+  margin-top: -4px;
+}
+
+/* ---------- Fiche produit, choix des variantes : mêmes libellé et pastilles que le thème d'origine ---------- */
+/* Taille et forme des pastilles : réglages du bloc (normale 30px ronde par défaut). */
+.product-details .variant-picker {
+  --svf-swatch-size: 30px;
+  --svf-swatch-radius: 100px;
+  --svf-swatch-offset: 2px;
+}
+
+.product-details .variant-picker.svf-swatches--small {
+  --svf-swatch-size: 21px;
+  --svf-swatch-offset: 1px;
+}
+
+.product-details .variant-picker.svf-swatches--big {
+  --svf-swatch-size: 45px;
+  --svf-swatch-offset: 3px;
+}
+
+.product-details .variant-picker.svf-swatches--square {
+  --svf-swatch-radius: 8px;
+}
+
+.product-details .variant-picker.svf-swatches--square.svf-swatches--small {
+  --svf-swatch-radius: 6px;
+}
+
+.product-details .variant-picker.svf-swatches--square.svf-swatches--big {
+  --svf-swatch-radius: 12px;
+}
+
+/* Libellé de l'option (« Couleur : ») : 14px, graisse 500, 8px sous le libellé. */
+.product-details .variant-picker .variant-option legend {
+  margin: 0 0 8px;
+  padding: 0;
+  color: #000000;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: normal;
+}
+
+/* 16px entre deux options (couleur, taille…). */
+.product-details .variant-picker .variant-picker__form {
+  gap: 16px;
+}
+
+/* Rangée de pastilles : 10px entre elles, sur une seule ligne qui défile si elle est trop longue. */
+.product-details .variant-picker .variant-option.variant-option--swatches {
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 0 10px;
+}
+
+.product-details .variant-picker .variant-option--swatches .variant-option__button-label--has-swatch {
+  flex: none;
+  width: var(--svf-swatch-size);
+  height: var(--svf-swatch-size);
+  margin: 4px 1px 1px;
+  border-radius: var(--svf-swatch-radius);
+  outline-offset: var(--svf-swatch-offset);
+  background: none;
+}
+
+.product-details .variant-picker .variant-option--swatches .variant-option__button-label--has-swatch:first-of-type {
+  margin-left: 4px;
+}
+
+.product-details .variant-picker .variant-option--swatches .variant-option__button-label--has-swatch:last-of-type {
+  margin-right: 4px;
+}
+
+.product-details .variant-picker .variant-option--swatches .variant-option__button-label--has-swatch:hover:not(:has(input:checked)) {
+  outline: 1px solid rgb(230 230 230 / 8%);
+}
+
+.product-details .variant-picker .variant-option--swatches .swatch {
+  position: relative;
+  overflow: hidden;
+  width: var(--svf-swatch-size);
+  height: var(--svf-swatch-size);
+  border: 1px solid rgb(230 230 230 / 8%);
+  border-radius: var(--svf-swatch-radius);
+  background-size: cover;
+  background-origin: border-box;
+}
+
+/* Couleur épuisée : trait fin en diagonale, d'un coin à l'autre de la pastille. */
+.product-details .variant-picker .variant-option__button-label--has-swatch .variant-option__strikethrough {
+  display: none;
+}
+
+.product-details .variant-picker .variant-option__button-label--has-swatch:has([data-option-available='false']) .swatch::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5px;
+  left: 0;
+  width: calc(var(--svf-swatch-size) * 1.414);
+  height: 1px;
+  background-color: #000000;
+  transform: rotate(-45deg);
+  transform-origin: left;
+}
+
+/* Indicateur de stock : pastille de 15px, texte en interligne normal. */
+.product-details product-inventory {
+  line-height: normal;
+}
+
+.product-details .product-inventory__icon,
+.product-details .product-inventory__icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Ligne d'achat : 8px entre la quantité et le bouton, bouton de 50px de haut. */
+.product-details .buy-buttons-block .product-form-buttons {
+  gap: 8px;
+}
+
+.product-details .product-form-buttons .add-to-cart-button {
+  height: 50px;
+  min-height: 50px;
+  padding-block: 10px;
+}
+
+/* Ligne d'achat collée en bas de l'écran quand elle n'est plus visible (voir assets/svf-sticky-buy.js). */
+.buy-buttons-block[data-svf-sticky='true'] .product-form-buttons,
+.buy-buttons-block[data-svf-closing='true'] .product-form-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 100%;
+  padding: 0.75rem 20px;
+  border-top: 0.5px solid var(--color-border);
+  background: var(--color-background);
+}
+
+.buy-buttons-block[data-svf-sticky='true'] .product-form-buttons {
+  animation: svf-sticky-buy-up 300ms ease-in-out;
+}
+
+.buy-buttons-block[data-svf-closing='true'] .product-form-buttons {
+  animation: svf-sticky-buy-down 300ms ease-in-out forwards;
+}
+
+@keyframes svf-sticky-buy-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes svf-sticky-buy-down {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@media screen and (min-width: 750px) {
+  .buy-buttons-block[data-svf-sticky='true'] .product-form-buttons,
+  .buy-buttons-block[data-svf-closing='true'] .product-form-buttons {
+    padding: 1rem max(10px, calc((100% - 1600px) / 2));
+  }
+}
+
+/* Pastilles écrites par le commerçant (« .color-swatches .swatch ») : le thème d'origine entourait leur libellé d'un
+   filet presque invisible (règle de ses propres pastilles). On le reprend, à la même priorité, pour garder la même
+   hauteur de bloc. */
+.swatch:where(.color-swatches > *) span {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border: 0.5px solid rgb(230 230 230 / 8%);
+}
+
+/* ---------- Accordéons : mêmes hauteurs, icône devant le titre, trait fin entre les lignes ---------- */
+.accordion[class*='svf-accordion--'] .details__header {
+  min-height: 0;
+  padding-block: 8px;
+}
+
+.accordion.svf-accordion--medium .details__header {
+  padding-block: 12px;
+}
+
+.accordion.svf-accordion--large .details__header {
+  padding-block: 16px;
+}
+
+.accordion[class*='svf-accordion--'] .details__icon.svf-icon {
+  height: 1em;
+  margin-inline-end: 8px;
+  font-size: 20px;
+}
+
+.accordion[class*='svf-accordion--'].accordion--dividers accordion-custom .details {
+  border: 0;
+}
+
+.accordion[class*='svf-accordion--'].accordion--dividers accordion-custom:not(:last-child) .details {
+  border-block-end: 0.5px solid rgb(0 0 0 / 19%);
+}
+
+.accordion[class*='svf-accordion--'] .details-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 0 1rem;
+}
+
+/* Vignettes de la galerie produit : 70px de côté, 10px d'écart, comme à l'origine. */
+.product-information .slideshow-controls__thumbnails {
+  gap: 10px;
+  padding-block: 10px 16px;
+}
+
+.product-information .slideshow-controls__thumbnails .slideshow-control {
+  width: 70px;
+  min-width: 70px;
+}
+
+@media screen and (max-width: 749px) {
+  .product-information .slideshow-controls__thumbnails {
+    padding-inline: 20px;
+  }
+}
+
+/* Quantité à gauche (92px), bouton d'ajout au panier sur le reste de la ligne, 50px de haut. */
+.product-form-buttons {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.product-form-buttons .quantity-selector-wrapper {
+  flex: 0 0 92px;
+  width: 92px;
+}
+
+.product-form-buttons .quantity-selector {
+  width: 92px;
+  height: 50px;
+  min-height: 50px;
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+.product-form-buttons .quantity-selector :is(.quantity-minus, .quantity-plus) {
+  width: 30px;
+  min-width: 30px;
+  min-height: 0;
+  height: 48px;
+  padding: 0;
+}
+
+.product-form-buttons .quantity-selector input {
+  width: 30px;
+  min-width: 0;
+  padding: 0;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.product-form-buttons add-to-cart-component {
+  flex: 1 1 auto;
+}
+
+.product-form-buttons .add-to-cart-button {
+  width: 100%;
+  max-width: none;
+  min-height: 50px;
+}
+
+.product-form-buttons .add-to-cart-button .add-to-cart-icon {
+  display: none;
+}
+
+/* Prix dans le bouton d'ajout au panier : « Ajouter au panier | 89,90€ ». */
+.add-to-cart-button .svf-atc-separator {
+  margin-inline: 8px;
+}
+
+.add-to-cart-button .svf-atc-compare {
+  margin-inline-start: 6px;
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+/* ---------- Vente croisée à cocher (fiche produit) ---------- */
+/* Titre du bloc : libellé de 14px, comme les libellés de variantes du thème d'origine (la balise reste un H3). */
+.variant_label {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-body--family);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-foreground);
+}
+
+.toggle-cross-sell__product {
+  --color-input-border: #e6e6e6;
+}
+
+.toggle-cross-sell__product .price,
+.toggle-cross-sell__product .compare-at-price {
+  white-space: nowrap;
+}
+
+.toggle-cross-sell__product .compare-at-price {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.svf-checkbox {
+  position: relative;
+  display: block;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+.svf-checkbox > input {
+  position: absolute;
+  opacity: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.svf-checkbox > span {
+  display: block;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #e6e6e6;
+  border-radius: 3px;
+  background-color: #ffffff;
+}
+
+.svf-checkbox > input:checked + span {
+  border-color: #000000;
+  background-color: #000000;
+}
+
+.svf-checkbox > input:checked + span::after {
+  content: '';
+  display: block;
+  width: 0.6rem;
+  height: 0.3rem;
+  border: solid 1.5px #ffffff;
+  border-right: none;
+  border-top: none;
+  transform: translate(0.22rem, 0.32rem) rotate(-45deg);
+}
+
+.toggle-cross-sell .select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.toggle-cross-sell .select {
+  appearance: none;
+  height: 35px;
+  min-width: 120px;
+  padding: 0 35px 0 14px;
+  border: 1px solid #e6e6e6;
+  border-radius: 7px;
+  color: #000000;
+  background-color: #ffffff;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.toggle-cross-sell .select-wrapper__icon {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  height: 20px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.toggle-cross-sell .select-wrapper__icon .svf-icon {
+  font-size: 20px;
+}
+
+/* Code personnalisé du commerçant (capacité, couleur) : sa classe .swatch porte le même nom que les pastilles
+   d'Horizon. Les pastilles d'Horizon les ignorent (voir snippets/swatch-styles.liquid) : seuls les styles
+   écrits par le commerçant dans son bloc s'appliquent. */
+
+/* ---------- Panier (page) repris du thème d'origine : variables et styles communs dont il dépend ---------- */
+.svf-panier {
+  /* Valeurs du jeu de couleurs et des réglages du thème d'origine utilisées par ses styles. */
+  --color-border: rgb(0 0 0 / 6%);
+  --color-error: #9f3a38;
+  --modal-shadow: 0 4px 24px rgb(0 0 0 / 12%);
+  --animation-link-hover: opacity 0.15s ease-in-out;
+  --icon-fill: 0;
+  --icon-weight: 300;
+}
+
+/* Boutons du panier : même construction que ceux du thème d'origine (contenu centré, 10px entre texte et icône). */
+.svf-panier .button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  line-height: normal;
+}
+
+.svf-panier .button.button--full-width {
+  display: flex;
+  width: 100%;
+  max-width: none;
+}
+
+/* Étiquettes (codes de réduction appliqués, remises d'une ligne). */
+.svf-panier .badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.33rem 0.75rem;
+  border: 0 solid #000000;
+  border-radius: 8px;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 0.78125rem;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.svf-panier .badge:not(:has(.badge__text:empty)) {
+  gap: 0.33rem;
+}
+
+.svf-panier .badge .svf-icon {
+  font-size: 14px;
+}
+
+.svf-panier .badge.badge--secondary {
+  border: 1px solid rgb(0 0 0 / 13%);
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.svf-panier .badge.badge--small {
+  padding: 0.25rem 0.5rem;
+}
+
+/* Message d'erreur ou de réussite qui monte du bas de l'écran (code de réduction refusé…). */
+.svf-panier .toast-notification {
+  position: fixed;
+  top: 100%;
+  left: 50%;
+  z-index: 10001;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  width: max-content;
+  min-width: 300px;
+  max-width: calc(100% - 4rem);
+  padding: 1rem;
+  box-shadow: var(--modal-shadow);
+  font-size: 0.875rem;
+  transform: translateX(-50%) translateY(0%);
+  transition: transform 500ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.svf-panier .toast-notification.active {
+  transform: translateX(-50%) translateY(calc(-100% - 20px));
+}
+
+.svf-panier .toast-notification .icon-container {
+  height: 24px;
+}
+
+.svf-panier .toast-notification .icon-container .svf-icon {
+  display: none;
+  font-size: 24px;
+}
+
+.svf-panier .toast-notification.success {
+  background-color: #f0f9eb;
+  color: #2d6a4f;
+}
+
+.svf-panier .toast-notification.error {
+  background-color: #f9e7e7;
+  color: #9f3a38;
+}
+
+.svf-panier .toast-notification.warning {
+  background-color: #fff4e5;
+  color: #7f5a1e;
+}
+
+.svf-panier .toast-notification.info {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.svf-panier .toast-notification.success .icon-success,
+.svf-panier .toast-notification.error .icon-error,
+.svf-panier .toast-notification.warning .icon-warning,
+.svf-panier .toast-notification.info .icon-info {
+  display: block;
+}
+
+/* Accordéons du bas du panier : lignes plus serrées, comme dans le thème d'origine. */
+.svf-panier .cart__footer .accordion[class*='svf-accordion--'] .details__header {
+  padding-block: 0.33rem;
+}
+
+/* Prix du panier (mise en page du thème d'origine : prix, prix barré, 0,33rem entre les deux). */
+.svf-panier .product-price-container:has(.unit-price:not(:empty)) {
+  display: flex;
+  flex-direction: column;
+  gap: 0.33rem;
+}
+
+.svf-panier .price-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.svf-panier .price-container .prices {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.33rem;
+}
+
+.svf-panier .price-container :is(.price, .compare-at-price) {
+  text-wrap-mode: nowrap;
+}
+
+.svf-panier .price-container .compare-at-price {
+  color: inherit;
+  text-decoration: line-through;
+  text-decoration-thickness: 1.5px;
+  opacity: 0.7;
+}
+
+.svf-panier .unit-price {
+  font-size: 0.78125rem;
+  opacity: 0.7;
+}
+
+/* Champs du panier : coins de 10px ; boutons de paiement express à leur taille par défaut (42px), comme à l'origine. */
+.svf-panier :is(input, textarea, select) {
+  border-radius: 10px;
+}
+
+.svf-panier shopify-accelerated-checkout-cart {
+  --shopify-accelerated-checkout-button-block-size: 42px;
+  --shopify-accelerated-checkout-button-border-radius: 4px;
+}
+
+/* Libellé flottant des champs repris du thème d'origine : interligne normal. */
+.textfield label {
+  line-height: normal;
+}
+
+/* ---------- Panier (tiroir) repris du thème d'origine ---------- */
+/* La page ne défile pas pendant que le tiroir est ouvert. */
+body.svf-overflow-hidden {
+  overflow: hidden !important;
+}
+
+/* Comme à l'origine : la page est seulement assombrie derrière le tiroir, sans voile coloré ni ombre portée. */
+.svf-panier svf-tiroir.svf-tiroir {
+  background: none;
+}
+
+.svf-panier .svf-tiroir__inner.svf-tiroir__inner {
+  box-shadow: none;
+}
+
+/* Glissement du tiroir depuis la droite (animations du thème d'origine). */
+@keyframes modalSlideInRight {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes modalSlideOutRight {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Boutons du tiroir : croix de fermeture sans fond (icône de 24px), bouton « supprimer » avec un vrai contour. */
+.svf-panier svf-tiroir .button.button--tertiary {
+  --button-background-color: transparent;
+  --button-border-width: 0px;
+  --button-color: var(--color-foreground);
+  border: 0;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--color-foreground);
+}
+
+.svf-panier svf-tiroir .button.button--tertiary.button--icon-only .svf-icon {
+  font-size: 24px;
+}
+
+.svf-panier svf-tiroir .button.button--secondary.button--icon-only {
+  border: 1px solid rgb(0 0 0 / 13%);
+  box-shadow: none;
+}
+
+/* Textes du tiroir : mêmes tailles et interlignes qu'à l'origine. */
+.svf-panier svf-tiroir .cart-progress-bar__step-label {
+  line-height: normal;
+}
+
+.svf-panier .accordion__heading-title {
+  font-size: 0.875rem;
+}
+
+/* Paragraphes du panier : mêmes retours à la ligne qu'à l'origine (pas de mot seul sur la dernière ligne). */
+.svf-panier p {
+  text-wrap: pretty;
+}
+
+/* Interlignes du thème d'origine : « normal » par défaut, 1,4 pour les paragraphes et les listes
+   (priorité la plus basse : chaque élément du panier garde l'interligne que sa propre règle lui donne). */
+.svf-panier {
+  line-height: normal;
+}
+
+:where(.svf-panier) :is(p, ul li, ol li) {
+  line-height: 1.4;
+}
+
+/* Ouverture et fermeture en douceur de l'accordéon (code de réduction). */
+.svf-panier .accordion-animation details {
+  &::details-content,
+  .accordion__content {
+    block-size: 0;
+    overflow-y: clip;
+    opacity: 0;
+    interpolate-size: allow-keywords;
+    transition:
+      content-visibility 0.1s allow-discrete,
+      padding-block 0.1s ease-in-out,
+      opacity 0.1s ease-in-out,
+      block-size 0.1s ease-in-out;
+  }
+
+  &[open] {
+    &::details-content,
+    .accordion__content {
+      opacity: 1;
+      block-size: auto;
+
+      @starting-style {
+        block-size: 0;
+        opacity: 0;
+        overflow-y: clip;
+      }
+    }
+  }
+}
+
+/* Demande du commerçant (10/2026), différente du thème d'origine : en plein écran (ordinateur), chaque photo produit
+   tient entièrement dans l'écran, sans rognage ni défilement dans la photo, et ne passe pas sous la colonne des miniatures
+   (même marge des deux côtés pour rester centrée). */
+@media screen and (min-width: 750px) {
+  .dialog-zoomed-gallery .product-media-container--image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 100vh;
+    height: 100dvh;
+    padding-block: 20px;
+    padding-inline: calc(var(--thumbnail-width, 80px) + var(--padding-lg, 16px) * 2 + 10px);
+  }
+
+  .dialog-zoomed-gallery .product-media-container--image :is(.product-media__drag-zoom-wrapper, .product-media) {
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: auto;
+  }
+
+  .dialog-zoomed-gallery .product-media-container--image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+/* Demande du commerçant (10/2026) : en plein écran sur mobile, miniatures plus petites pour laisser la place à la photo. */
+@media screen and (max-width: 749px) {
+  .dialog-thumbnails-list {
+    --thumbnail-width: 56px;
+  }
+}
+
+/* Ligne d'achat collée en bas de l'écran : elle passait derrière les sections suivantes, car elle restait dans le
+   calque de la colonne produit (position collante, niveau 1). Pendant qu'elle est détachée, la section produit et
+   la colonne passent au niveau juste sous l'en-tête collant, comme la barre d'achat d'origine d'Horizon. */
+.shopify-section:has(.buy-buttons-block:is([data-svf-sticky='true'], [data-svf-closing='true'])),
+.product-details:has(.buy-buttons-block:is([data-svf-sticky='true'], [data-svf-closing='true'])) {
+  z-index: calc(var(--layer-sticky) - 1);
+}
+
+.buy-buttons-block:is([data-svf-sticky='true'], [data-svf-closing='true']) .product-form-buttons {
+  z-index: calc(var(--layer-sticky) - 1);
+}
+
+/* Vidéo produit en plein écran (bouton du lecteur) : toujours affichée entière, jamais recadrée comme dans la galerie. */
+.product-media video:fullscreen {
+  object-fit: contain !important;
+}
+
+.product-media video:-webkit-full-screen {
+  object-fit: contain !important;
+}

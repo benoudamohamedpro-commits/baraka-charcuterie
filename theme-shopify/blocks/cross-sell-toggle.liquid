@@ -1,0 +1,411 @@
+{% liquid
+  assign product_list = block.settings.product_list
+
+  if request.visual_preview_mode
+    assign product_list = collections.all.products | where: 'available'
+  endif
+
+  assign product_list_length = 0
+
+  for product in product_list
+    if product.available
+      assign product_list_length = product_list_length | plus: 1
+    endif
+  endfor
+%}
+
+{%- if product_list_length > 0 -%}
+  <script src="{{ 'svf-toggle-cross-sell.js' | asset_url }}" type="module"></script>
+
+  <toggle-cross-sell-list
+    class="
+      toggle-cross-sell
+      {%- if block.settings.show_on_display == 'desktop_only' %} mobile-hide{% endif -%}
+      {%- if block.settings.show_on_display == 'mobile_only' %} desktop-hide{% endif -%}
+      {%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}
+    "
+    style="--margin-top: {{ block.settings.margin_top }}px; --margin-bottom: {{ block.settings.margin_bottom }}px;"
+    data-ref="toggle-cross-sells"
+    {{ block.shopify_attributes }}
+    {% if request.visual_preview_mode %}
+      data-visual-preview-mode
+    {% endif %}
+  >
+    {% if block.settings.title != blank or block.settings.description != blank %}
+      <div class="toggle-cross-sell__content">
+        {% if block.settings.title != blank %}
+          <h3 class="toggle-cross-sell__title variant_label">{{ block.settings.title }} :</h3>
+        {% endif %}
+
+        {% if block.settings.description != blank %}
+          <div class="toggle-cross-sell__description">
+            {{ block.settings.description }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="toggle-cross-sell__products">
+      {%- for product in product_list -%}
+        {%- if product.available -%}
+          <toggle-cross-sell
+            class="toggle-cross-sell__product"
+            data-ref="toggle-cross-sell"
+            data-price="{{ product.selected_or_first_available_variant.price }}"
+            {%- if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price -%}
+              data-compare-at-price="{{ product.selected_or_first_available_variant.compare_at_price }}"
+            {%- endif -%}
+          >
+            <div class="toggle-cross-sell__product-container">
+              {%- if block.settings.show_image -%}
+                <div class="toggle-cross-sell__product-image" data-ref="toggle-cross-sell-image">
+                  <a href="{{ product.url }}">
+                    <img
+                      src="{{ product.featured_image | image_url: width: 110 }}"
+                      alt="{{ product.featured_image.alt }}"
+                      width="55"
+                      height="55"
+                    >
+                  </a>
+                </div>
+              {%- endif -%}
+
+              <div class="toggle-cross-sell__product-content {% if block.settings.show_image == false %}toggle-cross-sell__product-content--no-image{% endif %}">
+                <div class="toggle-cross-sell__product-header">
+                  <a href="{{ product.url }}" class="toggle-cross-sell__product-title">{{ product.title }}</a>
+
+                  <span class="toggle-cross-sell__product-price-container" data-ref="toggle-cross-sell-price">
+                    {%- assign cross_variant = product.selected_or_first_available_variant -%}
+                    <span class="price">{{ cross_variant.price | money_without_trailing_zeros }}</span>
+                    <span class="compare-at-price">{% if cross_variant.compare_at_price > cross_variant.price %}{{ cross_variant.compare_at_price | money_without_trailing_zeros }}{% endif %}</span>
+                  </span>
+                </div>
+
+                {%- assign available_variants_length = 0 -%}
+                {%- for variant in product.variants -%}
+                  {%- if variant.available -%}
+                    {%- assign available_variants_length = available_variants_length | plus: 1 -%}
+                  {%- endif -%}
+                {%- endfor -%}
+
+                {%- if available_variants_length > 1 -%}
+                  <div class="select-wrapper">
+                    <select
+                      class="select select--small"
+                      data-ref="toggle-cross-sell-select"
+                      aria-label="{{ product.title }} select"
+                    >
+                      {%- for variant in product.variants -%}
+                        <option
+                          value="{{ variant.id }}"
+                          {%- if variant.featured_image != blank -%}
+                            data-variant-image="{{ variant.featured_image | image_url: width: 110 }}"
+                          {%- endif -%}
+                          data-price="{{ variant.price }}"
+                          {%- if variant.compare_at_price > variant.price -%}
+                            data-compare-at-price="{{ variant.compare_at_price }}"
+                          {%- endif -%}
+                          {% if variant.available == false %}
+                            disabled
+                          {% endif %}
+                        >
+                          {{ variant.title }}
+                        </option>
+                      {%- endfor -%}
+                    </select>
+
+                    <div class="select-wrapper__icon">
+                      {% render 'svf-icon', icon: 'keyboard_arrow_down' %}
+                    </div>
+                  </div>
+                {%- endif -%}
+              </div>
+            </div>
+
+            {%- case block.settings.toggle_mode -%}
+              {%- when 'checkbox' -%}
+                {% assign data = 'data-variant-id="' | append: product.selected_or_first_available_variant.id | append: '"' %}
+                {% assign data = data | append: ' data-ref="toggle-cross-sell-checkbox"' %}
+                {% assign name = product.title | handleize | append: ' ' | append: 'checkbox' %}
+                {% assign aria_label = product.title | append: ' ' | append: 'checkbox' %}
+
+                <label class="svf-checkbox"><input type="checkbox" name="{{ name }}" aria-label="{{ aria_label }}" {{ data }}><span></span></label>
+
+              {%- when 'add_button' -%}
+                <button
+                  type="button"
+                  class="button button--small button--secondary"
+                  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                  data-ref="toggle-cross-sell-button"
+                >
+                  <span class="toggle-cross-sell__text-add">
+                    Ajouter
+                  </span>
+                  <span class="toggle-cross-sell__text-added">
+                    Ajouté
+                  </span>
+                  <span class="toggle-cross-sell__text-remove">
+                    Retirer
+                  </span>
+                </button>
+            {%- endcase -%}
+          </toggle-cross-sell>
+        {%- endif -%}
+
+        {% if request.visual_preview_mode and forloop.index > 1 %}
+          {% break %}
+        {% endif %}
+      {%- endfor -%}
+    </div>
+  </toggle-cross-sell-list>
+{%- endif -%}
+
+{% stylesheet %}
+  .toggle-cross-sell {
+    display: block;
+    margin-top: var(--margin-top);
+    margin-bottom: var(--margin-bottom);
+  }
+
+  shopify-visual-preview-block-list .toggle-cross-sell[data-visual-preview-mode] {
+    width: 400px;
+  }
+
+  .product-form__form .toggle-cross-sell:not(:first-of-type) {
+    display: none;
+  }
+
+  .toggle-cross-sell__content {
+    margin-bottom: 0.5rem;
+  }
+
+  .toggle-cross-sell__description p {
+    margin: 0;
+    line-height: normal;
+    font-size: 0.875rem;
+  }
+
+  .toggle-cross-sell__products {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .toggle-cross-sell__product {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    /* min-height: 50px; */
+    gap: 1rem;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 16px;
+    padding: 0.5rem;
+    color: var(--color-input-text);
+    background-color: var(--color-input-background);
+    border: 1px solid var(--color-input-border);
+  }
+
+  .toggle-cross-sell__product:has(input[type='checkbox']:checked) {
+    border-color: #000000;
+  }
+
+  .toggle-cross-sell__product-image img {
+    display: block;
+    min-width: 55px;
+    width: 55px;
+    border-radius: calc(16px - 0.5rem);
+  }
+
+  .toggle-cross-sell__product-image--wide img {
+    object-fit: cover;
+    min-height: 100%;
+    border-radius: 0;
+  }
+
+  .toggle-cross-sell__product-container {
+    display: flex;
+    flex-direction: row;
+    cursor: auto;
+    gap: 0.5rem;
+  }
+
+  .toggle-cross-sell__product-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .toggle-cross-sell__product-content--no-image {
+    margin-left: 0.5rem;
+  }
+
+  .toggle-cross-sell__product-header {
+    display: flex;
+    gap: 0.33rem;
+    flex-wrap: wrap;
+    flex-direction: column;
+  }
+
+  .toggle-cross-sell__product-title {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .toggle-cross-sell__product-price-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78125rem;
+  }
+
+  .toggle-cross-sell__product .svf-checkbox,
+  .toggle-cross-sell__product .button {
+    margin-right: 0.5rem;
+  }
+
+  .toggle-cross-sell__text-add,
+  .toggle-cross-sell__text-added,
+  .toggle-cross-sell__text-remove {
+    display: none;
+  }
+
+  .toggle-cross-sell__product .button.button--secondary .toggle-cross-sell__text-add {
+    display: block;
+  }
+
+  .toggle-cross-sell__product .button.button--active:not(:hover) .toggle-cross-sell__text-added {
+    display: block;
+  }
+
+  .toggle-cross-sell__product .button.button--active:hover .toggle-cross-sell__text-remove {
+    display: block;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Vente croisée à cocher",
+  "tag": null,
+  "settings": [
+    {
+      "type": "select",
+      "id": "show_on_display",
+      "label": "Afficher sur",
+      "default": "desktop_and_mobile",
+      "options": [
+        {
+          "value": "desktop_and_mobile",
+          "label": "Ordinateur et mobile"
+        },
+        {
+          "value": "desktop_only",
+          "label": "Ordinateur uniquement"
+        },
+        {
+          "value": "mobile_only",
+          "label": "Mobile uniquement"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Contenu"
+    },
+    {
+      "type": "inline_richtext",
+      "id": "title",
+      "label": "Titre",
+      "default": "Ajouter des options"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Produits"
+    },
+    {
+      "type": "select",
+      "id": "toggle_mode",
+      "options": [
+        {
+          "value": "checkbox",
+          "label": "Case à cocher"
+        },
+        {
+          "value": "add_button",
+          "label": "Bouton d'ajout"
+        }
+      ],
+      "default": "checkbox",
+      "label": "Action d'ajout"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_image",
+      "default": true,
+      "label": "Afficher l'image"
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 10,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Cross-sells à activer",
+      "category": "Formulaire de produit"
+    }
+  ]
+}
+{% endschema %}

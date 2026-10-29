@@ -1,0 +1,128 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "search": {
+      "type": "svf-search-header",
+      "settings": {
+        "padding_top": 60
+      }
+    },
+    "main": {
+      "type": "search-results",
+      "blocks": {
+        "filters": {
+          "type": "filters",
+          "static": true,
+          "settings": {
+            "enable_filtering": false,
+            "enable_sorting": false,
+            "enable_grid_density": false
+          }
+        },
+        "product-card": {
+          "type": "_product-card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 15
+          },
+          "blocks": {
+            "product_card_media_gallery_KVygTA": {
+              "type": "_product-card-gallery",
+              "settings": {
+                "image_ratio": "square",
+                "border_radius": 16
+              }
+            },
+            "product_card_group_qiByJ3": {
+              "type": "_product-card-group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "flex-start",
+                "gap": 5,
+                "padding-block-start": 0,
+                "padding-block-end": 0
+              },
+              "blocks": {
+                "text_DNPfx7": {
+                  "type": "nbr-card-info",
+                  "settings": {}
+                },
+                "product_price_fwNmtJ": {
+                  "type": "price",
+                  "settings": {
+                    "show_sale_price_first": true,
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left",
+                    "sales_badge": "amount"
+                  }
+                },
+                "product_card_swatches_rgHB3d": {
+                  "type": "swatches",
+                  "settings": {
+                    "hide_padding": true
+                  }
+                },
+                "rating_stars_kDXzxw": {
+                  "type": "rating-stars",
+                  "settings": {
+                    "show_on_display": "desktop_and_mobile",
+                    "product": "{{ closest.product }}",
+                    "hide_rating_when_no_reviews": true,
+                    "rating": 4.5,
+                    "show_note": true,
+                    "show_review_count": true,
+                    "review_count": 123,
+                    "margin_top": 0,
+                    "margin_bottom": 0,
+                    "additional_class": ""
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_DNPfx7",
+                "product_price_fwNmtJ",
+                "product_card_swatches_rgHB3d",
+                "rating_stars_kDXzxw"
+              ]
+            }
+          },
+          "block_order": [
+            "product_card_media_gallery_KVygTA",
+            "product_card_group_qiByJ3"
+          ]
+        }
+      },
+      "settings": {
+        "layout_type": "grid",
+        "product_card_size": "medium",
+        "mobile_product_card_size": "small",
+        "enable_infinite_scroll": false,
+        "products_per_page": 20,
+        "product_grid_width": "centered",
+        "full_width_on_mobile": false,
+        "columns_gap_horizontal": 16,
+        "columns_gap_vertical": 16,
+        "padding-inline-start": 0,
+        "padding-inline-end": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 60
+      }
+    }
+  },
+  "order": [
+    "search",
+    "main"
+  ]
+}

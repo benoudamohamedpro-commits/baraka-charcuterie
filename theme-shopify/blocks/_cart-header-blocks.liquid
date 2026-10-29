@@ -1,0 +1,111 @@
+<div
+  class="cart-header-blocks{% if block.settings.wrap_in_card %} svf-card color-{{ block.settings.color_scheme }}{% endif %}"
+  style="--margin-top: {{ block.settings.margin_top }}px; --margin-bottom: {{ block.settings.margin_bottom }}px;"
+>
+  {% content_for 'blocks' %}
+</div>
+
+{% stylesheet %}
+  .svf-panier {
+    .cart-header-blocks {
+      margin-top: var(--margin-top);
+      margin-bottom: var(--margin-bottom);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  
+    .cart-drawer .cart-header-blocks:not(.svf-card) > div:first-of-type {
+      margin-top: 1rem;
+    }
+  
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Panier : en-tête",
+  "tag": null,
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "wrap_in_card",
+      "label": "Envelopper dans une carte",
+      "default": false
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-2",
+      "visible_if": "{{ block.settings.wrap_in_card }}",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "_cart-progress-bar"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "countdown"
+    }
+  ],
+  "presets": [
+    {
+      "name": "En-tête du panier"
+    }
+  ]
+}
+{% endschema %}

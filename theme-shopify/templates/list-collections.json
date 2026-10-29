@@ -1,0 +1,104 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "custom_section_kLfPKp": {
+      "type": "section",
+      "blocks": {
+        "text_JadnEe": {
+          "type": "text",
+          "settings": {
+            "width": "fit-content",
+            "max_width": "none",
+            "alignment": "left",
+            "type_preset": "h2",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "rich_text_styles": false,
+            "alignment_mobile": "left"
+          }
+        }
+      },
+      "block_order": [
+        "text_JadnEe"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "flex-start",
+        "gap": 15,
+        "section_width": "page-width",
+        "padding-block-start": 60,
+        "padding-block-end": 0
+      }
+    },
+    "main": {
+      "type": "main-collection-list",
+      "blocks": {
+        "static-collection-card": {
+          "type": "_collection-card",
+          "static": true,
+          "settings": {
+            "placement": "below_image",
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "flex-start",
+            "collection_card_gap": 10
+          },
+          "blocks": {
+            "collection-card-image": {
+              "type": "_collection-card-image",
+              "static": true,
+              "settings": {
+                "image_ratio": "square",
+                "border_radius": 16
+              }
+            },
+            "text_nAaRae": {
+              "type": "text",
+              "settings": {
+                "text": "<p>{{ closest.collection.title }}</p>",
+                "width": "100%",
+                "max_width": "none",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "rich_text_styles": false,
+                "alignment_mobile": "left",
+                "font_weight": "500"
+              }
+            }
+          },
+          "block_order": [
+            "text_nAaRae"
+          ]
+        }
+      },
+      "settings": {
+        "layout_type": "grid",
+        "carousel_on_mobile": false,
+        "columns": 3,
+        "mobile_columns": "2",
+        "columns_gap": 16,
+        "rows_gap": 32,
+        "max_collections": 50,
+        "section_width": "page-width",
+        "gap": 0,
+        "padding-block-start": 60,
+        "padding-block-end": 60
+      }
+    }
+  },
+  "order": [
+    "custom_section_kLfPKp",
+    "main"
+  ]
+}

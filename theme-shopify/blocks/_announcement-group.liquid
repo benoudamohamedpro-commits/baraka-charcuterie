@@ -1,0 +1,95 @@
+{% doc %}
+  Affiche un groupe de blocs avec une mise en page configurable.
+
+  @example
+  {% content_for 'block', type: 'group', id: 'group' %}
+{% enddoc %}
+
+<li
+  class="splide__slide announcement{%- if block.settings.additional_class != blank %} {{ block.settings.additional_class }}{% endif -%}"
+  {{ block.shopify_attributes }}
+>
+  <div
+    class="slide"
+    style="      --gap: {{ block.settings.layout_gap }}px;"
+  >
+    {% content_for 'blocks' %}
+  </div>
+</li>
+
+{% stylesheet %}
+  .announcement .slide {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: var(--gap);
+    margin: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Annonce (groupe de blocs)",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "text"
+    },
+    {
+      "type": "material-icon"
+    },
+    {
+      "type": "button"
+    },
+    {
+      "type": "rating-stars"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Mise en page"
+    },
+    {
+      "type": "range",
+      "id": "layout_gap",
+      "label": "Espacement entre les éléments",
+      "default": 10,
+      "step": 1,
+      "min": 0,
+      "max": 30,
+      "unit": "px"
+    },
+    {
+      "type": "header",
+      "content": "Réglages avancés"
+    },
+    {
+      "type": "text",
+      "id": "additional_class",
+      "label": "Classes CSS supplémentaires",
+      "info": "Utiles pour réaliser des A/B tests par exemple. Pour ajouter plusieurs classes, séparez-les par un espace."
+    },
+    {
+      "type": "header",
+      "content": "Aller plus loin"
+    },
+    {
+      "type": "paragraph",
+      "content": "❇️ Vous êtes limité par le thème, ou cherchez des solutions d’optimisation concrètes ? [Prenez rendez-vous](https://www.the-deployer.fr/rdv) avec un expert de l’équipe The Deployer !"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Annonce",
+      "category": "Barre d'annonce"
+    }
+  ]
+}
+{% endschema %}

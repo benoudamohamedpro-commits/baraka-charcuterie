@@ -1,0 +1,99 @@
+<article
+  class="cart-line-child"
+  data-ref="cart-line-child"
+  {% if is_nested %}
+    data-quantity="{{ child.quantity }}"
+  {% endif %}
+>
+  <span class="cart-line-child__image">
+    {% if child.image %}
+      <img
+        src="{{ child.image | image_url: width: 80 }}"
+        alt="{{ child.product.title | default: child.title | escape }}"
+        loading="lazy"
+        width="40"
+        height="40"
+      >
+    {% else %}
+      <img
+        src="{{ 'placeholder-product.jpg' | asset_img_url: 'x80' }}"
+        alt="placeholder product"
+        width="40"
+        height="40"
+      >
+    {% endif %}
+  </span>
+
+  <div class="cart-line-child__info">
+    <span class="cart-line-child__title">{{ child.product.title | default: child.title | escape }}</span>
+
+    {%- if child.product.has_only_default_variant == false -%}
+      <span class="cart-line-child__variant">
+        {%- for option in child.options_with_values -%}
+          {{- option.value -}}
+          {%- unless forloop.last %}, {% endunless -%}
+        {%- endfor -%}
+      </span>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .svf-panier {
+    .cart-line-child {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  
+    .cart-line-child__image {
+      flex-shrink: 0;
+      display: flex;
+    }
+  
+    .cart-line-child__image img {
+      width: 34px;
+      height: 34px;
+      object-fit: cover;
+      border-radius: calc(16px - 0.75rem);
+      background-color: white;
+    }
+  
+    @media screen and (max-width: 420px) {
+      .cart-line-child__image img {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  
+    @media screen and (max-width: 380px) {
+      .cart-line-child {
+        gap: 0;
+      }
+  
+      .cart-line-child__image img {
+        display: none;
+      }
+    }
+  
+    .cart-line-child__info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 0;
+    }
+  
+    .cart-line-child__title,
+    .cart-line-child__variant {
+      font-size: 0.78125rem;
+      color: rgb(var(--color-foreground));
+      line-height: 1;
+    }
+  
+    .cart-line-child__variant {
+      opacity: 0.7;
+    }
+  
+  }
+{% endstylesheet %}

@@ -1,0 +1,154 @@
+<div
+  class="cart-footer-resume-blocks{% if block.settings.wrap_in_card %} svf-card color-{{ block.settings.color_scheme }}{% endif %}"
+  style="--margin-top: {{ block.settings.margin_top }}px; --margin-bottom: {{ block.settings.margin_bottom }}px;"
+>
+  {% content_for 'blocks' %}
+
+  {%- if cart.cart_level_discount_applications.size > 0 -%}
+    <div class="cart__discounts">
+      {%- for discount in cart.cart_level_discount_applications -%}
+        <div class="cart__discount">
+          {% render 'svf-icon', icon: 'shoppingmode' %}
+          <span>{{ discount.title }} (-{{ discount.total_allocated_amount | money }})</span>
+        </div>
+      {%- endfor -%}
+    </div>
+  {%- endif -%}
+
+  {%- if cart.original_total_price != cart.total_price -%}
+    <div class="cart__reductions">
+      <p>Réduction</p>
+      <div class="cart__reductions-value">
+        {% assign reduction = cart.original_total_price | minus: cart.total_price %}
+        {% render 'svf-price', price: reduction, sales_badge: 'none' %}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <div class="cart__totals">
+    <p>Total estimé</p>
+    <div class="cart__totals-value">
+      {% assign real_cart_original_total_price = 0 %}
+
+      {% for item in cart.items %}
+        {% assign compare_price = item.original_price %}
+        {% if item.variant.compare_at_price > item.original_price %}
+          {% assign compare_price = item.variant.compare_at_price | times: item.quantity %}
+        {% else %}
+          {% assign compare_price = item.original_price | times: item.quantity %}
+        {% endif %}
+        {% assign real_cart_original_total_price = real_cart_original_total_price | plus: compare_price %}
+      {% endfor %}
+
+      {%- if real_cart_original_total_price > cart.total_price -%}
+        {% render 'svf-price', price: cart.total_price, compare_price: real_cart_original_total_price, sales_badge: 'none' %}
+      {%- else -%}
+        {% render 'svf-price', price: cart.total_price, sales_badge: 'none' %}
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .svf-panier {
+    .cart-footer-resume-blocks {
+      margin-top: var(--margin-top);
+      margin-bottom: var(--margin-bottom);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+  
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Panier : récapitulatif",
+  "tag": null,
+  "blocks": [
+    {
+      "type": "_discount-code"
+    },
+    {
+      "type": "_cart-progress-bar"
+    },
+    {
+      "type": "text"
+    },
+    {
+      "type": "delivery-estimation"
+    }
+  ],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "wrap_in_card",
+      "label": "Envelopper dans une carte",
+      "default": false
+    },
+    {
+      "id": "color_scheme",
+      "label": "Palette de couleurs",
+      "default": "scheme-2",
+      "visible_if": "{{ block.settings.wrap_in_card }}",
+      "type": "select",
+      "options": [
+        {
+          "value": "",
+          "label": "Aucun"
+        },
+        {
+          "value": "scheme-1",
+          "label": "Clair (fond gris clair)"
+        },
+        {
+          "value": "scheme-2",
+          "label": "Carte claire (boutons jaunes)"
+        },
+        {
+          "value": "scheme-3",
+          "label": "Jaune"
+        },
+        {
+          "value": "scheme-dc39c57a-5dca-4d27-aa18-4454c1b54ee4",
+          "label": "Noir"
+        },
+        {
+          "value": "scheme-c103a6b2-823a-4f64-98af-41ea3f4922a8",
+          "label": "Blanc (texte blanc)"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Marges"
+    },
+    {
+      "type": "range",
+      "id": "margin_top",
+      "label": "Marge en haut",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "margin_bottom",
+      "label": "Marge en bas",
+      "default": 0,
+      "min": 0,
+      "max": 100,
+      "step": 1,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Résumé du panier"
+    }
+  ]
+}
+{% endschema %}
